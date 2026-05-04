@@ -1,0 +1,47 @@
+{
+  "assets/scripts/js/app.js": {
+    "file": "scripts/scripts.js",
+    "isEntry": true,
+    "src": "assets/scripts/js/app.js"
+  },
+  "assets/scripts/specific-scripts/admin.js": {
+    "file": "scripts/admin.js",
+    "isEntry": true,
+    "src": "assets/scripts/specific-scripts/admin.js"
+  },
+  "assets/scripts/specific-scripts/ajax-pagination.js": {
+    "file": "scripts/ajax-pagination.js",
+    "isEntry": true,
+    "src": "assets/scripts/specific-scripts/ajax-pagination.js"
+  },
+  "assets/scripts/specific-scripts/cookiebanner.js": {
+    "file": "scripts/cookiebanner.js",
+    "isEntry": true,
+    "src": "assets/scripts/specific-scripts/cookiebanner.js"
+  },
+  "assets/scripts/specific-scripts/lazyloading.js": {
+    "file": "scripts/lazyloading.js",
+    "isEntry": true,
+    "src": "assets/scripts/specific-scripts/lazyloading.js"
+  },
+  "assets/styles/specific-css/admin.css": {
+    "file": "styles/admin.css",
+    "isEntry": true,
+    "src": "assets/styles/specific-css/admin.css"
+  },
+  "assets/styles/specific-css/cookiebanner.css": {
+    "file": "styles/cookiebanner.css",
+    "isEntry": true,
+    "src": "assets/styles/specific-css/cookiebanner.css"
+  },
+  "assets/styles/specific-css/lazyloading.css": {
+    "file": "styles/lazyloading.css",
+    "isEntry": true,
+    "src": "assets/styles/specific-css/lazyloading.css"
+  },
+  "assets/styles/style.css": {
+    "file": "styles/style.css",
+    "isEntry": true,
+    "src": "assets/styles/style.css"
+  }
+}

@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Digihood HTML Sitemap\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-11 14:14+0000\n"
+"PO-Revision-Date: 2024-07-18 10:12+0000\n"
+"Last-Translator: Josph\n"
+"Language-Team: English (UK)\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.4; wp-6.2.2\n"
+"X-Domain: digiSM"
+
+#: Admin/fields/d1g1PluginField.php:208
+msgid " v jazyce: "
+msgstr "In Language: "
+
+#: Admin/view/d1g1MenusContents.php:68
+msgid ""
+"(exclude a exclude_type jsou volitelné parametry pro černou listinu - "
+"nefunguje pro typ příspěvku \"page\", vstupy jsou ID příspěvků a klíče typů "
+"příspěvků)"
+msgstr ""
+"(exclude and exclude_type are optional parameters for blacklisting - does "
+"not work for 'page' post type, inputs are post ids and post type keys)"
+
+#. Author of the plugin
+msgid "digihood"
+msgstr ""
+
+#. Name of the plugin
+msgid "Digihood HTML Sitemap"
+msgstr "Digihood HTML Sitemap"
+
+#. Description of the plugin
+msgid ""
+"Digihood HTML Sitemap is simple plugin for creating simple HTML sitemaps "
+"(entire web, post-types, terms/posts under taxonomies, attachments ...) "
+"using shortcodes. Documentation included in wp-admin plugin settings."
+msgstr ""
+
+#: Admin/view/d1g1MenusContents.php:59
+msgid ""
+"Digihood HTML Sitemap je plugin pro tvorbu jednoduchých sitemap pomocí "
+"shortcodů. Vytvořte mapu celého webu nebo pouze specifikovaných "
+"postů/stránek/custom post typů, taxonomií a jejich termů, postů pod "
+"specifikovanou taxonomií nebo jejím termem, nebo příloh. Sitemapy jsou "
+"přizpůsobitelné pomocí šablon nebo vlastního CSS s minimálním výchozím "
+"stylováním. Obsahuje black-list možnosti."
+msgstr ""
+"Digihood HTML Sitemap is a plugin for simple sitemaps creation using "
+"shortcodes. Create a map of entire web or only specified posts/pages/custom "
+"post types, taxonomies and their terms, posts under specified taxonomy or "
+"it's term, or attachments. Sitemaps are customizable by theme or custom css "
+"with minimal default styling.\n"
+"Blacklisting options included."
+
+#: Admin/view/d1g1MenusContents.php:99
+msgid ""
+"Do kódu nebylo přidáno žádné další stylování kromě style=\"clear: both;\" a "
+"třídy \"whs-wrap\", která obklopuje celý seznam a může být použita pro další "
+"osobní stylování. Doporučujeme přidávat své stylování mimo samotný plugin, "
+"protože změny by mohly být přepsány budoucími aktualizacemi."
+msgstr ""
+"No additional styling has been added to the code except style=\"clear: both;"
+"\" and the class \"whs-wrap\", which wraps the whole list and can be used "
+"for further personal styling. We recommend adding your styling outside of "
+"the plugin itself since the changes could be overwritten by future updates."
+
+#: Admin/view/d1g1MenusContents.php:35
+msgid "Dokumentace"
+msgstr "Documentation"
+
+#: Admin/view/d1g1MenusContents.php:75
+msgid ""
+"file-type není povinný parametr a používá MIME kódy, výchozí: všechny "
+"dokumenty"
+msgstr "file-type is optional and uses MIME codes, default: all documents"
+
+#. Author URI of the plugin
+msgid "https://digihood.co.uk/"
+msgstr "https://digihood.co.uk/"
+
+#. URI of the plugin
+msgid "https://digihood.co.uk/plugins/html-sitemap/"
+msgstr ""
+
+#: Admin/fields/d1g1PluginField.php:20 Admin/view/d1g1MenusContents.php:34
+msgid "Nastavení"
+msgstr "Settings"
+
+#: components/html-sitemap.php:274
+msgid "Notice: hledaný post-type neexistuje"
+msgstr "Notice: This post-type does not exist!"
+
+#: Admin/view/d1g1MenusContents.php:82
+msgid ""
+"post-type je povinný parametr, který specifikuje typ příspěvku, který chcete "
+"zahrnout"
+msgstr "specific post-type parameter required"
+
+#: Admin/view/d1g1MenusContents.php:99
+msgid "Poznámka:"
+msgstr "Note:"
+
+#: Admin/fields/d1g1PluginField.php:177
+msgid "Přepsat defaultní názvy taxonomií pro aktivní jazyky"
+msgstr "Overwrite the default taxonomy names for each active language"
+
+#: Admin/fields/d1g1PluginField.php:152
+msgid "Přepsat defaultní názvy vlastních typů příspěvků pro aktivní jazyky"
+msgstr "Overwrite the default custom post-type names for each active language"
+
+#: components/html-sitemap.php:410
+msgid "Přiložené soubory: "
+msgstr "Attachments: "
+
+#: Admin/view/d1g1MenusContents.php:67 Admin/view/d1g1MenusContents.php:74
+#: Admin/view/d1g1MenusContents.php:81 Admin/view/d1g1MenusContents.php:88
+#: Admin/view/d1g1MenusContents.php:95
+msgid "Příklad: "
+msgstr "Example: "
+
+#: Admin/view/d1g1MenusContents.php:85
+msgid "Příspěvky pod taxonomií nebo termem:"
+msgstr ""
+"listing of all posts under specified taxonomy/term\n"
+
+#: Admin/view/d1g1MenusContents.php:71
+msgid "Seznam MIME kódů"
+msgstr "list of MIME codes"
+
+#: Admin/view/d1g1MenusContents.php:64
+msgid "Sitemapa celého webu:"
+msgstr "Sitemap of entire web"
+
+#: Admin/view/d1g1MenusContents.php:71
+msgid "Sitemapa příloh:"
+msgstr "Attachment sitemap"
+
+#: Admin/view/d1g1MenusContents.php:78
+msgid "Sitemapa příspěvků pod post-typy:"
+msgstr "Post-type sitemap"
+
+#: Admin/view/d1g1MenusContents.php:91
+msgid "Sitemapa termů taxonomií:"
+msgstr "Taxonomy terms sitemap"
+
+#: components/html-sitemap.php:468
+msgid "Tato taxonomie neobsahuje žádné termy"
+msgstr "This taxonomy has no terms"
+
+#: components/html-sitemap.php:360
+msgid "Tato taxonomie/term neobsahuje žádné posty"
+msgstr "This taxonomy/term doesn't contain any posts"
+
+#: Admin/view/d1g1MenusContents.php:94
+msgid ""
+"taxonomy je povinný, volitelný parametr hide-empty=\"true/false\" - výchozí "
+"= false"
+msgstr ""
+"taxonomy is required, optional parameter hide-empty=\"true/false\" - default "
+"= false"
+
+#: components/html-sitemap.php:272
+msgid "tento post-type neobsahuje žádné příspěvky"
+msgstr "This post-type doesn't have any posts"
+
+#: Admin/view/d1g1MenusContents.php:73
+msgid "výpis všech příloh specifikovaného typu z administrace WordPressu."
+msgstr "listing of all attachments of a specified type from wordpress admin."
+
+#: Admin/view/d1g1MenusContents.php:87
+msgid "výpis všech příspěvků pod specifikovanou taxonomií/termínem"
+msgstr "listing of all posts under specified taxonomy/term"
+
+#: Admin/view/d1g1MenusContents.php:80
+msgid ""
+"výpis všech příspěvků pod specifikovaným typem příspěvku, post-type parametr "
+"je povinný"
+msgstr ""
+"listing of all posts under a specified post-type (post-type parameter "
+"required)"
+
+#: Admin/view/d1g1MenusContents.php:93
+msgid "výpis všech termínů pod specifikovanou taxonomií"
+msgstr ""
+"listing of all terms under specified taxonomy\n"
+
+#: components/html-sitemap.php:460
+msgid "Zadaná taxonomie neexistuje"
+msgstr "This taxonomy does not exist"
+
+#: components/html-sitemap.php:368
+msgid "Zadaná taxonomie neexistuje: "
+msgstr "Entered taxonomy does not exist"
+
+#: components/html-sitemap.php:365
+msgid "Zadaný term v dané taxonomii neexistuje"
+msgstr "Entered term does not exist in specified taxonomy"
+
+#: components/html-sitemap.php:454
+msgid "Špatný parametr hide-empty."
+msgstr "wrong input for hide-empty parameter."

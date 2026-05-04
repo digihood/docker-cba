@@ -1,0 +1,446 @@
+@tailwind base;
+@layer base {
+    html {
+        @apply font-sans;
+    }
+    h1, .h1 {
+        font-size: theme(fontSize.h1.sm);
+    }
+    @screen md {
+        h1, .h1 {
+            font-size: theme(fontSize.h1.md);
+        }
+    }
+    @screen lg {
+        h1, .h1 {
+            font-size: theme(fontSize.h1.lg);
+        }
+    }
+    h2, .h2 {
+        font-size: theme(fontSize.h2.sm);
+    }
+    @screen md {
+        h2, .h2 {
+            font-size: theme(fontSize.h2.md);
+        }
+    }
+    @screen lg {
+        h2, .h2 {
+            font-size: theme(fontSize.h2.lg);
+        }
+    }
+    h3, .h3 {
+        font-size: theme(fontSize.h3.sm);
+    }
+    @screen md {
+        h3, .h3 {
+            font-size: theme(fontSize.h3.md);
+        }
+    }
+    @screen lg {
+        h3, .h3 {
+            font-size: theme(fontSize.h3.lg);
+        }
+    }
+    h4, .h4 {
+        font-size: theme(fontSize.h4.sm);
+    }
+    @screen md {
+        h4, .h4 {
+            font-size: theme(fontSize.h4.md);
+        }
+    }
+    @screen lg {
+        h4, .h4 {
+            font-size: theme(fontSize.h4.lg);
+        }
+    }
+    h5, .h5 {
+        font-size: theme(fontSize.h5.sm);
+    }
+    @screen md {
+        h5, .h5 {
+            font-size: theme(fontSize.h5.md);
+        }
+    }
+    @screen lg {
+        h5, .h5 {
+            font-size: theme(fontSize.h5.lg);
+        }
+    }
+    a {
+        @apply text-primary;
+    }
+    a:hover {
+        @apply underline;
+    }
+    p {
+        @apply text-base mb-3;
+    }
+    img {
+        @apply inline-block;
+    }
+}
+@tailwind components;
+@layer components {
+    /* Buttons settings
+    =======================================  */
+    .button {
+        width: fit-content;
+        font-size: theme('fontSize.lg');
+        line-height: 0;
+        padding: 16px 24px;
+        border: 1px solid;
+        border-radius: 10px;
+        transition: all 300ms linear;
+    }
+
+    .button:focus, 
+    .button:active, 
+    .button:hover {
+        color: theme('colors.primary');
+        background-color: theme('colors.white');
+        border-color: theme('colors.white');
+        text-decoration: none;
+    }
+
+    .menu .active a {
+        text-decoration: underline;
+    }
+
+    .button.primary {
+        color: theme('colors.white');
+        background-color: theme('colors.primary');
+        border-color: theme('colors.primary');
+    }
+    .button.primary:hover {
+        color: theme('colors.primary');
+        background-color: theme('colors.white');
+    }
+    .button.secondary {
+        color: theme('colors.white');
+        background-color: theme('colors.secondary');
+        border-color: theme('colors.secondary');
+    }
+    .button.secondary:hover {
+        color: theme('colors.secondary');
+        background-color: theme('colors.white');
+    }
+
+    /* Default column gap settings
+    ======================================= */
+    .gap-x-theme {
+        column-gap: theme('gap.sm');
+        @screen md {
+            column-gap: theme('gap.md');
+        }
+        @screen lg {
+            column-gap: theme('gap.lg');
+        }
+    }
+   
+    .gap-y-theme {
+        row-gap: theme('gap.sm');
+        @screen md {
+            column-gap: theme('gap.md');
+        }
+        @screen lg {
+            column-gap: theme('gap.lg');
+        }
+    }
+}
+@tailwind utilities;
+
+
+/* Styly z global.scss
+************************/
+.admin-bar #header-content {
+    top: 32px;
+}
+
+#header-content {
+    position: relative;
+}
+
+#header-content .logo {
+    display: flex;
+    align-items: center;
+}
+
+#header-content .logo img {
+    transition: all 0.3s;
+}
+
+.scrolled #header-content {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.scrolled #header-content .logo img {
+    width: 118px;
+}
+
+#header-content .button {
+    justify-content: center;
+}
+
+
+
+/* WordPress WYSIWYG Editor Styles 
+************************/
+
+.alignleft, 
+img.alignleft {
+	margin-right: 1.5em;
+	display: inline;
+	float: left;
+}
+
+.alignright, 
+img.alignright {
+	margin-left: 1.5em;
+	display: inline;
+	float: right;
+
+}
+
+.aligncenter, 
+img.aligncenter {
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+	clear: both;
+}
+
+.wp-block-image{
+    @apply mb-4;
+}
+
+.wp-caption {
+	margin-bottom: 1.5em;
+	text-align: center;
+	padding-top: 5px;
+}
+
+.wp-caption img {
+	border: 0 none;
+	padding: 0;
+	margin: 0;
+}
+
+.wp-caption p.wp-caption-text {
+	line-height: 1.5;
+	font-size: 10px;
+	margin: 0;
+}
+.wp-smiley {
+	margin: 0 !important;
+	max-height: 1em;
+}
+
+blockquote.left {
+	margin-right: 20px;
+	text-align: right;
+	margin-left: 0;
+	width: 33%;
+	float: left;
+}
+
+blockquote.right {
+	margin-left: 20px;
+	text-align: left;
+	margin-right: 0;
+	width: 33%;
+	float: right;
+}
+
+.wp-block-list li {
+    @apply list-disc;
+}
+
+.wp-block-cover {
+    @apply text-white font-bold;
+}
+
+.wp-block-cover p {
+    @apply !text-[60px];
+}
+
+/* Entry content
+========================================*/
+
+.entry-content ul,
+.entry-content ol{
+    @apply mb-5; 
+}
+
+.entry-content iframe {
+    @apply min-h-[500px]
+}
+
+.entry-content button,
+.entry-content table {
+    @apply mb-5; 
+}
+
+.entry-content .wp-block-button a {
+    @apply bg-primary;
+} 
+
+/* Menu
+========================================*/
+
+.menu .menu-item-has-children {
+    @apply relative;
+}
+
+.menu .menu-item-has-children .menu {
+    @apply absolute top-full left-0 bg-white py-6 px-4 shadow-lg rounded-[15px] hidden w-[300px] z-10 min-h-[150px];
+}
+
+.menu .menu-item-has-children:hover .menu {
+    @apply block;
+}
+
+.social-list img {
+    @apply w-[30px] h-[30px];
+}
+
+
+/* bloky
+************************/
+
+.rank-math-block .rank-math-list {
+    @apply grid py-12 md:py-[70px] gap-5 max-sm:!grid-cols-1 [&_>*]:h-full [&_>*>h3:not(.collapse)]:h-full;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#rank-math-faq .rank-math-list-item {
+    grid-column: span 1 / span 1;
+}
+
+.rank-math-question {
+    @apply relative cursor-pointer block py-6 px-3 md:py-8 md:px-8 bg-primary text-black rounded-[15px] text-base;
+}
+
+.rank-math-question.collapse {
+    @apply bg-primary text-white;
+}
+
+.rank-math-answer {
+    @apply py-2 px-8 text-[16px];
+}
+
+.rank-math-answer p {
+    @apply text-[16px] leading-7;
+}
+
+.rank-math-block .collapse {
+    visibility: visible;
+}
+
+.rank-math-question:hover {
+    opacity: 0.8;
+}
+
+/* Mobile menu 
+************************/
+#mobile-menu li a {
+    @apply text-white no-underline hover:text-primary;
+}
+#mobile-menu li.active > a {
+    @apply text-primary;
+}
+#mobile-menu li.active > .arrow {
+    @apply border-primary;
+}
+#mobile-menu li.menu-button a {
+    @apply text-primary w-full bg-white hover:bg-primary hover:text-white rounded-full text-base;
+}
+#mobile-menu li .sub-menu li a {
+    @apply pl-9;
+}
+#mobile-menu li .sub-menu {
+    @apply w-full order-3 hidden;
+}
+#mobile-menu li .arrow {
+    @apply ml-4 mt-2 size-3 order-2 border-l-2 border-b-2 border-white -rotate-45;
+}
+#mobile-menu li.menu-item-has-children {
+    @apply flex flex-wrap;
+}
+#mobile-menu li.menu-item-has-children > a {
+    @apply order-1;
+}
+
+
+
+/* Form
+************************/
+
+select,
+textarea,
+input {
+    @apply block h-[65px] w-full px-4 py-4 border border-primary rounded-[15px] focus:outline-none text-sm focus:border-primary hover:border-primary;
+}
+
+select {
+    @apply cursor-pointer bg-none;
+    background: transparent;
+}
+
+textarea {
+    @apply h-[230px];
+}
+
+.wpcf7 label {
+    @apply md:mb-10 block cursor-pointer mb-5;
+}
+
+.wpcf7 {
+    @apply text-sm max-sm:[&_p]:!m-0;
+}
+
+.wpcf7-acceptance label {
+    @apply mt-3;
+}
+
+strong {
+    @apply font-bold;
+}
+
+input[type="round"],
+input[type="checkbox"] {
+    @apply h-auto cursor-pointer w-auto inline-block mr-4 align-middle;   
+}
+
+input[type="submit"] {
+    @apply bg-primary text-white w-auto min-w-[175px] h-[53px] leading-[53px] py-0 text-lg font-bold cursor-pointer max-sm:rounded-full max-sm:mx-auto max-sm:mt-5;
+}
+
+.wpcf7-list-item {
+    @apply m-0 mr-4;
+}
+
+.wpcf7-list-item label {
+    @apply mb-4 mt-0;
+}
+
+.wpcf7-response-output {
+    @apply !mx-0;
+}
+
+.wpcf7-spinner {
+    @apply absolute;
+}
+
+
+
+
+
+
+/* Obecné
+************************/
+*::selection {
+    @apply bg-primary text-white;
+}

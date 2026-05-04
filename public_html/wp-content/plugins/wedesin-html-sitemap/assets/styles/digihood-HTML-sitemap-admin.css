@@ -1,0 +1,46 @@
+.d1g1-admin .form-section p, .d1g1-admin .form-section ul{
+    margin: 0;
+}
+
+.d1g1-admin .form-section .plugin-introduction{
+    margin-bottom: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #c3c2bf;
+}
+
+.d1g1-admin .form-section .plugin-explanation{
+    margin-left: 20px;
+}
+.d1g1-admin .form-section .plugin-explanation ul{
+    padding: 0 0 10px 10px;
+    list-style: inside;
+}
+.d1g1-admin .form-section .note{
+    padding: 8px 0;
+    border-bottom: 1px solid #c3c2bf;
+    border-top: 1px solid #c3c2bf;
+
+}
+.d1g1-admin .form-section .functionality-description{
+    border-left: 1px solid #c3c2bf;
+}
+
+.d1g1-admin .form-section .functionality-description > *{
+    padding-left: 10px;
+}
+
+.plugin-introduction{
+    border-bottom: 1px solid #c3c2bf;
+}
+.functionality-description > ol{
+    list-style: square;;
+}
+
+.functionality-description > ol > ul{
+    list-style: circle;
+}
+
+.functionality-description > ol > ul{
+    list-style: circle;
+    padding-left: 15px;
+}

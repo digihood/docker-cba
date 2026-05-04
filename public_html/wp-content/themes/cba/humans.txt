@@ -1,0 +1,21 @@
+/* TEAM */
+
+	Digital Strategy: Ing. Josef Antoš
+	From: Huťská 1350, Kladno, 27301, Czech Republic
+
+	UX & "Design": Digihood
+
+	Frontend Development: Jan Rubeš, Ing. Josef Antoš
+
+	PHP Programming & Backend Development: Milan Pišna
+
+	Content & Copywriting: Ing. Josef Antoš
+
+	SEO, emails, social & other marketing: Ing. Josef Antoš
+
+/* SITE */
+
+	Language: Czech
+	Standards: HTML5, CSS3
+	Technology: PHP, HTML, CSS, Javascript, Vite, PostCSS, Tailwind
+    CMS: WordPress

@@ -1,0 +1,4 @@
+node_modules/
+data/ibtmp1
+data/mysql.sock
+data/*.sock

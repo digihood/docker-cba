@@ -1,0 +1,84 @@
+/* Slideout menu - základní styly
+==========================*/
+.slideout-menu {
+  position: fixed;
+  left: auto;
+  top: 0;
+  bottom: 0;
+  right: -256px;
+  z-index: 10;
+  width: 256px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 80px 2rem;
+  transform: translateX(0);
+  transition: all 0.3s ease;
+}
+.slideout-open .slideout-menu {
+    transform: translateX(-256px)
+}
+.slideout-open main {
+    position: relative;
+    transform: translateX(0);
+}
+.slideout-open .js-slideout-toggle {
+  z-index: 30;
+}
+
+/* hamburger menu - ikona
+======================= */
+.js-slideout-toggle path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  --length: 24;
+  --offset: -38;
+  stroke-dasharray: var(--length) var(--total-length);
+  stroke-dashoffset: var(--offset);
+  transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.js-slideout-toggle {
+  cursor: pointer;;
+}
+
+.js-slideout-toggle circle {
+  fill: #000;
+  opacity: 0;
+}
+
+.js-slideout-toggle .line--1,
+.js-slideout-toggle .line--3 {
+  --total-length: 126.64183044433594;
+}
+
+.js-slideout-toggle .line--2 {
+  --total-length: 70;
+}
+
+.slideout-open .js-slideout-toggle svg .line--1,
+.slideout-open .js-slideout-toggle svg .line--3 {
+  --offset: -94.1149185097;
+}
+
+.slideout-open .js-slideout-toggle svg .line--2 {
+  --offset: -50;
+}
+
+.slideout-open .js-slideout-toggle svg .line--1,
+.slideout-open .js-slideout-toggle svg .line--3 {
+  --length: 22.627416998;
+}
+
+.slideout-open .js-slideout-toggle svg .line--2 {
+  --length: 0;
+}
+
+
+/* Slideout menu - styl menu - editovatelné */
+.slideout-menu .menu-mobile-menu-container li.active a {
+    text-decoration: underline;
+}
