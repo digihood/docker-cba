@@ -1,14 +1,14 @@
 === Import and export users and customers ===
-Contributors: carazo, hornero
+Contributors: carazo
 Donate link: https://codection.com/go/donate-import-users-from-csv-with-meta/
-Tags: csv, import, export, importer, exporter
+Tags: import users, export users, csv, woocommerce, customers
 Requires at least: 3.4
-Tested up to: 6.6.1
-Stable tag: 1.27.2
+Tested up to: 6.9.4
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Import and export users and customers including user meta, roles, and other. Compatible with many plugins. Do it from the front end or using cron.
+Bulk import and export WordPress users and WooCommerce customers from CSV, including roles, passwords and any custom meta.
 
 == Description ==
 
@@ -17,12 +17,11 @@ Import and export users and customers including user meta, roles, and other. Com
 Clean and easy-to-use import and export users and customer plugin, for WordPress and WooCommerce. It includes custom user meta to be included automatically from a CSV file and delimitation auto-detector. It also is able to send a mail to each user imported and all the meta data imported is ready to edit into user profile.
 
 *	Import CSV file with users directly to your WordPress or customers into WooCommerce
-*	Import thousends of users or customers in only some seconds
+*	Import thousands of users or customers in only some seconds
 *   Export users or customers to a CSV file, filtering by role or registered date
 *	You can also import meta-data like data from WooCommerce customers
-*	You can assign roles while importing. To create new user roles or manage existing ones we recommend you using [Profile Builder - Roles Editor](https://wordpress.org/plugins/profile-builder/)
+*	You can assign roles while importing.
 *	Send a mail to every new user, this mails can be saved as templates and are fully customizable, before sending you can test it
-*	Use your own 
 *	You can also update users if the user is already in your WordPress
 *	Create a cron task to import users periodically
 *	Edit the metadata (you will be able to edit the metadata imported using metakeys directly in the profile of each user)
@@ -116,6 +115,150 @@ Plugin will automatically detect:
 5. Extra profile information (user meta)
 
 == Changelog ==
+
+= 2.1 =
+*   Redesigned admin UI: import and export tabs reorganised with secondary navigation, accordion-style import form, and improved sidebar
+*   New option to apply "users not present in CSV" actions only to users previously imported by this plugin
+*   New option to apply "users not present in CSV" actions only to users with the same role as those being imported
+
+= 2.0.10 =
+*   Fixed an error in standard import
+
+= 2.0.9 =
+*   Fixed two security issues
+
+= 2.0.8 =
+*   Fixed an issue when choosing to move the file after import in the cron tab
+
+= 2.0.7 =
+*   An issue with the cron import task has been resolved; now, each step processes 100 rows or runs for 29 seconds by default
+
+= 2.0.6 =
+*   Fixed an error, included a file in the trunk
+
+= 2.0.5 =
+*   Fixed an issue where Action Scheduler hooks interfered with automatic imports and plugin deactivation
+
+= 2.0.4 =
+*   Included a way to change time limit and batch size from wp-config without generating an error
+
+= 2.0.3 =
+*   Fixed a problem showing errors, warnings and notices when the CSV file was small
+
+= 2.0.2 =
+*   Fixed a problem in cron import
+*   The plugin will now never change the password of the user uploading the file, to prevent the user from accidentally being logged out
+
+= 2.0.1 =
+*   Improved compatibility with PHP 8.x
+*   New hooks added
+
+= 2.0 =
+*   Importing is now performed in steps, allowing files of any size to be processed.
+*   Datatables have been added to some tables to improve the UX.
+*   The Action Scheduler library has been updated to the latest version.
+*   Hooks that did not follow the acui_ naming pattern have been renamed to comply with it.
+*   When selecting columns to export, any extra spaces between column names are ignored to prevent issues when retrieving the meta key.
+*   Improved security.
+
+= 1.29.7 =
+*   Ready for WordPress 6.9
+
+= 1.29.6 =
+*   Fixed a warning
+
+= 1.29.5 =
+*   New hooks added to allow to define users that should never be deleted or their role changed
+
+= 1.29.4 =
+*   Documentation improved
+
+= 1.29.3 =
+*   Fixed a problem when exporting in the frontend
+*   Fixed a problem when saving settings of the export in the backend
+
+= 1.29.2 =
+*   Fixed a problem when deleting users
+
+= 1.29.1 =
+*   Fixed a problem when exporting in the frontend
+
+= 1.29 =
+*   Fixed a problem when exporting a huge list of users when the process was stopped without finishing and an attempt was made to restart
+*   Improved the performance of the export
+*   Improved compatibility with latest versions of PHP
+
+= 1.28.6 =
+*   Bug fixed, included the new file in the repository
+
+= 1.28.5 =
+*   Ready for WordPress 6.8
+*   Improved GUI with a new tab with the old CSV uploaded info
+
+= 1.28.4 =
+*   Fixed the export when selecting alphabetical order
+*   Fixed a fatal error in certain imports using certain roles
+*   Fixed a problem selecting no_role
+
+= 1.28.3 =
+*   You can now choose to delete or change the role of users that do not appear in the CSV but only of the role(s) that have appeared in the import
+
+= 1.28.2 =
+*   Fixed the export in the frontend using the shortcode when there is no role parameter
+
+= 1.28.1 =
+*   Fixed a problem with select2 enqueue
+*   Fixed the export in the frontend using the shortcode
+
+= 1.28 =
+*   The export dialog now allows the use of several roles
+*   Improved role selection interface on user import page
+
+= 1.27.16 =
+*   PMPro addon now import startdate and enddate with hours, minutes and seconds if needed
+
+= 1.27.15 =
+*   Including the possibility of changing field names when exporting fields
+
+= 1.27.14 =
+*   Fixed a problem with long exports created in the previous version
+
+= 1.27.13 =
+*   The name of the exported file has been anonymized so that no attacker can brute force the file while it is being generated and before it is downloaded to obtain information
+
+= 1.27.12 =
+*   Fixed the Melapress Login Security plugin, included compatibility with version 2.0
+
+= 1.27.11 =
+*   Fixed a bug that throws an error when trying to import an incomplete class to a user meta
+
+= 1.27.10 =
+*   Fixed a bug that creates a warning
+
+= 1.27.9 =
+*   Two new buttons have been added to the user window to access import and export directly
+
+= 1.27.8 =
+*   Fixed another problem with the Melapress Login Security addon
+
+= 1.27.7 =
+*   Ready for WordPress 6.7
+*   Fixed a problem in the link of email template in main import tab
+*   Action Scheduler now is only loaded if it is necessary
+*   Fixed another problem with the Melapress Login Security addon
+
+= 1.27.6 =
+*   Fixed a problem with the Melapress Login Security addon
+
+= 1.27.5 =
+*   More variables sanitized
+
+= 1.27.4 =
+*   Fixed a problem with some roles that were able to execute in backend but not using the shortcode in frontend
+*   Every export has an unique filename
+
+= 1.27.3 =
+*   Fixed some warnings
 
 = 1.27.2 =
 *   Improved the way the cron result log is shown
@@ -1191,7 +1334,7 @@ Michael Finkenberger
 *	Documentation fixed: if user id is present in the CSV but not in the database, it cannot be used to create a new user
 
 = 1.10.6.3 =
-*	New hook added do_action('post_acui_import_single_user', $headers, $data, $user_id );
+*	New hook added do_action('acui_post_import_single_user', $headers, $data, $user_id );
 
 = 1.10.6.2 =
 *	Added documentation about locale and BuddyPress Extendend Profile
@@ -1511,15 +1654,6 @@ Michael Finkenberger
 = 1.1.7 =
 *	Fixed problems with \n, \r and \n\r inside CSV fields. Thanks to Ted Stresen-Reuter for his help. We have changed our way to parse CSV files, now we use SplFileObject and we can solve this problem.
 
-= 1.2 =
-*	From this version, plugin can both insert new users and update new ones. Thanks to Nick Gallop from Weston Graphics.
-
-= 1.1.8 =
-*	Donation button added.
-
-= 1.1.7 =
-*	Fixed problems with \n, \r and \n\r inside CSV fields. Thanks to Ted Stresen-Reuter for his help. We have changed our way to parse CSV files, now we use SplFileObject and we can solve this problem.
-
 = 1.1.6 =
 *	You can import now user_registered but always in the correct format Y-m-d H:i:s
 
@@ -1641,6 +1775,22 @@ You can get:
 
 = Customizations, addons, develops... =
 [Write us directly to contacto@codection.com](mailto:contacto@codection.com).
+
+= Can I migrate users from another WordPress site? =
+
+Yes. Export users from your old site using the Export tab, then import the resulting CSV into your new site. Hashed passwords can be transferred using the user_pass column so users keep their existing passwords without needing to reset them.
+
+= Can I bulk create WooCommerce customers? =
+
+Yes. Add WooCommerce billing and shipping fields as columns in your CSV (e.g. billing_first_name, billing_email, shipping_address_1) and the plugin will populate them automatically when importing users with the customer role.
+
+= Can I import users with custom fields (ACF, BuddyPress, etc.)? =
+
+Yes. The plugin has addons for Advanced Custom Fields, BuddyPress/BuddyBoss, Paid Membership Pro, WooCommerce Memberships, WooCommerce Subscriptions and many others. Custom meta fields not covered by an addon can still be imported by using the meta key as the column header.
+
+= Can I update existing users without creating duplicates? =
+
+Yes. The plugin checks for existing users by username and email before inserting. If a match is found the user is updated instead of created. You can also control whether passwords and roles are overwritten on update.
 
 = How can I report security bugs? =
 

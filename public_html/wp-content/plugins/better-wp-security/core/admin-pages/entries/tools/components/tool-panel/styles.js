@@ -43,10 +43,6 @@ export const StyledCardBody = styled( CardBody )`
 	flex-direction: column;
 `;
 
-export const StyledResult = styled.div`
-	margin-bottom: 0.5rem;
-`;
-
 export const StyledTextContainer = styled.div`
 	width: 90%;
 `;

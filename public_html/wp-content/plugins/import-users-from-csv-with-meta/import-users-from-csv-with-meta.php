@@ -3,7 +3,7 @@
 Plugin Name:	Import and export users and customers
 Plugin URI:		https://www.codection.com
 Description:	Using this plugin you will be able to import and export users or customers choosing many options and interacting with lots of other plugins
-Version:		1.27.2
+Version:		2.1
 Author:			codection
 Author URI: 	https://codection.com
 License:     	GPL2
@@ -15,7 +15,13 @@ Domain Path: /languages
 if ( ! defined( 'ABSPATH' ) ) 
 	exit;
 
-define( 'ACUI_VERSION', '1.27.2' );
+define( 'ACUI_VERSION', '2.1' );
+
+if( !defined( 'ACUI_IMPORT_BATCH_SIZE' ) )
+	define( 'ACUI_IMPORT_BATCH_SIZE', 100 );
+
+if( !defined( 'ACUI_IMPORT_TIME_LIMIT' ) )
+	define( 'ACUI_IMPORT_TIME_LIMIT', 29 );
 
 class ImportExportUsersCustomers{
 	var $file;
@@ -40,6 +46,7 @@ class ImportExportUsersCustomers{
 	}
 	
 	function loader(){
+		global $acui_import, $acui_exporter, $acui_frontend;
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_filter( 'plugin_action_links', array( $this, 'action_links' ), 10, 2 );
@@ -66,7 +73,8 @@ class ImportExportUsersCustomers{
 		}
 
 		// libs
-		include_once( plugin_dir_path( __FILE__ ) . "lib/action-scheduler/action-scheduler.php" );
+		if( get_option( "acui_cron_activated" ) == true )
+			include_once( plugin_dir_path( __FILE__ ) . "lib/action-scheduler/action-scheduler.php" );
 	}
 	
 	static function activate(){
@@ -79,25 +87,46 @@ class ImportExportUsersCustomers{
 	}
 
 	static function deactivate(){
+		if( !function_exists( 'as_unschedule_all_actions' ) )
+			include_once( plugin_dir_path( __FILE__ ) . "lib/action-scheduler/action-scheduler.php" );
+	
 		as_unschedule_all_actions( 'acui_cron_process');
 	}
 
 	function menu() {
-		$acui_import = new ACUI_Import();
+		global $acui_import;
 		add_submenu_page( 'tools.php', __( 'Import and export users and customers', 'import-users-from-csv-with-meta' ), __( 'Import and export users and customers', 'import-users-from-csv-with-meta' ), apply_filters( 'acui_capability', 'create_users' ), 'acui', array( $acui_import, 'show' ) );
 	}
 	
 	function admin_enqueue_scripts( $hook ) {
-		if( 'tools_page_acui' != $hook )
-			return;
-		
-		wp_enqueue_style( 'acui_css', plugins_url( 'assets/style.css', __FILE__ ), false, ACUI_VERSION );
-		wp_enqueue_style( 'datatable', '//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css' );
-		wp_enqueue_script( 'datatable', '//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js' );
+		if( 'tools_page_acui' == $hook ){
+			wp_enqueue_style( 'acui_css', plugins_url( 'assets/style.css', __FILE__ ), false, ACUI_VERSION );
+			wp_enqueue_style( 'datatable', '//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css', false, '2.2.2' );
+			wp_enqueue_script( 'datatable', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array( 'jquery' ), '2.2.2' );
 
-        if( isset( $_GET['tab'] ) && $_GET['tab'] == 'export' ){
-            ACUI_Exporter::enqueue();
-        }
+			if( isset( $_GET['tab'] ) && $_GET['tab'] == 'export' ){
+				ACUI_Exporter::enqueue();
+			}
+
+			if( !isset( $_GET['tab'] ) || $_GET['tab'] == 'homepage' ){
+				ACUI_Import::enqueue();
+			}
+		}
+
+		if( 'users.php' == $hook ){
+			wp_register_script( 'acui_js', esc_url( plugins_url( 'assets/script.js', __FILE__ ) ), array( 'jquery' ), ACUI_VERSION );
+			wp_localize_script( 'acui_js', 'acui_js_object',
+				array(
+					'import_url' => get_admin_url( null, 'tools.php?page=acui&tab=homepage' ),
+					'import_title' => __( 'Import users using Import and Export Users and Customers', 'import-users-from-csv-with-meta' ),
+					'import_label' => __( 'Import', 'import-users-from-csv-with-meta' ),
+					'export_url' => get_admin_url( null, 'tools.php?page=acui&tab=export' ),
+					'export_title' => __( 'Export users using Import and Export Users and Customers', 'import-users-from-csv-with-meta' ),
+					'export_label' => __( 'Export', 'import-users-from-csv-with-meta' ),
+				)
+			);
+			wp_enqueue_script( 'acui_js' );
+		}
 	}
 
 	function action_links( $links, $file ) {
@@ -113,11 +142,11 @@ class ImportExportUsersCustomers{
 	function plugin_row_meta( $links, $file ){
 		if ( strpos( $file, basename( __FILE__ ) ) !== false ) {
 			$new_links = array(
-						'<a href="https://ko-fi.com/codection" target="_blank">' . __( 'Invite us for a coffee', 'import-users-from-csv-with-meta' ) . '</a>',
-						'<a href="mailto:contacto@codection.com" target="_blank">' . __( 'Premium support', 'import-users-from-csv-with-meta' ) . '</a>',
-						'<a href="https://codection.com/" target="_blank">' . __( 'RedSys and Ceca Gateways', 'import-users-from-csv-with-meta' ) . '</a>',
-						'<a href="https://import-wp.com/" target="_blank" style="color:#d54e21;font-weight:bold">' . __( 'Premium addons and plugins', 'import-users-from-csv-with-meta' ) . '</a>',
-					);
+				'<a href="https://ko-fi.com/codection" target="_blank">' . __( 'Invite us for a coffee', 'import-users-from-csv-with-meta' ) . '</a>',
+				'<a href="mailto:contacto@codection.com" target="_blank">' . __( 'Premium support', 'import-users-from-csv-with-meta' ) . '</a>',
+				'<a href="https://codection.com/" target="_blank">' . __( 'RedSys and Ceca Gateways', 'import-users-from-csv-with-meta' ) . '</a>',
+				'<a href="https://import-wp.com/" target="_blank" style="color:#d54e21;font-weight:bold">' . __( 'Premium addons and plugins', 'import-users-from-csv-with-meta' ) . '</a>',
+			);
 			
 			$links = array_merge( $links, $new_links );
 		}
@@ -127,8 +156,6 @@ class ImportExportUsersCustomers{
 
 	function wp_check_filetype_and_ext( $values, $file, $filename, $mimes ) {
 		if ( extension_loaded( 'fileinfo' ) ) {
-			// with the php-extension, a CSV file is issues type text/plain so we fix that back to 
-			// text/csv by trusting the file extension.
 			$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 			$real_mime = finfo_file( $finfo, $file );
 			finfo_close( $finfo );
@@ -137,12 +164,12 @@ class ImportExportUsersCustomers{
 				$values['type'] = 'text/csv';
 			}
 		} else {
-			// without the php-extension, we probably don't have the issue at all, but just to be sure...
 			if ( preg_match( '/\.(csv)$/i', $filename ) ) {
 				$values['ext']  = 'csv';
 				$values['type'] = 'text/csv';
 			}
 		}
+		$values = apply_filters( 'acui_check_filetype_and_ext', $values, $file, $filename );
 		return $values;
 	}	
 }

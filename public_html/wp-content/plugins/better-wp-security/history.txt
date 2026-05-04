@@ -1077,8 +1077,62 @@
 	Enhancement: Allow generating a new Two-Factor TOTP secret from the WP-Login UI.
 	Bug Fix: The SolidWP logo appeared too large in some email clients.
 	Bug Fix: An error would occur if we could not determine the length of database columns while saving log items.
-9.3.3 - 2024-06-19 - Tiomthy Jacobs, Lisa Canini, Jared Hill
+9.3.3 - 2024-06-19 - Timothy Jacobs, Lisa Canini, Jared Hill
 	Enhancement: Improve highlighting settings search results.
 	Bug Fix: Crash during the onboarding process when starting over in some paths.
 	Bug Fix: Checkbox styling issue on WordPress 6.6.
 	Bug Fix: Fire an action when a vulnerability is unresolved due to plugin activation.
+9.3.4 - 2024-11-11 - Timothy Jacobs
+	Important: Solid Security now requires WordPress 6.5 or later.
+	Tweak: Add a new `solid_security_mail_site_logo` filter to modify the Site Logo used in email notifications.
+	Bug Fix: PHP fatal error on shutdown due to missing Event class on some sites.
+	Bug Fix: PHP warning on Site Health page.
+	Bug Fix: PHP warning in the SSL module on some server setups.
+9.3.5 - 2024-11-19 - Timothy Jacobs
+	Bug Fix: PHP warning about translations being loaded too early.
+9.3.6 - 2024-12-04 - Timothy Jacobs
+	Enhancement: Better surface Login Security features during onboarding.
+9.3.7 - 2025-03-24 - Timothy Jacobs, Zach Tirrell
+	Enhancement: Use block API Version 3 for the Security Profile block.
+	Bug Fix: PHP warning when HTTP_HOST not set.
+9.3.8 - 2025-04-28 - Timothy Jacobs
+	Tweak: Delete older JS files that were causing false-positives on scans. They have not been used since the UI was rewritten in React.
+	Security: Update StellarWP Telemetry library to improve authorization checks.
+9.3.9 - 2025-07-08 - Timothy Jacobs
+	Tweak: Reduce number of steps in the onboarding sequence.
+	Bug Fix: Notification Center settings could not be properly saved.
+9.3.10 - 2025-07-16 - Timothy Jacobs
+	Tweak: Update SolidWP Logo.
+9.4.0 - 2025-09-15 - Volodymyr Shelmuk
+	Learn more: https://solidwp.com/?p=110379
+	Important: Solid Security now requires PHP 7.4 or later.
+	New: Patchstack Priority tells you how quickly you should address a vulnerability so you can focus on the most critical issues.
+	New: The Security Digest email includes a complete list of vulnerabilities affecting your site.
+	Enhancement: The Site Scan email now only includes newly found vulnerabilities to prevent notification fatigue.
+	Enhancement: Site Scans now run four times daily to detect new vulnerabilities.
+	Tweak: Make frontend JS code compatible with React 18.
+9.4.1 - 2025-09-15 - Volodymyr Shelmuk
+	Bug Fix: Missing assets in release 9.4.0.
+9.4.2 - 2025-10-28 - Volodymyr Shelmuk
+	Bug Fix: PHP notice about early translations loading on the settings screen.
+9.4.3 - 2025-11-18 - Volodymyr Shelmuk
+	Enhancement: Send notification about new vulnerabilities found during manual scan.
+	Tweak: Show mitigated vulnerabilities and ensure all unresolved vulnerabilities are visible on the Site Scan page.
+9.4.4 - 2026-01-29 - Justin Frydman, Volodymyr Shelmuk
+	Tweak: The Solid Security Basic and Solid Security Pro plugins can no longer be active at the same time.
+	Tweak: Config files now show "Solid Security" instead of "iThemes Security".
+	Tweak: Improved Database Backups dashboard widget when the feature is disabled.
+	Tweak: Clarify the 2FA onboarding email confirmation message.
+	Tweak: All Gutenberg blocks use API version 3.
+	Security: Update the "tmp" npm package.
+	Bug Fix: Vulnerable Software dashboard card didn't render properly.
+	Bug Fix: Firewall rules that depend on HTTP headers didn't work correctly in all cases.
+	Bug Fix: PHP Warning: Undefined array key 1 core/admin-pages/logs-list-table.php.
+	Bug Fix: Logs will appear in the correct order regardless of database version.
+	Bug Fix: PHP Warning: Array offset on value of type null core/modules/security-check-pro/class-itsec-security-check-pro.php.
+9.4.5 - 2026-02-11 - Volodymyr Shelmuk
+	Tweak: Ensure generated Nginx config rules are valid for customized directory structures.
+9.4.6 - 2026-02-25 - Volodymyr Shelmuk
+	Enhancement: Update Patchstack details for existing vulnerabilities.
+9.4.7 - 2026-03-30 - Rahula Palu
+	Bug Fix: Prevent email retry loops by ensuring the scheduled notification properties are saved.

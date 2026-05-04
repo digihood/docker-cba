@@ -236,7 +236,7 @@ export function* updateUserSelectionType( userSelectionType ) {
 	yield { type: UPDATE_SELECTION_TYPE, userSelectionType };
 }
 
-export function toggleSelectAll( ) {
+export function toggleSelectAll() {
 	return { type: TOGGLE_SELECT_ALL };
 }
 
@@ -248,7 +248,7 @@ export function removeSelectedUsers() {
 	return { type: REMOVE_SELECTED_USERS };
 }
 
-export function openQuickEdit( ) {
+export function openQuickEdit() {
 	return { type: OPEN_QUICK_EDIT };
 }
 

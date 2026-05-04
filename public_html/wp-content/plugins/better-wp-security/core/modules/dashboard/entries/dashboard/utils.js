@@ -590,6 +590,38 @@ export function getCardTitle( card, config ) {
 	);
 }
 
+/**
+ * Gets the module route for a given module.
+ *
+ * This is a port from ithemes-security-pro/core/core.php::get_settings_module_route()
+ *
+ * @param {Object} module The module object from MODULES_STORE.
+ * @return {string|undefined} The module route, or undefined if not available.
+ */
+export function getModuleRoute( module ) {
+	if ( ! module ) {
+		return undefined;
+	}
+
+	if ( module.id === 'global' ) {
+		return '/settings/global';
+	}
+
+	if ( module.type === 'custom' || module.type === 'tool' || module.type === 'recommended' ) {
+		return undefined;
+	}
+
+	if ( module.type === 'advanced' ) {
+		return `/settings/advanced#${ module.id }`;
+	}
+
+	if ( module.status?.default === 'always-active' && ! module.settings?.show_ui ) {
+		return undefined;
+	}
+
+	return `/settings/configure/${ module.type }#${ module.id }`;
+}
+
 export function debugChange( prevProps, prevState, thisProps, thisState ) {
 	Object.entries( thisProps ).forEach(
 		( [ key, val ] ) =>

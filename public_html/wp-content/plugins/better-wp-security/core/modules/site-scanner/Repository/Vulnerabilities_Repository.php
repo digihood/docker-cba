@@ -82,6 +82,8 @@ class Vulnerabilities_Repository {
 					: $issue->get_meta()['software']['slug'],
 				$issue->get_meta()['issue']
 			);
+		} else {
+			$vulnerability->refresh_details( $issue->get_meta()['issue'] );
 		}
 
 		return Result::success( $vulnerability );

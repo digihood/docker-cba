@@ -7,10 +7,11 @@ use iThemesSecurity\Site_Scanner\Repository\Scans_Repository;
 
 class Vulnerable_Software_Card extends \ITSEC_Dashboard_Card {
 
-	/** @var Repository */
-	private $repository;
+	private Scans_Repository $repository;
 
-	public function __construct( Scans_Repository $repository ) { $this->repository = $repository; }
+	public function __construct( Scans_Repository $repository ) {
+		$this->repository = $repository;
+	}
 
 	public function get_slug() {
 		return 'vulnerable-software';
@@ -29,6 +30,10 @@ class Vulnerable_Software_Card extends \ITSEC_Dashboard_Card {
 			'defaultW' => 2,
 			'defaultH' => 1,
 		];
+	}
+
+	public function get_module_id(): ?string {
+		return 'site-scanner';
 	}
 
 	public function query_for_data( array $query_args, array $settings ) {

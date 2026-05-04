@@ -15,6 +15,7 @@ import {
 	RECEIVE_CURRENT_USER_ID,
 	LOAD_INITIAL_FEATURE_FLAGS,
 	RECEIVE_BATCH_MAX_ITEMS,
+	RECEIVE_ADMIN_URL,
 } from './actions';
 
 const DEFAULT_STATE = {
@@ -32,6 +33,7 @@ const DEFAULT_STATE = {
 	siteInfo: null,
 	featureFlags: [],
 	batchMaxItems: 0,
+	adminUrl: '',
 };
 
 export default function reducer( state = DEFAULT_STATE, action ) {
@@ -46,14 +48,13 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 				...state,
 				users: {
 					...state.users,
-					saving: [
-						...state.users.saving,
-						action.id,
-					],
-					optimisticEdits: action.optimistic ? {
-						...state.users.optimisticEdits,
-						[ action.id ]: action.data,
-					} : state.users.optimisticEdits,
+					saving: [ ...state.users.saving, action.id ],
+					optimisticEdits: action.optimistic
+						? {
+							...state.users.optimisticEdits,
+							[ action.id ]: action.data,
+						}
+						: state.users.optimisticEdits,
 				},
 			};
 		case 'FINISH_SAVING_USER':
@@ -62,8 +63,13 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 				...state,
 				users: {
 					...state.users,
-					saving: state.users.saving.filter( ( id ) => id !== action.id ),
-					optimisticEdits: omit( state.users.optimisticEdits, action.id ),
+					saving: state.users.saving.filter(
+						( id ) => id !== action.id
+					),
+					optimisticEdits: omit(
+						state.users.optimisticEdits,
+						action.id
+					),
 				},
 			};
 		case RECEIVE_USER:
@@ -118,6 +124,11 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 			return {
 				...state,
 				batchMaxItems: action.maxItems,
+			};
+		case RECEIVE_ADMIN_URL:
+			return {
+				...state,
+				adminUrl: action.adminUrl,
 			};
 		default:
 			return state;

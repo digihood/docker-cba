@@ -33,6 +33,10 @@ final class ITSEC_Modules implements Import_Export_Source {
 	private $_default_active_modules = array();
 	private $_always_active_modules = array();
 	private $inherited_modules = array();
+
+	/**
+	 * @var bool|array
+	 */
 	private $_active_modules = false;
 	private $_active_modules_list = false;
 
@@ -63,6 +67,7 @@ final class ITSEC_Modules implements Import_Export_Source {
 		$this->container = new Psr11Container( $this->pimple );
 
 		$this->pimple[ ContainerInterface::class ] = $this->container;
+		$this->pimple[ Container::class ]          = $this->pimple;
 	}
 
 	/**
@@ -439,7 +444,7 @@ final class ITSEC_Modules implements Import_Export_Source {
 	public static function get_available_modules() {
 		$self = self::get_instance();
 
-		if ( false !== $self->_available_modules ) {
+		if ( is_array( $self->_available_modules ) ) {
 			return $self->_available_modules;
 		}
 
@@ -1007,7 +1012,7 @@ final class ITSEC_Modules implements Import_Export_Source {
 			$check['ip'] = true;
 		}
 
-		return ITSEC_Lib::evaluate_requirements( $check );
+		return ITSEC_Lib::evaluate_requirements( $check, $mode === 'activate' );
 	}
 
 	public function get_export_slug(): string {

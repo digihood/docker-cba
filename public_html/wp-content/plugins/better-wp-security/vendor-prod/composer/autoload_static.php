@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
+class ComposerStaticInit21d5536de7b0f1825cc8669e43c80018
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -76,9 +76,9 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
     );
 
     public static $classMap = array (
-        'ComposerAutoloaderInit30f4a1a7f1523625c670c10bf8b5f4ec' => __DIR__ . '/..' . '/composer/autoload_real.php',
+        'ComposerAutoloaderInit21d5536de7b0f1825cc8669e43c80018' => __DIR__ . '/..' . '/composer/autoload_real.php',
         'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'Composer\\Autoload\\ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec' => __DIR__ . '/..' . '/composer/autoload_static.php',
+        'Composer\\Autoload\\ComposerStaticInit21d5536de7b0f1825cc8669e43c80018' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'ITSEC_Admin_Notice' => __DIR__ . '/../..' . '/core/lib/admin-notices/interface-itsec-admin-notice.php',
         'ITSEC_Admin_Notice_Action' => __DIR__ . '/../..' . '/core/lib/admin-notices/actions/interface-itsec-admin-notice-action.php',
@@ -127,7 +127,6 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'ITSEC_Debug' => __DIR__ . '/../..' . '/core/lib/debug.php',
         'ITSEC_Email_Confirmation' => __DIR__ . '/../..' . '/core/modules/email-confirmation/class-itsec-email-confirmation.php',
         'ITSEC_File_Change' => __DIR__ . '/../..' . '/core/modules/file-change/class-itsec-file-change.php',
-        'ITSEC_File_Change_Admin' => __DIR__ . '/../..' . '/core/modules/file-change/admin.php',
         'ITSEC_File_Change_Chunk_Scanner' => __DIR__ . '/../..' . '/core/modules/file-change/lib/chunk-scanner.php',
         'ITSEC_File_Change_Hash_Comparator' => __DIR__ . '/../..' . '/core/modules/file-change/lib/hash-comparator.php',
         'ITSEC_File_Change_Hash_Comparator_Chain' => __DIR__ . '/../..' . '/core/modules/file-change/lib/hash-comparator-chain.php',
@@ -168,7 +167,6 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'ITSEC_IPCheck_Logs' => __DIR__ . '/../..' . '/core/modules/network-brute-force/logs.php',
         'ITSEC_IPCheck_Setup' => __DIR__ . '/../..' . '/core/modules/network-brute-force/setup.php',
         'ITSEC_IP_Detector' => __DIR__ . '/../..' . '/core/lib/class-itsec-ip-detector.php',
-        'ITSEC_Ithemes_Sync_Upgrader_Skin' => __DIR__ . '/../..' . '/core/modules/sync-connect/includes/upgrader-skin.php',
         'ITSEC_Job' => __DIR__ . '/../..' . '/core/lib/class-itsec-job.php',
         'ITSEC_Lib_Admin_Notices' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-admin-notices.php',
         'ITSEC_Lib_Browser' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-browser.php',
@@ -183,6 +181,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'ITSEC_Lib_File' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-file.php',
         'ITSEC_Lib_Fingerprinting' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-fingerprinting.php',
         'ITSEC_Lib_Geolocation' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-geolocation.php',
+        'ITSEC_Lib_Headers' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-headers.php',
         'ITSEC_Lib_Highlighted_Logs' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-highlighted-logs.php',
         'ITSEC_Lib_IP_Detector' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-ip-detector.php',
         'ITSEC_Lib_IP_Tools' => __DIR__ . '/../..' . '/core/lib/class-itsec-lib-ip-tools.php',
@@ -260,8 +259,6 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'ITSEC_Storage' => __DIR__ . '/../..' . '/core/lib/storage.php',
         'ITSEC_Strong_Passwords' => __DIR__ . '/../..' . '/core/modules/strong-passwords/class-itsec-strong-passwords.php',
         'ITSEC_Strong_Passwords_Setup' => __DIR__ . '/../..' . '/core/modules/strong-passwords/setup.php',
-        'ITSEC_Sync_Connect' => __DIR__ . '/../..' . '/core/modules/sync-connect/class-itsec-sync-connect.php',
-        'ITSEC_Sync_Connect_Interstitial' => __DIR__ . '/../..' . '/core/modules/sync-connect/class-itsec-sync-connect-interstitial.php',
         'ITSEC_System_Tweaks' => __DIR__ . '/../..' . '/core/modules/system-tweaks/class-itsec-system-tweaks.php',
         'ITSEC_System_Tweaks_Config_Generators' => __DIR__ . '/../..' . '/core/modules/system-tweaks/config-generators.php',
         'ITSEC_System_Tweaks_Settings' => __DIR__ . '/../..' . '/core/modules/system-tweaks/settings.php',
@@ -293,6 +290,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'Ithemes_Sync_Verb_ITSEC_Get_Two_Factor_Users' => __DIR__ . '/../..' . '/core/modules/two-factor/sync-verbs/itsec-get-two-factor-users.php',
         'Ithemes_Sync_Verb_ITSEC_Latest_File_Scan' => __DIR__ . '/../..' . '/core/modules/file-change/sync-verbs/itsec-latest-file-scan.php',
         'Ithemes_Sync_Verb_ITSEC_Override_Two_Factor_User' => __DIR__ . '/../..' . '/core/modules/two-factor/sync-verbs/itsec-override-two-factor-user.php',
+        'Test_Batch_Data' => __DIR__ . '/..' . '/deliciousbrains/wp-background-processing/tests/fixtures/Test_Batch_Data.php',
         'Test_Setup' => __DIR__ . '/..' . '/deliciousbrains/wp-background-processing/tests/Test_Setup.php',
         'Test_WP_Background_Process' => __DIR__ . '/..' . '/deliciousbrains/wp-background-processing/tests/Test_WP_Background_Process.php',
         'Two_Factor_Backup_Codes' => __DIR__ . '/../..' . '/core/modules/two-factor/providers/class.two-factor-backup-codes.php',
@@ -348,6 +346,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'iThemesSecurity\\Exception\\Unsatisfied_Module_Dependencies_Exception' => __DIR__ . '/../..' . '/core/Exception/Unsatisfied_Module_Dependencies_Exception.php',
         'iThemesSecurity\\Exception\\WP_Error' => __DIR__ . '/../..' . '/core/Exception/WP_Error.php',
         'iThemesSecurity\\FeatureFlags\\Settings' => __DIR__ . '/../..' . '/core/modules/feature-flags/settings.php',
+        'iThemesSecurity\\Headers\\ITSEC_Headers_Sanitizer' => __DIR__ . '/../..' . '/core/lib/headers/class-itsec-headers-sanitizer.php',
         'iThemesSecurity\\Lib\\Background_Process' => __DIR__ . '/../..' . '/core/lib/Background_Process.php',
         'iThemesSecurity\\Lib\\Config_Password_Requirement' => __DIR__ . '/../..' . '/core/lib/Config_Password_Requirement.php',
         'iThemesSecurity\\Lib\\Legacy_Password_Requirement' => __DIR__ . '/../..' . '/core/lib/Legacy_Password_Requirement.php',
@@ -364,6 +363,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'iThemesSecurity\\Lib\\Lockout\\User_Context' => __DIR__ . '/../..' . '/core/lib/lockout/class-user-context.php',
         'iThemesSecurity\\Lib\\Lockout\\Username_Context' => __DIR__ . '/../..' . '/core/lib/lockout/class-username-context.php',
         'iThemesSecurity\\Lib\\Password_Requirement' => __DIR__ . '/../..' . '/core/lib/Password_Requirement.php',
+        'iThemesSecurity\\Lib\\Pipeline\\Pipeline' => __DIR__ . '/../..' . '/core/lib/pipeline/Pipeline.php',
         'iThemesSecurity\\Lib\\REST\\Geolocation_Controller' => __DIR__ . '/../..' . '/core/lib/rest/Geolocation_Controller.php',
         'iThemesSecurity\\Lib\\REST\\Lockout_Stats_Controller' => __DIR__ . '/../..' . '/core/lib/rest/Lockout_Stats_Controller.php',
         'iThemesSecurity\\Lib\\REST\\Lockouts_Controller' => __DIR__ . '/../..' . '/core/lib/rest/Lockouts_Controller.php',
@@ -387,6 +387,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'iThemesSecurity\\Lib\\Site_Types\\Question\\End_Users_Question_Pack' => __DIR__ . '/../..' . '/core/lib/site-types/Question/End_Users_Question_Pack.php',
         'iThemesSecurity\\Lib\\Site_Types\\Question\\Global_Question_Pack' => __DIR__ . '/../..' . '/core/lib/site-types/Question/Global_Question_Pack.php',
         'iThemesSecurity\\Lib\\Site_Types\\Question\\Login_Security_Question_Pack' => __DIR__ . '/../..' . '/core/lib/site-types/Question/Login_Security_Question_Pack.php',
+        'iThemesSecurity\\Lib\\Site_Types\\Question\\Site_Scan_Question' => __DIR__ . '/../..' . '/core/lib/site-types/Question/Site_Scan_Question.php',
         'iThemesSecurity\\Lib\\Site_Types\\Questions_Provider' => __DIR__ . '/../..' . '/core/lib/site-types/Questions_Provider.php',
         'iThemesSecurity\\Lib\\Site_Types\\Registry' => __DIR__ . '/../..' . '/core/lib/site-types/Registry.php',
         'iThemesSecurity\\Lib\\Site_Types\\Responds' => __DIR__ . '/../..' . '/core/lib/site-types/Responds.php',
@@ -401,6 +402,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'iThemesSecurity\\Lib\\Site_Types\\Type\\Non_Profit' => __DIR__ . '/../..' . '/core/lib/site-types/Type/Non_Profit.php',
         'iThemesSecurity\\Lib\\Site_Types\\Type\\Portfolio' => __DIR__ . '/../..' . '/core/lib/site-types/Type/Portfolio.php',
         'iThemesSecurity\\Lib\\Stellar_Container' => __DIR__ . '/../..' . '/core/lib/Stellar_Container.php',
+        'iThemesSecurity\\Lib\\Stringable_Json' => __DIR__ . '/../..' . '/core/lib/Stringable_Json.php',
         'iThemesSecurity\\Lib\\Tools\\Config_Tool' => __DIR__ . '/../..' . '/core/lib/tools/Config_Tool.php',
         'iThemesSecurity\\Lib\\Tools\\Tool' => __DIR__ . '/../..' . '/core/lib/tools/Tool.php',
         'iThemesSecurity\\Lib\\Tools\\Tools_Registry' => __DIR__ . '/../..' . '/core/lib/tools/Tools_Registry.php',
@@ -433,6 +435,7 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
         'iThemesSecurity\\Site_Scanner\\Issue_Trait' => __DIR__ . '/../..' . '/core/modules/site-scanner/Model/Issue_Trait.php',
         'iThemesSecurity\\Site_Scanner\\Malware_Issue' => __DIR__ . '/../..' . '/core/modules/site-scanner/Model/Malware_Issue.php',
         'iThemesSecurity\\Site_Scanner\\Multi_Fixer' => __DIR__ . '/../..' . '/core/modules/site-scanner/Fixer/Multi_Fixer.php',
+        'iThemesSecurity\\Site_Scanner\\Priority' => __DIR__ . '/../..' . '/core/modules/site-scanner/Model/Priority.php',
         'iThemesSecurity\\Site_Scanner\\REST\\Issues' => __DIR__ . '/../..' . '/core/modules/site-scanner/REST/Issues.php',
         'iThemesSecurity\\Site_Scanner\\REST\\Muted_Issues' => __DIR__ . '/../..' . '/core/modules/site-scanner/REST/Muted_Issues.php',
         'iThemesSecurity\\Site_Scanner\\REST\\REST' => __DIR__ . '/../..' . '/core/modules/site-scanner/REST/REST.php',
@@ -556,10 +559,10 @@ class ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit30f4a1a7f1523625c670c10bf8b5f4ec::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit21d5536de7b0f1825cc8669e43c80018::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit21d5536de7b0f1825cc8669e43c80018::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit21d5536de7b0f1825cc8669e43c80018::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit21d5536de7b0f1825cc8669e43c80018::$classMap;
 
         }, null, ClassLoader::class);
     }

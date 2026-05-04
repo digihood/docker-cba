@@ -45,13 +45,13 @@ class Manager {
 			return;
 		}
 
-		$this->action( 'plugins_loaded', 'setup_modules' );
+		$this->action( 'after_setup_theme', 'setup_modules', 2 );
 		$this->filter( 'rank_math/modules', 'setup_core', 1 );
 		$this->filter( 'rank_math/modules', 'setup_admin_only', 1 );
 		$this->filter( 'rank_math/modules', 'setup_internals', 1 );
 		$this->filter( 'rank_math/modules', 'setup_3rd_party', 1 );
 
-		$this->action( 'plugins_loaded', 'load_modules' );
+		$this->action( 'after_setup_theme', 'load_modules', 2 );
 		add_action( 'rank_math/module_changed', [ '\RankMath\Admin\Watcher', 'module_changed' ], 10, 2 );
 		$this->action( 'rank_math/module_changed', 'watch_for_analytics', 10, 2 );
 	}
@@ -109,16 +109,16 @@ class Manager {
 			'class'       => 'RankMath\Monitor\Monitor',
 			'icon'        => '404',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-general' ) . '#setting-panel-404-monitor',
+			'settings'    => Helper::get_settings_url( 'general', '404-monitor' ),
 		];
 
 		$modules['local-seo'] = [
 			'title'       => esc_html__( 'Local SEO', 'rank-math' ),
-			'desc'        => esc_html__( 'Dominate the search results for the local audiences by optimizing your website for Local SEO and it also helps you to aquire the Knowledge Graph.', 'rank-math' ),
+			'desc'        => esc_html__( 'Dominate the search results for the local audiences by optimizing your website for Local SEO and it also helps you to acquire the Knowledge Graph.', 'rank-math' ),
 			'class'       => 'RankMath\Local_Seo\Local_Seo',
 			'icon'        => 'local-seo',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-titles' ) . '#setting-panel-local',
+			'settings'    => Helper::get_settings_url( 'titles', 'local' ),
 		];
 
 		$modules['redirections'] = [
@@ -127,7 +127,7 @@ class Manager {
 			'class'       => 'RankMath\Redirections\Redirections',
 			'icon'        => 'redirection',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-general' ) . '#setting-panel-redirections',
+			'settings'    => Helper::get_settings_url( 'general', 'redirections' ),
 		];
 
 		$modules['rich-snippet'] = [
@@ -136,7 +136,7 @@ class Manager {
 			'class'       => 'RankMath\Schema\Schema',
 			'icon'        => 'schema',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-titles' ) . '#setting-panel-post-type-post',
+			'settings'    => Helper::get_settings_url( 'titles', 'post-type-post' ),
 		];
 
 		$modules['sitemap'] = [
@@ -154,13 +154,22 @@ class Manager {
 			'icon'  => 'link',
 		];
 
+		$modules['link-genius'] = [
+			'title'         => esc_html__( 'Link Genius', 'rank-math' ),
+			'desc'          => esc_html__( 'An advanced internal linking tool that analyzes your posts, tracks link data, highlights opportunities, and offers detailed report.', 'rank-math' ),
+			'icon'          => 'link',
+			'probadge'      => true,
+			'disabled'      => true,
+			'disabled_text' => esc_html__( 'This module is available in the PRO version.', 'rank-math' ),
+		];
+
 		$modules['image-seo'] = [
 			'title'       => esc_html__( 'Image SEO', 'rank-math' ),
 			'desc'        => esc_html__( 'Advanced Image SEO options to supercharge your website. Automate the task of adding the ALT and Title tags to your images on the fly.', 'rank-math' ),
 			'class'       => 'RankMath\Image_Seo\Image_Seo',
 			'icon'        => 'images',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-general' ) . '#setting-panel-images',
+			'settings'    => Helper::get_settings_url( 'general', 'images' ),
 		];
 
 		$modules['instant-indexing'] = [
@@ -178,8 +187,16 @@ class Manager {
 			'class'       => 'RankMath\ContentAI\Content_AI',
 			'icon'        => 'content-ai',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-general' ) . '#setting-panel-content-ai',
+			'settings'    => Helper::get_settings_url( 'general', 'content-ai' ),
 			'betabadge'   => true,
+		];
+
+		$modules['llms-txt'] = [
+			'title'    => esc_html__( 'LLMS Txt', 'rank-math' ),
+			'desc'     => esc_html__( 'Serve a custom llms.txt file to guide AI models with posts, terms, and most important content on your website.', 'rank-math' ),
+			'class'    => 'RankMath\\LLMS\\LLMS_Txt',
+			'icon'     => 'bot',
+			'settings' => Helper::get_settings_url( 'general', 'llms' ),
 		];
 
 		$modules['news-sitemap'] = [
@@ -237,7 +254,7 @@ class Manager {
 			'icon'        => 'search-console',
 			'only'        => 'admin',
 			'upgradeable' => true,
-			'settings'    => Helper::get_admin_url( 'options-general' ) . '#setting-panel-analytics',
+			'settings'    => Helper::get_settings_url( 'general', 'analytics' ),
 		];
 
 		$modules['seo-analysis'] = [
@@ -336,7 +353,7 @@ class Manager {
 			'upgradeable'   => true,
 			'disabled'      => ( ! Helper::is_woocommerce_active() ),
 			'disabled_text' => esc_html__( 'Please activate WooCommerce plugin to use this module.', 'rank-math' ),
-			'settings'      => Helper::get_admin_url( 'options-general' ) . '#setting-panel-woocommerce',
+			'settings'      => Helper::get_settings_url( 'general', 'woocommerce' ),
 		];
 
 		$modules['acf'] = [
@@ -525,7 +542,7 @@ class Manager {
 		?>
 			<div class="rank-math-box rank-math-unlock-pro-box">
 				<i class="rm-icon rm-icon-software"></i>
-				<a href="<?php KB::the( 'pro', 'Unlock PRO Module Box' ); ?>" target="_blank" class="pro-link" data-url="https://rankmath.com/site-checkout/">
+				<a href="<?php KB::the( 'pro', 'Unlock PRO Module Box' ); ?>" target="_blank" class="pro-link" data-url="<?php KB::the( 'site-checkout', 'Unlock PRO Module Box' ); ?>">
 					<header>
 						<h3><?php esc_html_e( 'Take SEO to the Next Level!', 'rank-math' ); ?></h3>
 						<ul>

@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import styled from '@emotion/styled';
+
+/**
  * Solid dependencies
  */
 import { MessageList } from '@ithemes/ui';
@@ -8,6 +13,13 @@ import { MessageList } from '@ithemes/ui';
  */
 import { ErrorList } from '../';
 
+const StyledResultSummary = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem';
+`;
+
 export default function ResultSummary( {
 	result,
 	hasBorder,
@@ -15,7 +27,7 @@ export default function ResultSummary( {
 	errors,
 } ) {
 	return (
-		<>
+		<StyledResultSummary>
 			<ErrorList
 				apiError={ result?.error }
 				schemaError={ schemaError }
@@ -43,6 +55,6 @@ export default function ResultSummary( {
 					hasBorder={ hasBorder }
 				/>
 			) }
-		</>
+		</StyledResultSummary>
 	);
 }

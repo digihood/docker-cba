@@ -12,12 +12,10 @@ import { ListItem, Text, TextVariant } from '@ithemes/ui';
  * Internal dependencies
  */
 import { useGlobalNavigationUrl } from '@ithemes/security-utils';
+import { PatchPriority } from '@ithemes/security-ui';
 import { EmptyState } from './index';
 import {
 	vulnerabilityIcon,
-	severityColor,
-	statusIcon,
-	StyledSeverity,
 	StyledListHeading,
 	StyledList,
 	StyledTopRow,
@@ -25,6 +23,7 @@ import {
 	StyledLink,
 	StyledStatusResolution,
 } from './styles';
+import VulnerabilityStatusIcon from './vulnerability-status-icon';
 
 export default function VulnerabilityList( { cardData } ) {
 	return (
@@ -48,7 +47,7 @@ function VulnerabilityListItem( { vulnerability } ) {
 				{ vulnerability.software.type.slug !== 'wordpress' && (
 					<Text weight={ 500 } text={ vulnerability.software.label || vulnerability.software.slug } />
 				) }
-				<StyledSeverity backgroundColor={ severityColor( vulnerability.details.score ) } weight={ 600 } text={ vulnerability.details.score ?? '??' } />
+				<PatchPriority priority={ vulnerability.details.patch_priority } score={ vulnerability.details.score } />
 				<Text
 					text={ sprintf(
 						/* translators: 1. Human time diff. */
@@ -59,7 +58,7 @@ function VulnerabilityListItem( { vulnerability } ) {
 			</StyledTopRow>
 			<StyledBottomRow>
 				<StyledStatusResolution
-					icon={ statusIcon( vulnerability.resolution.slug ) }
+					icon={ <VulnerabilityStatusIcon vulnerability={ vulnerability } /> }
 					iconSize={ 16 }
 					text={ vulnerability.resolution.label }
 				/>

@@ -28,7 +28,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Admin extends Base {
 
-	use Ajax, Hooker;
+	use Ajax;
+	use Hooker;
 
 	/**
 	 * Module ID.
@@ -83,7 +84,7 @@ class Admin extends Base {
 	 * The Constructor.
 	 */
 	public function __construct() {
-		$directory = dirname( __FILE__ );
+		$directory = __DIR__;
 		$this->config(
 			[
 				'id'             => 'redirect',
@@ -220,6 +221,9 @@ class Admin extends Base {
 					/* translators: Link to kb article */
 					'desc'  => sprintf( esc_html__( 'Easily create redirects without fiddling with tedious code. %s.', 'rank-math' ), '<a href="' . KB::get( 'redirections-settings', 'Options Panel Redirections Tab' ) . '" target="_blank">' . esc_html__( 'Learn more', 'rank-math' ) . '</a>' ),
 					'file'  => $this->directory . '/views/options.php',
+					'json'  => [
+						'redirectionTypes' => Helper::choices_redirection_types(),
+					],
 				],
 			],
 			8
@@ -232,7 +236,7 @@ class Admin extends Base {
 	 * Initialize module actions.
 	 */
 	public function init() {
-		Helper::add_json( 'redirections', $this->get_default_redirection() );
+		Helper::add_json( 'data', $this->get_default_redirection() );
 		if ( ! empty( $_REQUEST['delete_all'] ) ) {
 			check_admin_referer( 'bulk-redirections' );
 			DB::clear_trashed();
@@ -311,7 +315,7 @@ class Admin extends Base {
 			],
 			'settings'      => [
 				'class' => 'page-title-action',
-				'href'  => Helper::get_admin_url( 'options-general#setting-panel-redirections' ),
+				'href'  => Helper::get_settings_url( 'general', 'redirections' ),
 				'label' => __( 'Settings', 'rank-math' ),
 			],
 		];
@@ -386,7 +390,7 @@ class Admin extends Base {
 	 * @return array
 	 */
 	private function get_sources_for_log() {
-		$logs = array_map( 'absint', $_REQUEST['log'] );
+		$logs = isset( $_REQUEST['log'] ) ? array_map( 'absint', $_REQUEST['log'] ) : [];
 		$logs = Monitor_DB::get_logs(
 			[
 				'ids'     => $logs,

@@ -30,7 +30,7 @@ export default function UserGroupNotice( { } ) {
 			{ showUserGroupNotice && (
 				<StyledNotice
 					text={ __( 'Filter the user groups whose security requirements you’d like to edit with the “Edit User Group Settings” feature.', 'better-wp-security' ) }
-					onDismiss={ ( ) =>
+					onDismiss={ () =>
 						toggle( 'ithemes-security/users', 'howToEditUserGroups' )
 					}
 				/>

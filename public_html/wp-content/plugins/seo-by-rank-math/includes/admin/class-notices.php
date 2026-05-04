@@ -24,7 +24,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Notices implements Runner {
 
-	use Hooker, Ajax;
+	use Hooker;
+	use Ajax;
 
 	/**
 	 * Register hooks.
@@ -40,8 +41,52 @@ class Notices implements Runner {
 	public function notices() {
 		$this->is_plugin_configured();
 		$this->new_post_type();
-		$this->convert_wpml_settings();
+		if ( Sitepress::get()->is_active() ) {
+			$this->convert_wpml_settings();
+			$this->display_wpml_notice();
+		}
 		$this->permalink_changes_warning();
+		$this->react_settings_ui_notice();
+	}
+
+	/**
+	 * Show a persistent admin notice when the React Settings UI is disabled.
+	 *
+	 * Adds a dismissible, persistent error when the temporary option to
+	 * disable the React-based Settings UI is turned off. The notice is removed
+	 * when the React Settings UI is enabled again.
+	 *
+	 * @since 1.0.255
+	 * @return void
+	 */
+	private function react_settings_ui_notice() {
+		// Only relevant for admins in the dashboard context.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$notice_id = 'rank_math_react_settings_ui_disabled';
+
+		if ( ! Helper::is_react_enabled() ) {
+			$message = sprintf(
+				// Translators: 1: opening anchor tag, 2: closing anchor tag.
+				__( 'The React Settings UI is currently disabled, and the classic settings interface is active. Note: The PHP-based settings interface will be removed in an upcoming release. %1$sEnable the React Settings UI%2$s to switch back.', 'rank-math' ),
+				'<a href="' . esc_url( Helper::get_dashboard_url() ) . '">',
+				'</a>'
+			);
+
+			Helper::add_notification(
+				$message,
+				[
+					'type' => 'error',
+					'id'   => $notice_id,
+				]
+			);
+			return;
+		}
+
+		// React UI is enabled; ensure any prior notice is removed.
+		Helper::remove_notification( $notice_id );
 	}
 
 	/**
@@ -60,7 +105,7 @@ class Notices implements Runner {
 			return;
 		}
 
-		if ( 'convert_wpml_settings' === $notification_id ) {
+		if ( 'display_wpml_notice' === $notification_id ) {
 			update_option( 'rank_math_wpml_notice_dismissed', true );
 		}
 
@@ -114,7 +159,7 @@ class Notices implements Runner {
 		}
 
 		$message = $this->do_filter( 'admin/notice/new_post_type', $message, $count );
-		$message = sprintf( wp_kses_post( $message ), $list, Helper::get_admin_url( 'options-titles#setting-panel-post-type-' . key( $new ) ), Helper::get_admin_url( 'options-sitemap#setting-panel-sitemap-post-type-' . key( $new ) ) );
+		$message = sprintf( wp_kses_post( $message ), $list, Helper::get_settings_url( 'titles', 'post-type-' . key( $new ) ), Helper::get_settings_url( 'sitemap', 'post-type-' . key( $new ) ) );
 		Helper::add_notification(
 			$message,
 			[
@@ -128,24 +173,11 @@ class Notices implements Runner {
 	 * Function to show Show String Translation plugin notice and convert the settings.
 	 */
 	private function convert_wpml_settings() {
-		if ( ! Sitepress::get()->is_active() || get_option( 'rank_math_wpml_data_converted' ) ) {
+		if ( ! function_exists( 'icl_get_languages' ) || get_option( 'rank_math_wpml_data_converted' ) ) {
 			return;
 		}
 
-		if ( ! function_exists( 'icl_add_string_translation' ) ) {
-			if ( ! get_option( 'rank_math_wpml_notice_dismissed' ) ) {
-				Helper::add_notification(
-					__( 'Please activate the WPML String Translation plugin to convert Rank Math Setting values in different languages.', 'rank-math' ),
-					[
-						'type' => 'error',
-						'id'   => 'convert_wpml_settings',
-					]
-				);
-			}
-			return;
-		}
-
-		$languages = icl_get_languages();
+		$languages = icl_get_languages(); // @phpstan-ignore-line
 		foreach ( $languages as $lang_code => $language ) {
 
 			foreach ( [ 'general', 'titles' ] as $option ) {
@@ -160,13 +192,39 @@ class Notices implements Runner {
 				}
 
 				foreach ( $common_data as $option_key ) {
-					$string_id = icl_get_string_id( Helper::get_settings( "$option.$option_key" ), "admin_texts_rank-math-options-$option" );
-					icl_add_string_translation( $string_id, $lang_code, $data[ $option_key ], 10 );
+					$string_id = icl_get_string_id( Helper::get_settings( "$option.$option_key" ), "admin_texts_rank-math-options-$option" ); // @phpstan-ignore-line
+					icl_add_string_translation( $string_id, $lang_code, $data[ $option_key ], 10 ); // @phpstan-ignore-line
 				}
 			}
 		}
 
 		update_option( 'rank_math_wpml_data_converted', true );
+	}
+
+	/**
+	 * Display WPML notice.
+	 *
+	 * @return void
+	 */
+	private function display_wpml_notice() {
+		if ( function_exists( 'icl_add_string_translation' ) || get_option( 'rank_math_wpml_notice_dismissed' ) ) {
+			return;
+		}
+
+		$sitepress      = Sitepress::get()->get_var();
+		$setup_complete = $sitepress->get_setting( 'setup_complete', false );
+
+		if ( ! $setup_complete ) {
+			return;
+		}
+
+		Helper::add_notification(
+			__( 'Please activate the WPML String Translation plugin to convert Rank Math Setting values in different languages.', 'rank-math' ),
+			[
+				'type' => 'error',
+				'id'   => 'display_wpml_notice',
+			]
+		);
 	}
 
 	/**

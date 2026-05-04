@@ -1,16 +1,16 @@
-=== DebugPress: Debugger in a Popup ===
+=== DebugPress: Debugger in Popup ===
 Contributors: GDragoN
 Donate link: https://buymeacoffee.com/millan
 Tags: dev4press, query monitor, debugging, development, ajax monitor
-Stable tag: 3.9.2
+Stable tag: 4.1
 Requires at least: 5.5
-Tested up to: 6.6
-Requires PHP: 7.3
+Tested up to: 6.8
+Requires PHP: 7.4
 Requires CP: 2.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-DebugPress is an easy-to-use plugin that implements popups for debugging and profiling website pages with support for intercepting AJAX requests.
+Easy-to-use plugin for debugging and profiling website loading, SQL queries analysis, help with development, bug fixing, all in configurable popup.
 
 == Description ==
 
@@ -21,7 +21,7 @@ The plugin currently has a total of 22 tabs in the popup debugger window, showin
 The plugin doesn't modify or replace any WordPress files or functions.
 
 = Home and GitHub =
-* Learn more about the plugin: [DebugPress Website](https://debug.press/)
+* Learn more about the plugin: [DebugPress Website](https://www.dev4press.com/plugins/debugpress/)
 * Contribute to plugin development: [DebugPress on GitHub](https://github.com/dev4press/debugpress)
 
 = Quick Overview Video =
@@ -84,17 +84,17 @@ Log various debug events into a database with the free plugin: [coreActivity Plu
 = Documentation and Support =
 To get help with the plugin, you can use WordPress.org support forums, or you can use Dev4Press.com support forums.
 
-* Plugin Documentation: [DebugPress Website](https://debug.press/documentation/)
+* Plugin Documentation: [DebugPress Website](https://www.dev4press.com/kb/product/debugpress/)
 * Support Forum: [Dev4Press Support](https://support.dev4press.com/forums/forum/plugins-free/debugpress/)
 
 == Installation ==
 = General Requirements =
-* PHP: 7.3 or newer
-* Tested with the latest PHP, version 8.3
+* PHP: 7.4 or newer
+* Tested with the latest PHP, version 8.4
 
 = WordPress Requirements =
 * WordPress: 5.5 or newer
-* Tested with the latest WordPress, version 6.5
+* Tested with the latest WordPress, version 6.8
 
 = Basic Installation =
 * Upload folder `debugpress` to the `/wp-content/plugins/` directory
@@ -102,11 +102,8 @@ To get help with the plugin, you can use WordPress.org support forums, or you ca
 * Plugin settings are available under WordPress 'Settings' panel
 
 == Frequently Asked Questions ==
-= How I can install this plugin? =
-If you are not sure about WordPress plugins installation, here is the quick information: [Plugin Installation](https://debug.press/documentation/plugin-installation/).
-
 = How can I enable WordPress Debug Mode? =
-To enable WordPress debug mode via `wp-config.php`, check out the article here: [WordPress Setup](https://debug.press/documentation/wordpress-setup/).
+To enable WordPress debug mode via `wp-config.php`, check out the article here: [WordPress Setup](https://www.dev4press.com/kb/article/debug-mode-wordpress-setup/).
 
 = How can I open Debugger popup? =
 If you have enabled debugger (for admin side and/or frontend), Debugger is activated via Bug button placed in the WordPress Toolbar or as a float button (depending on the settings). Since version 3.0, you can activate the button via keyboard shortcut, default combination is `ctrl+shift+u`, but it can be changed in the plugin settings.
@@ -118,6 +115,22 @@ Yes. Once the popup is open, you will find the Layout icon next to the button to
 Open the WordPress 'Settings' menu, there you will find 'DebugPress' panel.
 
 == Changelog ==
+= 4.1 (2025.09.18) =
+* New: tested with WordPress 6.8
+* New: tested and compatible with `PHP` 8.4
+* New: additional functions for logging
+* Edit: improvements to plugin initialization
+* Edit: various small improvements and tweaks
+* Edit: expanded support for Dev4Press Library
+* Edit: Kint Pretty Print Library 6.0.1
+* Fix minor issue with PHP 8.4 and error reporting
+
+= 4.0 (2024.11.02) =
+* New: tested with WordPress 6.7
+* New: tested and compatible with `PHP` 8.4 RC 3
+* New: using composer to load `Kint` library
+* New: various constants for KINT library control
+
 = 3.9.2 (2024.08.23) =
 * Fix: one more issue with the access to OPCache status information
 
@@ -382,6 +395,15 @@ Open the WordPress 'Settings' menu, there you will find 'DebugPress' panel.
 * First official release
 
 == Upgrade Notice ==
+= 4.1 =
+Few updates and improvements. Updated Kint Library.
+
+= 4.0 =
+Various updates and improvements.
+
+= 3.9 =
+Various updates and improvements.
+
 = 3.8 =
 Various updates and improvements.
 
@@ -393,18 +415,6 @@ Various updates and improvements.
 
 = 3.5 =
 Tracking improvements. Popup layout improvements. Tweaks and fixes.
-
-= 3.4 =
-Various updates and improvements.
-
-= 3.3 =
-Few updates and improvements. Updated Kint Library.
-
-= 3.2 =
-Tracking improvements and bug fixes.
-
-= 3.1 =
-Various updates, improvements and fixes.
 
 == Screenshots ==
 * Debugger popup: Basic debugger panel

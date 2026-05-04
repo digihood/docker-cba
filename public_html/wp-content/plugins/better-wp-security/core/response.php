@@ -385,6 +385,15 @@ final class ITSEC_Response {
 		$this->regenerate_server_config     = false;
 	}
 
+	public function reset_messages(): void {
+		$this->response = null;
+		$this->errors   = [];
+		$this->warnings = [];
+		$this->messages = [];
+		$this->infos    = [];
+		$this->success  = true;
+	}
+
 	public static function get_error_strings( $error ) {
 		if ( is_string( $error ) ) {
 			return array( $error );

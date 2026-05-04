@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name:       DebugPress: Debugger in a Popup
- * Plugin URI:        https://debug.press/
- * Description:       DebugPress is an easy-to-use plugin that implements popups for debugging and profiling website pages with support for intercepting AJAX requests.
+ * Plugin Name:       DebugPress: Debugger in Popup
+ * Plugin URI:        https://www.dev4press.com/plugins/debugpress/
+ * Description:       Easy-to-use plugin for debugging and profiling website loading, SQL queries analysis, help with development, bug fixing, all in configurable popup.
  * Author:            Milan Petrovic
  * Author URI:        https://www.dev4press.com/
  * Text Domain:       debugpress
- * Version:           3.9.2
+ * Version:           4.1
  * Requires at least: 5.5
- * Tested up to:      6.6
+ * Tested up to:      6.8
  * Requires PHP:      7.4
  * Requires CP:       2.0
  * License:           GPLv3 or later
@@ -17,7 +17,7 @@
  * @package DebugPress
  *
  * == Copyright ==
- * Copyright 2008 - 2024 Milan Petrovic (email: support@dev4press.com)
+ * Copyright 2008 - 2025 Milan Petrovic (email: support@dev4press.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-const DEBUGPRESS_VERSION     = '3.9.2';
+const DEBUGPRESS_VERSION     = '4.1';
 const DEBUGPRESS_FILE        = __FILE__;
 const DEBUGPRESS_PLUGIN_PATH = __DIR__ . '/';
 
@@ -51,10 +51,15 @@ if ( ! defined( 'DEBUGPRESS_ACTIVATION_PRIORITY' ) ) {
 	define( 'DEBUGPRESS_ACTIVATION_PRIORITY', 99 );
 }
 
-if ( DEBUGPRESS_IS_CLI || DEBUGPRESS_IS_CRON ) {
+if ( ! defined( 'DEBUGPRESS_SKIP_ON_CLI_OR_CRON' ) ) {
+	define( 'DEBUGPRESS_SKIP_ON_CLI_OR_CRON', false );
+}
+
+if ( DEBUGPRESS_SKIP_ON_CLI_OR_CRON && ( DEBUGPRESS_IS_CLI || DEBUGPRESS_IS_CRON ) ) {
 	return;
 }
 
+require_once DEBUGPRESS_PLUGIN_PATH . 'vendor/autoload.php';
 require_once DEBUGPRESS_PLUGIN_PATH . 'core/autoload.php';
 require_once DEBUGPRESS_PLUGIN_PATH . 'core/bridge.php';
 require_once DEBUGPRESS_PLUGIN_PATH . 'core/functions.php';

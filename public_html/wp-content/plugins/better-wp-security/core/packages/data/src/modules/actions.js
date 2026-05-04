@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getAjv, WPError } from '@ithemes/security-utils';
+import { getAjv, Result, WPError } from '@ithemes/security-utils';
 import { apiFetch, apiFetchBatch, createNotice } from '../controls';
 import { STORE_NAME } from './constant';
 
@@ -121,6 +121,14 @@ export function* activateModule( module ) {
 	try {
 		const response = yield updateModule( module, 'active' );
 		yield receiveModule( response );
+
+		// Always fetch fresh settings after activation to ensure state matches the backend.
+		const settings = yield apiFetch( {
+			path: `/ithemes-security/v1/settings/${ module }`,
+		} );
+
+		yield receiveSettings( module, settings );
+
 		yield { type: FINISH_SAVING_MODULES, modules: [ module ] };
 
 		if ( response.side_effects ) {
@@ -210,7 +218,16 @@ export function* editSettings( module, settings ) {
 	if ( hasChanges ) {
 		yield { type: EDIT_SETTINGS, module, edit };
 	} else {
-		yield resetSettingEdits( module );
+		// If there's a pending error for this module, keep it dirty so user can retry.
+		// Set edits to current (saved) settings so they're sent to server for re-validation.
+		// Otherwise, reset edits since the form matches saved state.
+		const error = yield controls.select( STORE_NAME, 'getError', module );
+
+		if ( error ) {
+			yield { type: EDIT_SETTINGS, module, edit: settings };
+		} else {
+			yield resetSettingEdits( module );
+		}
 	}
 }
 
@@ -322,7 +339,7 @@ export function* saveSettings( modules = true, validate = false ) {
 			errors[ module ] = response.body;
 		} else {
 			success.push( module );
-			yield receiveSettings( module, response.body );
+			yield receiveSettings( module, response.body, Result.fromResponseObject( response ) );
 		}
 	}
 
@@ -388,7 +405,7 @@ export const validateSettings = ( moduleId ) => async ( { select, resolveSelect 
 function convertSchemaErrorToText( errors, moduleId, schema ) {
 	const text = [];
 
-	for ( const { message, schemaPath, dataPath } of errors ) {
+	for ( const { message, schemaPath, instancePath } of errors ) {
 		let ptr = JsonPointer.create( schemaPath );
 		let parent = ptr.parent( schema );
 
@@ -402,7 +419,7 @@ function convertSchemaErrorToText( errors, moduleId, schema ) {
 		if ( parent?.title ) {
 			text.push( `${ parent.title } ${ message }.` );
 		} else {
-			text.push( `${ moduleId }${ dataPath } ${ message }.` );
+			text.push( `${ moduleId }${ instancePath } ${ message }.` );
 		}
 	}
 
@@ -442,11 +459,12 @@ export function receiveModule( module ) {
 	};
 }
 
-export function receiveSettings( module, settings ) {
+export function receiveSettings( module, settings, result = {} ) {
 	return {
 		type: RECEIVE_SETTINGS,
 		module,
 		settings,
+		result,
 	};
 }
 

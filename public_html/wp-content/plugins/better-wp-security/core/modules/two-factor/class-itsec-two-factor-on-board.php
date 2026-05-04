@@ -196,7 +196,7 @@ class ITSEC_Two_Factor_On_Board extends ITSEC_Login_Interstitial {
 		$session->save();
 
 		return array(
-			'message' => esc_html__( 'Email confirmed. Please continue setting up Two-Factor in your original browser window.', 'better-wp-security' ),
+			'message' => esc_html__( 'Email confirmed. Please continue setting up Two-Factor in your original browser tab/window.', 'better-wp-security' ),
 		);
 	}
 
@@ -297,6 +297,19 @@ class ITSEC_Two_Factor_On_Board extends ITSEC_Login_Interstitial {
 		<?php
 
 		require_once( dirname( __FILE__ ) . '/includes/template.php' );
+	}
+
+	/**
+	 * If an async action is performed in the same browser, we usually allow continuing.
+	 * But for an onboarding process we verify email only. The user should come back to the original window
+	 * to verify settings and complete an onboarding process.
+	 *
+	 * @param $action
+	 *
+	 * @return bool
+	 */
+	public function allows_continuing_async_action( $action ) {
+		return $action !== '2fa-verify-email';
 	}
 
 	/**

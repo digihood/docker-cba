@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'donatj\\UserAgent\\' => array($vendorDir . '/donatj/phpuseragentparser/src/UserAgent'),
-    'MyThemeShop\\Helpers\\' => array($vendorDir . '/mythemeshop/wordpress-helpers/src'),
+    'WPMedia\\Mixpanel\\' => array($vendorDir . '/wp-media/wp-mixpanel/src'),
 );

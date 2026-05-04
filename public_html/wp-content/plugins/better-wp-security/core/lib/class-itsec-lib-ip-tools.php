@@ -270,8 +270,8 @@ class ITSEC_Lib_IP_Tools {
 
 		if ( ! self::is_range( $range, $range_version, false ) ) {
 			if ( ! self::is_range( $ip, $ip_version, false ) ) {
-				$ip_parts = self::_ip_cidr( $ip );
-				$range_parts = self::_ip_cidr( $ip );
+				$ip_parts    = self::_ip_cidr( $ip );
+				$range_parts = self::_ip_cidr( $range );
 
 				// If neither is a range, just compare and return
 				return $ip_parts->ip == $range_parts->ip;

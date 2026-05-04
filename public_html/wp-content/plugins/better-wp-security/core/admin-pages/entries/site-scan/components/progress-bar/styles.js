@@ -8,7 +8,7 @@ import { keyframes, css } from '@emotion/react';
  * WordPress dependencies
  */
 import { Icon, Spinner } from '@wordpress/components';
-import { check, close, lock, warning } from '@wordpress/icons';
+import { check, close, lock, caution as warning } from '@wordpress/icons';
 
 /**
  * SolidWP dependencies

@@ -20,7 +20,7 @@ import {
 	StyledSubheading,
 } from './styles';
 
-export function UserSecurityPillContainer( ) {
+export function UserSecurityPillContainer() {
 	const maxNumberOfUsersToShow = 10;
 	const { selectedUsers, userSelectionType } = useSelect(
 		( select ) => ( {

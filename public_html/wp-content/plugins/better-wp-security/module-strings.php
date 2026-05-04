@@ -248,8 +248,13 @@ __( 'Advanced', 'better-wp-security' );
 # END MODULE: hide-backend
 
 # BEGIN MODULE: malware-scheduling
-__( 'Site Scan Scheduling', 'better-wp-security' );
-__( 'Protect your site with automated site scans. When this feature is enabled, the site will be automatically scanned twice a day. If a problem is found, an email is sent to select users.', 'better-wp-security' );
+__( 'Scheduled Site Scan', 'better-wp-security' );
+__( 'Protect your site with automated site scans. When this feature is enabled, the site will be automatically scanned four times daily (hourly for Pro). If a problem is found, an email is sent to select users.', 'better-wp-security' );
+__( 'Vulnerability Notification Threshold', 'better-wp-security' );
+__( 'Choose what types of vulnerabilities should be included in the site scan notification.', 'better-wp-security' );
+__( 'All', 'better-wp-security' );
+__( 'Medium and high priority', 'better-wp-security' );
+__( 'High priority only', 'better-wp-security' );
 # END MODULE: malware-scheduling
 
 # BEGIN MODULE: network-brute-force
@@ -320,10 +325,6 @@ __( 'Require strong passwords approved by the WordPress password strength meter.
 __( 'Strong Passwords', 'better-wp-security' );
 __( 'Require strong passwords approved by the WordPress password strength meter.', 'better-wp-security' );
 # END MODULE: strong-passwords
-
-# BEGIN MODULE: sync-connect
-__( 'Sync Connect', 'better-wp-security' );
-# END MODULE: sync-connect
 
 # BEGIN MODULE: system-tweaks
 __( 'System Tweaks', 'better-wp-security' );

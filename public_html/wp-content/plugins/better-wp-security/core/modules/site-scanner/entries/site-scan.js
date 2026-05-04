@@ -16,16 +16,34 @@ import { store } from '@ithemes/security.pages.site-scan';
 import { siteScannerStore, vulnerabilitiesStore } from '@ithemes/security.packages.data';
 import App from './site-scan/app.js';
 
-function severityLevel( score ) {
+/**
+ * @param {number | null }  priority
+ * @param {number | score } score
+ * @return {string} Severity level
+ */
+function severityLevel( priority, score ) {
+	return Number.isInteger( priority ) ? severityFromPriority( priority ) : severityFromScore( score );
+}
+
+function severityFromPriority( priority ) {
+	switch ( true ) {
+		case priority <= 1:
+			return 'low';
+		case priority <= 2:
+			return 'medium';
+		default:
+			return 'high';
+	}
+}
+
+function severityFromScore( score ) {
 	switch ( true ) {
 		case score < 3:
 			return 'low';
 		case score < 7:
 			return 'medium';
-		case score < 9:
-			return 'high';
 		default:
-			return 'critical';
+			return 'high';
 	}
 }
 
@@ -39,19 +57,22 @@ async function googleStatus( id ) {
 function transform( apiData ) {
 	const issue = {
 		id: apiData.id,
-		severity: severityLevel( apiData.details?.score ),
 		meta: apiData,
 		_links: apiData._links,
+		status: 'attention',
 	};
 
 	if ( apiData.id === 'google' ) {
 		issue.component = apiData.entry;
 		issue.title = apiData.description;
+		issue.severity = 'high';
 	} else {
 		issue.component = apiData.software.type.slug;
 		issue.title = apiData.software.label || apiData.software.slug || __( 'WordPress', 'better-wp-security' );
 		issue.description = apiData.details.type.label;
 		issue.muted = apiData.resolution?.slug === 'muted';
+		issue.severity = severityLevel( apiData.details?.patch_priority, apiData.details?.score );
+		issue.status = apiData.resolution?.slug === 'patched' ? 'mitigated' : 'attention';
 	}
 	return issue;
 }
@@ -92,7 +113,8 @@ dispatch( store ).registerScanComponentGroup( {
 		const results = await googleStatus( scan.id );
 		const issues = results.filter( ( issue ) => issue.status !== 'clean' );
 		const vulnerabilities = await dispatch( vulnerabilitiesStore ).query( 'siteScanner', {
-			resolution: [ '', 'muted' ],
+			resolution: [ '', 'patched', 'muted' ],
+			per_page: 100,
 		} );
 		const siteScannerIssues = vulnerabilities.concat( issues );
 		return siteScannerIssues.map( transform );

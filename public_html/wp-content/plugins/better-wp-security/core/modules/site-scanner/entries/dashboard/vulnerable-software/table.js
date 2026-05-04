@@ -12,18 +12,17 @@ import { Text } from '@ithemes/ui';
  * Internal dependencies
  */
 import { useGlobalNavigationUrl } from '@ithemes/security-utils';
+import { PatchPriority } from '@ithemes/security-ui';
 import { EmptyState } from './index';
 import {
 	vulnerabilityIcon,
-	severityColor,
-	statusIcon,
 	StyledVulnerabilityName,
 	StyledVulnerabilityVersion,
 	StyledVulnerabilityDetail,
 	StyledVulnerability,
-	StyledSeverity,
 	StyledTableSection,
 } from './styles';
+import VulnerabilityStatusIcon from './vulnerability-status-icon';
 
 export default function VulnerabilityTable( { cardData, isWide } ) {
 	return (
@@ -33,7 +32,7 @@ export default function VulnerabilityTable( { cardData, isWide } ) {
 					<tr>
 						<Text as="th" text={ __( 'Type', 'better-wp-security' ) } />
 						<Text as="th" text={ __( 'Vulnerability', 'better-wp-security' ) } />
-						<Text as="th" text={ __( 'Severity', 'better-wp-security' ) } />
+						<Text as="th" text={ __( 'Priority', 'better-wp-security' ) } />
 						<Text as="th" text={ __( 'Status', 'better-wp-security' ) } />
 						<Text as="th" text={ __( 'Date', 'better-wp-security' ) } />
 						<Text as="th" text={ __( 'Action', 'better-wp-security' ) } />
@@ -68,10 +67,12 @@ function VulnerabilityTableRow( { vulnerability, isWide } ) {
 					<StyledVulnerabilityDetail text={ vulnerability.details.type.label } />
 				</StyledVulnerability>
 			</td>
-			<td><StyledSeverity backgroundColor={ severityColor( vulnerability.details.score ) } weight={ 600 } text={ vulnerability.details.score ?? '??' } /></td>
+			<td>
+				<PatchPriority priority={ vulnerability.details.patch_priority } score={ vulnerability.details.score } />
+			</td>
 			<td>
 				<Text
-					icon={ statusIcon( vulnerability.resolution.slug ) }
+					icon={ <VulnerabilityStatusIcon vulnerability={ vulnerability } /> }
 					iconSize={ 16 }
 					text={ vulnerability.resolution.label }
 				/>

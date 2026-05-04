@@ -104,7 +104,7 @@ export function UserSecurityModalActionsDropdown( { dropdownTitle, dropdownButto
 					</StyledUserSecurityModalDropdownOverlay>
 					<StyledUserSecurityModalAddButton
 						text={ dropdownButtonText }
-						onClick={ ( ) => {
+						onClick={ () => {
 							setActiveActions( {
 								...activeActions,
 								[ slug ]: selectedOptions,

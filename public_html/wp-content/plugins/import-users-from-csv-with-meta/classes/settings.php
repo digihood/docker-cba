@@ -12,7 +12,7 @@ class ACUI_Settings{
         $this->settings = apply_filters( 'acui_settings', array(
             'import_common' => array(
                 'path_to_file' => array( 
-                    'sanitization' => 'text',
+                    'sanitization' => 'url_path',
                     'default' => ''
                 ),
                 'role' => array( 
@@ -67,14 +67,18 @@ class ACUI_Settings{
                     'sanitization' => 'text',
                     'default' => 'subscriber'
                 ),
+                'not_present_same_role' => array( 
+                    'sanitization' => 'text',
+                    'default' => 'no'
+                ),                
             ),
             'import_backend' => array(),
             'import_frontend' => array(),
             'import_cron' => array(),
             'export_common' => array(
                 'role' => array( 
-                    'sanitization' => 'text',
-                    'default' => ''
+                    'sanitization' => 'array_text',
+                    'default' => array( 'subscriber' )
                 ),
                 'columns' => array( 
                     'sanitization' => 'text',
@@ -184,10 +188,16 @@ class ACUI_Settings{
                 return sanitize_text_field( $value );
 
             case 'array_text':
-                return array_map( 'sanitize_text_field', $value );
+                return array_map( 'sanitize_text_field', is_array( $value ) ? $value : array( $value ) );
 
             case 'checkbox':
                 return ( $value != 'yes' ) ? 'no' : 'yes';
+
+            case 'url_path':
+                $url_sanitized = sanitize_url( $value );
+                $path_sanitized = sanitize_file_name( $value );
+                return empty( $url_sanitized ) ? $path_sanitized : $url_sanitized;
+
         }
     }
 
@@ -198,7 +208,7 @@ class ACUI_Settings{
 
         foreach( $settings_to_save as $setting => $setting_options ){
             $sanitize_type = $setting_options['sanitization'];
-            if( !isset( $data[ $setting ] ) && $sanitize_type != 'checkbox' )
+            if( !isset( $data[ $setting ] ) && $sanitize_type != 'checkbox' && $setting != 'role' )
                 continue;
 
             $values[ $setting ] = isset( $data[ $setting ] ) ? $this->sanitize( $data[ $setting ], $sanitize_type ) : 'no';

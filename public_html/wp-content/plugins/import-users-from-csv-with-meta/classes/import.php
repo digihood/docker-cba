@@ -3,6 +3,38 @@ class ACUI_Import{
     function __construct(){
     }
 
+    function hooks(){
+        add_action( 'wp_ajax_acui_import_users_batch', array( $this, 'ajax_import_users_batch' ) );
+        add_action( 'acui_post_import_single_user', array( $this, 'mark_user_as_imported' ), 10, 11 );
+    }
+
+    function mark_user_as_imported( $headers, $data, $user_id, $role, $positions, $form_data, $is_frontend, $is_cron, $password_changed, $created ){
+        if( $user_id )
+            update_user_meta( $user_id, '_acui_imported', '1' );
+    }
+
+    static function enqueue(){
+        wp_enqueue_script( 'acui_import_js', plugins_url( 'assets/import.js', dirname( __FILE__ ) ), array( 'jquery' ), ACUI_VERSION, true );
+        wp_localize_script( 'acui_import_js', 'acui_import_js_object', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'starting_process' => __( 'Starting process', 'import-users-from-csv-with-meta' ),
+            'step' => __( 'Step', 'import-users-from-csv-with-meta' ),
+            'of_approximately' => __( 'of approximately', 'import-users-from-csv-with-meta' ),
+            'steps' => __( 'steps', 'import-users-from-csv-with-meta' ),
+            'error_thrown' => __( 'Error thrown on the server, cannot continue. Please check console to see full details about the error.', 'import-users-from-csv-with-meta' ),
+            'pause'            => __( 'Pause', 'import-users-from-csv-with-meta' ),
+            'resume'           => __( 'Resume', 'import-users-from-csv-with-meta' ),
+            'stop'             => __( 'Stop', 'import-users-from-csv-with-meta' ),
+            'stopped'          => __( 'Import stopped', 'import-users-from-csv-with-meta' ),
+            'import_done'      => __( 'Import completed successfully.', 'import-users-from-csv-with-meta' ),
+            'import_done_log'  => __( 'The results have been saved in the Log tab.', 'import-users-from-csv-with-meta' ),
+            'view_log'         => __( 'View log', 'import-users-from-csv-with-meta' ),
+            'new_import'       => __( 'New import', 'import-users-from-csv-with-meta' ),
+            'log_url'          => admin_url( 'tools.php?page=acui&tab=log' ),
+            'import_url'       => admin_url( 'tools.php?page=acui&tab=homepage' ),
+        ) );
+    }
+
     function show(){
         if ( !current_user_can( apply_filters( 'acui_capability', 'create_users' ) ) ) {
             wp_die( __( 'You are not allowed to see this content.', 'import-users-from-csv-with-meta' ));
@@ -59,9 +91,17 @@ class ACUI_Import{
             break;
     
             case 'frontend':
-                ACUI_Frontend::admin_gui();	
+                ACUI_Frontend::admin_gui_import();
+            break;
+
+            case 'frontend-export':
+                ACUI_Frontend::admin_gui_export();
             break;
     
+            case 'cron':
+                ACUI_Cron::admin_gui();
+            break;
+            
             case 'columns':
                 ACUI_Columns::admin_gui();
             break;
@@ -70,18 +110,22 @@ class ACUI_Import{
                 ACUI_MetaKeys::admin_gui();
             break;
     
-            case 'doc':
-                ACUI_Doc::message();
-            break;
-    
             case 'mail-options':
                 ACUI_Email_Options::admin_gui();
             break;
     
-            case 'cron':
-                ACUI_Cron::admin_gui();
+            case 'doc':
+                ACUI_Doc::message();
             break;
-    
+
+            case 'tools':
+                ACUI_Tools::admin_gui();
+            break;
+
+            case 'log':
+                ACUI_Log::admin_gui();
+            break;
+
             case 'help':
                 ACUI_Help::message();
             break;
@@ -92,40 +136,111 @@ class ACUI_Import{
         }
     }
 
-    function admin_tabs( $current = 'homepage' ) {
-        $tabs = array( 
-                'homepage' => __( 'Import', 'import-users-from-csv-with-meta' ),
-                'export' => __( 'Export', 'import-users-from-csv-with-meta' ),
-                'frontend' => __( 'Frontend', 'import-users-from-csv-with-meta' ), 
-                'cron' => __( 'Recurring import', 'import-users-from-csv-with-meta' ),
-                'cron-export' => __( 'Recurring export', 'import-users-from-csv-with-meta' ),
-                'columns' => __( 'Extra profile fields', 'import-users-from-csv-with-meta' ), 
-                'meta-keys' => __( 'Meta keys', 'import-users-from-csv-with-meta' ), 
-                'mail-options' => __( 'Mail options', 'import-users-from-csv-with-meta' ), 
-                'doc' => __( 'Documentation', 'import-users-from-csv-with-meta' ), 
-                'help' => __( 'More...', 'import-users-from-csv-with-meta' )
+    function admin_tabs( $current = 'homepage' ){
+        $import_tab_ids   = apply_filters( 'acui_import_tab_ids', array( 'homepage', 'frontend', 'cron' ) );
+        $export_tab_ids   = apply_filters( 'acui_export_tab_ids', array( 'export', 'frontend-export', 'cron-export' ) );
+        $settings_tab_ids = apply_filters( 'acui_settings_tab_ids', array( 'mail-options', 'columns', 'meta-keys', 'tools' ) );
+
+        $all_tabs = array(
+            'homepage'        => __( 'Import', 'import-users-from-csv-with-meta' ),
+            'export'          => __( 'Export', 'import-users-from-csv-with-meta' ),
+            'frontend'        => __( 'Frontend', 'import-users-from-csv-with-meta' ),
+            'frontend-export' => __( 'Frontend', 'import-users-from-csv-with-meta' ),
+            'cron'            => __( 'Recurring import', 'import-users-from-csv-with-meta' ),
+            'cron-export'     => __( 'Recurring export', 'import-users-from-csv-with-meta' ),
+            'mail-options'    => __( 'Mail options', 'import-users-from-csv-with-meta' ),
+            'columns'         => __( 'Extra profile fields', 'import-users-from-csv-with-meta' ),
+            'meta-keys'       => __( 'Meta keys', 'import-users-from-csv-with-meta' ),
+            'doc'             => __( 'Documentation', 'import-users-from-csv-with-meta' ),
+            'tools'           => __( 'Tools', 'import-users-from-csv-with-meta' ),
+            'log'             => __( 'Log', 'import-users-from-csv-with-meta' ),
+            'help'            => __( 'More...', 'import-users-from-csv-with-meta' ),
         );
-    
-        $tabs = apply_filters( 'acui_tabs', $tabs );
-    
+
+        $all_tabs = apply_filters( 'acui_tabs', $all_tabs );
+
+        $in_import   = in_array( $current, $import_tab_ids );
+        $in_export   = in_array( $current, $export_tab_ids );
+        $in_settings = in_array( $current, $settings_tab_ids );
+
+        $grouped = array_merge( $import_tab_ids, $export_tab_ids, $settings_tab_ids );
+
         echo '<div id="icon-themes" class="icon32"><br></div>';
         echo '<h2 class="nav-tab-wrapper">';
-        foreach( $tabs as $tab => $name ){
-            $class = ( $tab == $current ) ? ' nav-tab-active' : '';
 
-            $class = apply_filters( 'acui_tab_class', $class, $tab );            
-            $href = apply_filters( 'acui_tab_href', '?page=acui&tab=' . $tab, $tab );
+        $import_class = $in_import ? ' nav-tab-active' : '';
+        echo "<a class='nav-tab$import_class' href='?page=acui&tab=homepage'>" . __( 'Import', 'import-users-from-csv-with-meta' ) . "</a>";
+
+        $export_class = $in_export ? ' nav-tab-active' : '';
+        echo "<a class='nav-tab$export_class' href='?page=acui&tab=export'>" . __( 'Export', 'import-users-from-csv-with-meta' ) . "</a>";
+
+        $settings_class = $in_settings ? ' nav-tab-active' : '';
+        echo "<a class='nav-tab$settings_class' href='?page=acui&tab=mail-options'>" . __( 'Settings', 'import-users-from-csv-with-meta' ) . "</a>";
+
+        foreach( array( 'log', 'doc', 'help' ) as $tab ){
+            if( !isset( $all_tabs[$tab] ) ) continue;
+            $name   = $all_tabs[$tab];
+            $class  = ( $tab === $current ) ? ' nav-tab-active' : '';
+            $class  = apply_filters( 'acui_tab_class', $class, $tab );
+            $href   = apply_filters( 'acui_tab_href', '?page=acui&tab=' . $tab, $tab );
             $target = apply_filters( 'acui_tab_target', '_self', $tab );
-
-            if( !function_exists( 'acui_ec_check_active' ) && $tab == 'cron-export' ){
-                $name = $name .= ' (PRO)';
-                $href = 'https://import-wp.com/recurring-export-addon/';
-                $target = '_blank';
-            }
-    
-            echo "<a class='nav-tab$class' href='$href' target='$target'>$name</a>";    
+            echo "<a class='nav-tab$class' href='$href' target='$target'>$name</a>";
         }
+
+        foreach( $all_tabs as $tab => $name ){
+            if( in_array( $tab, $grouped ) || in_array( $tab, array( 'log', 'doc', 'help' ) ) ) continue;
+            $class  = ( $tab === $current ) ? ' nav-tab-active' : '';
+            $href   = apply_filters( 'acui_tab_href', '?page=acui&tab=' . $tab, $tab );
+            $target = apply_filters( 'acui_tab_target', '_self', $tab );
+            echo "<a class='nav-tab$class' href='$href' target='$target'>$name</a>";
+        }
+
         echo '</h2>';
+
+        if( $in_import ){
+            $import_subtabs = array(
+                'homepage' => __( 'Backend', 'import-users-from-csv-with-meta' ),
+                'frontend' => __( 'Frontend', 'import-users-from-csv-with-meta' ),
+                'cron'     => __( 'Recurring', 'import-users-from-csv-with-meta' ),
+            );
+            echo '<div class="wp-clearfix"><ul class="acui-subsubsub">';
+            foreach( $import_subtabs as $tab => $name ){
+                $class = ( $tab === $current ) ? 'current' : '';
+                echo '<li><a class="' . esc_attr( $class ) . '" href="' . esc_url( '?page=acui&tab=' . $tab ) . '">' . esc_html( $name ) . '</a></li>';
+            }
+            echo '</ul></div>';
+        }
+
+        if( $in_export ){
+            $export_subtabs = array(
+                'export'          => __( 'Backend', 'import-users-from-csv-with-meta' ),
+                'frontend-export' => __( 'Frontend', 'import-users-from-csv-with-meta' ),
+                'cron-export'     => __( 'Recurring', 'import-users-from-csv-with-meta' ),
+            );
+            echo '<div class="wp-clearfix"><ul class="acui-subsubsub">';
+            foreach( $export_subtabs as $tab => $name ){
+                $class  = ( $tab === $current ) ? 'current' : '';
+                $href   = '?page=acui&tab=' . $tab;
+                $target = '_self';
+                if( !function_exists( 'acui_ec_check_active' ) && $tab === 'cron-export' ){
+                    $name  .= ' (PRO)';
+                    $href   = 'https://import-wp.com/recurring-export-addon/';
+                    $target = '_blank';
+                }
+                echo '<li><a class="' . esc_attr( $class ) . '" href="' . esc_url( $href ) . '" target="' . esc_attr( $target ) . '">' . esc_html( $name ) . '</a></li>';
+            }
+            echo '</ul></div>';
+        }
+
+        if( $in_settings ){
+            echo '<div class="wp-clearfix"><ul class="acui-subsubsub">';
+            foreach( $all_tabs as $tab => $name ){
+                if( !in_array( $tab, $settings_tab_ids ) ) continue;
+                $class = ( $tab === $current ) ? 'current' : '';
+                echo '<li><a class="' . esc_attr( $class ) . '" href="' . esc_url( '?page=acui&tab=' . $tab ) . '">' . esc_html( $name ) . '</a></li>';
+            }
+            echo '</ul></div>';
+        }
     }
 
     static function secondary_admin_tabs( $active_tab = '', $section = '', $sections = array() ){
@@ -162,6 +277,7 @@ class ACUI_Import{
             case 'homepage':
             case 'export':
             case 'frontend':
+            case 'frontend-export':
             case 'columns':
             case 'meta-keys':
             case 'doc':
@@ -249,7 +365,9 @@ class ACUI_Import{
         $path_to_file = $this->manage_file_upload( $form_data["path_to_file"] );
 
         if( $path_to_file !== false )
-            $this->import_users( $path_to_file, $form_data, true, false, $step, $initial_row, 29 );        
+            return $this->import_users( $path_to_file, $form_data, true, false, $step, $initial_row, ACUI_IMPORT_TIME_LIMIT );
+
+        return array( 'done' => true );
     }
 
     function read_first_row( $data, &$headers, &$positions, &$headers_filtered ){
@@ -261,8 +379,9 @@ class ACUI_Import{
         }
 
         $restricted_fields = ACUIHelper()->get_restricted_fields();
+        $restricted_fields_lower = array_map( 'strtolower', $restricted_fields );
         $i = 0;
-        
+
         foreach ( $restricted_fields as $acui_restricted_field ) {
             $positions[ $acui_restricted_field ] = false;
         }
@@ -270,10 +389,10 @@ class ACUI_Import{
         foreach( $data as $element ){
             $headers[] = $element;
 
-            if( in_array( strtolower( $element ) , $restricted_fields ) )
-                $positions[ strtolower( $element ) ] = $i;
-
-            if( !in_array( strtolower( $element ), $restricted_fields ) )
+            $restricted_index = array_search( strtolower( $element ), $restricted_fields_lower );
+            if( $restricted_index !== false )
+                $positions[ $restricted_fields[ $restricted_index ] ] = $i;
+            else
                 $headers_filtered[] = $element;
 
             $i++;
@@ -383,7 +502,7 @@ class ACUI_Import{
                 if( $user->user_login == $username ){
                     $user_id = $id;
                     
-                    if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' ){
+                    if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' && $user_id != get_current_user_id() ){
                         wp_set_password( $password, $user_id );
                         $password_changed = true;
                     }
@@ -435,11 +554,11 @@ class ACUI_Import{
                 return array( 'result' => 'ignored', 'user_id' => $user_id );
             }
             
-            if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' ){
+            if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' && $user_id != get_current_user_id() ){
                 wp_set_password( $password, $user_id );
                 $password_changed = true;
             }
-            
+
             $new_user_id = ACUIHelper()->maybe_update_email( $user_id, $email, $password, $settings['update_emails_existing_users'], $original_email );
             if( empty( $new_user_id ) ){
                 $errors[] = ACUIHelper()->new_error( $row,  sprintf( __( 'User with email "%s" exists with other username, it will be ignored', 'import-users-from-csv-with-meta' ), $email ), 'notice' );     
@@ -473,7 +592,7 @@ class ACUI_Import{
             $data[0] = sprintf( __( 'User already exists as: %s (in this CSV file, it is called: %s)', 'import-users-from-csv-with-meta' ), $user_object->user_login, $username );
             $errors[] = ACUIHelper()->new_error( $row, $data[0], 'warning' );
 
-            if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' ){
+            if( $password !== "" && $settings['update_allow_update_passwords'] == 'yes' && $user_id != get_current_user_id() ){
                 wp_set_password( $password, $user_id );
                 $password_changed = true;
             }
@@ -555,7 +674,7 @@ class ACUI_Import{
                         else
                             $data[0] = __('Invalid roles','import-users-from-csv-with-meta').' (' . implode( ', ', $invalid_roles ) . ')';
                 
-                        $errors[] = ACUIHelper()->new_error( $row, $data[0], 'warning' );    
+                        $errors[] = ACUIHelper()->new_error( $row, $data[0], 'warning' );  
                     }
                 }
             }
@@ -593,6 +712,9 @@ class ACUI_Import{
                         if( !$created && $settings['update_allow_update_passwords'] == 'no' )
                             continue;
 
+                        if( !$created && $user_id == get_current_user_id() )
+                            continue;
+
                         global $wpdb;
                         $wpdb->update( $wpdb->users, array( 'user_pass' => wp_slash( $data[ $i ] ) ), array( 'ID' => $user_id ) );
                         wp_cache_delete( $user_id, 'users' );
@@ -618,7 +740,11 @@ class ACUI_Import{
                                 continue;	
                         }
                         else{
-                            update_user_meta( $user_id, $headers[ $i ], $data[ $i ] );
+                            if( is_object( $data[ $i ] ) && get_class( $data[ $i ] ) === '__PHP_Incomplete_Class' )
+                                $errors[] = ACUIHelper()->new_error( $row, __( 'Invalid value __PHP_Incomplete_Class', 'import-users-from-csv-with-meta' ), 'warning' );
+                            else    
+                                update_user_meta( $user_id, $headers[ $i ], $data[ $i ] );
+                            
                             continue;
                         }
                     }
@@ -629,7 +755,7 @@ class ACUI_Import{
 
         ACUIHelper()->print_row_imported( $row, $data, $errors );
 
-        do_action( 'post_acui_import_single_user', $headers, $data, $user_id, $role, $positions, $form_data, $is_frontend, $is_cron, $password_changed, $created );
+        do_action( 'acui_post_import_single_user', $headers, $data, $user_id, $role, $positions, $form_data, $is_frontend, $is_cron, $password_changed, $created );
 
         $mail_for_this_user = false;
         if( $is_cron ){
@@ -661,7 +787,7 @@ class ACUI_Import{
             ACUI_Email_Options::send_email( $user_object, $positions, $headers, $data, $created, $password );
         }
 
-        return array( 'result' => ( $created ) ? 'created' : 'updated', 'user_id' => $user_id );
+        return array( 'result' => ( $created ) ? 'created' : 'updated', 'user_id' => $user_id, 'role' => is_array( $role ) ? $role : array( $role ) );
     }
 
     function prepare_settings( $form_data ){
@@ -686,6 +812,8 @@ class ACUI_Import{
         $settings['delete_users_only_specified_role'] = isset( $form_data["delete_users_only_specified_role"] ) ? sanitize_text_field( $form_data["delete_users_only_specified_role"] ) : false;			
         $settings['change_role_not_present'] = isset( $form_data["change_role_not_present"] ) ? sanitize_text_field( $form_data["change_role_not_present"] ) : '';
         $settings['change_role_not_present_role'] = isset( $form_data["change_role_not_present_role"] ) ? sanitize_text_field( $form_data["change_role_not_present_role"] ) : '';
+        $settings['not_present_same_role'] = isset( $form_data["not_present_same_role"] ) ? sanitize_text_field( $form_data["not_present_same_role"] ) : 'no';
+        $settings['not_present_only_imported'] = isset( $form_data["not_present_only_imported"] ) ? sanitize_text_field( $form_data["not_present_only_imported"] ) : 'no';
         
         if( $is_cron ){
             $settings['allow_multiple_accounts'] = ( get_option( "acui_cron_allow_multiple_accounts" ) == "allowed" ) ? "allowed" : "not_allowed";
@@ -704,23 +832,162 @@ class ACUI_Import{
         return ( microtime( true ) - $time_start ) >= $time_per_step;
     }
 
-    function save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored ){
-        set_transient( 'acui_columns', $columns, HOUR_IN_SECONDS );
-        set_transient( 'acui_headers', $headers, HOUR_IN_SECONDS );
-        set_transient( 'acui_headers_filtered', $headers_filtered, HOUR_IN_SECONDS );
-        set_transient( 'acui_positions', $positions, HOUR_IN_SECONDS );
-        set_transient( 'acui_errors', $errors, HOUR_IN_SECONDS );
-        set_transient( 'acui_errors_totals', $errors_totals, HOUR_IN_SECONDS );
-        set_transient( 'acui_results', $results, HOUR_IN_SECONDS );
-        set_transient( 'acui_users_created', $users_created, HOUR_IN_SECONDS );
-        set_transient( 'acui_users_updated', $users_updated, HOUR_IN_SECONDS );
-        set_transient( 'acui_users_ignored', $users_ignored, HOUR_IN_SECONDS );
+    function ajax_import_users_batch(){
+        check_ajax_referer( 'codection-security', 'security' );
+
+        if( !current_user_can( apply_filters( 'acui_capability', 'create_users' ) ) )
+            wp_die( __( 'Only users who are allowed to create users can import them.', 'import-users-from-csv-with-meta' ) );
+
+        $step = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
+        $row = isset( $_POST['row'] ) ? absint( $_POST['row'] ) : 0;
+        $file = isset( $_POST['file_path'] ) ? sanitize_text_field( $_POST['file_path'] ) : '';
+        
+        // On first step, we might need to handle the upload if it's there
+        if( $step == 1 && empty( $file ) ){
+            if( !empty( $_FILES['uploadfile']['tmp_name'] ) ){
+                $original_ext = strtolower( pathinfo( $_FILES['uploadfile']['name'], PATHINFO_EXTENSION ) );
+                $allowed_extensions = apply_filters( 'acui_allowed_upload_extensions', array( 'csv' ) );
+                if( !in_array( $original_ext, $allowed_extensions, true ) ){
+                    wp_send_json_error( array( 'message' => __( 'Invalid file type.', 'import-users-from-csv-with-meta' ) ) );
+                }
+                $upload_dir = wp_upload_dir();
+                $file = $upload_dir['basedir'] . '/acui-import-' . uniqid() . '.' . $original_ext;
+                move_uploaded_file( $_FILES['uploadfile']['tmp_name'], $file );
+            }
+            elseif( !empty( $_POST['path_to_file'] ) ){
+                $file = $this->manage_file_upload( $_POST['path_to_file'] );
+            }
+        }
+
+        if( empty( $file ) || !file_exists( $file ) ){
+            wp_send_json_error( array( 'message' => __( 'File not found', 'import-users-from-csv-with-meta' ) ) );
+        }
+
+        $form_data = array();
+        if( isset( $_POST['form'] ) )
+            parse_str( $_POST['form'], $form_data );
+        else
+            $form_data = $_POST;
+
+        // If it's step 1, we also need to get total rows
+        $total_rows = 0;
+        if( $step == 1 ){
+            $handle = fopen( $file, "r" );
+            while( !feof( $handle ) ){
+                fgets( $handle );
+                $total_rows++;
+            }
+            fclose( $handle );
+            // Subtract header row
+            $total_rows = max( 0, $total_rows - 1 );
+            set_transient( 'acui_import_total_rows', $total_rows, HOUR_IN_SECONDS );
+        }
+        else{
+            $total_rows = get_transient( 'acui_import_total_rows' );
+        }
+
+        ob_start();
+        $import_status = $this->import_users( $file, $form_data, false, false, $step, $row, ACUI_IMPORT_TIME_LIMIT, $total_rows, true );
+        $log = ob_get_clean();
+
+        // Accumulate log across batches for Log tab
+        if ( $step == 1 ) {
+            set_transient( 'acui_import_log_accumulate', $log, HOUR_IN_SECONDS );
+        } else {
+            $accumulated = get_transient( 'acui_import_log_accumulate' );
+            set_transient( 'acui_import_log_accumulate', ( $accumulated !== false ? $accumulated : '' ) . $log, HOUR_IN_SECONDS );
+        }
+
+        $next_row = $import_status['row'];
+        $percentage = $total_rows ? min( 100, floor( ( $next_row / ( $total_rows + 1 ) ) * 100 ) ) : 100;
+
+        // Results data from import_users() for live progress
+        $results_data = isset( $import_status['results'] ) ? $import_status['results'] : array( 'created' => 0, 'updated' => 0, 'deleted' => 0 );
+        $errors_count = isset( $import_status['errors_count'] ) ? $import_status['errors_count'] : 0;
+
+        if( $import_status['done'] ){
+            // Finalize
+            $users_created = get_transient( 'acui_users_created' );
+            $users_updated = get_transient( 'acui_users_updated' );
+            $users_ignored = get_transient( 'acui_users_ignored' );
+            $users_deleted = get_transient( 'acui_users_deleted' );
+
+            if( !is_array( $users_created ) ) $users_created = array();
+            if( !is_array( $users_updated ) ) $users_updated = array();
+            if( !is_array( $users_ignored ) ) $users_ignored = array();
+            if( !is_array( $users_deleted ) ) $users_deleted = array();
+
+            do_action( 'acui_after_import_users', $users_created, $users_updated, $users_deleted, $users_ignored );
+
+            // Generate results HTML for the Log tab
+            $errors_for_log = get_transient( 'acui_errors' );
+            if( !is_array( $errors_for_log ) ) $errors_for_log = array();
+
+            ob_start();
+            ACUIHelper()->print_errors( $errors_for_log );
+            ACUIHelper()->print_results( $results_data, $errors_for_log );
+            ACUIHelper()->print_end_of_process();
+            ACUIHelper()->execute_datatable();
+            $results_log_html = ob_get_clean();
+
+            // Save full log (rows + results) for the Log tab
+            $full_log = get_transient( 'acui_import_log_accumulate' );
+            update_option( 'acui_last_import_log', array(
+                'date' => current_time( 'mysql' ),
+                'html' => ( $full_log !== false ? $full_log : $log ) . $results_log_html,
+            ), false );
+            delete_transient( 'acui_import_log_accumulate' );
+
+            // Clean up file if it was our temporary one
+            if( strpos( $file, 'acui-import-' ) !== false )
+                @unlink( $file );
+
+            wp_send_json_success( array(
+                'step' => 'done',
+                'percentage' => 100,
+                'log' => $log,
+                'results' => $results_data,
+                'errors_count' => $errors_count,
+                'file_path' => $file
+            ) );
+        }
+        else{
+            wp_send_json_success( array(
+                'step' => $step + 1,
+                'row' => $next_row,
+                'percentage' => $percentage,
+                'total_steps' => ceil( $total_rows / ACUI_IMPORT_BATCH_SIZE ),
+                'log' => $log,
+                'results' => $results_data,
+                'errors_count' => $errors_count,
+                'file_path' => $file
+            ) );
+        }
     }
 
-    function import_users( $file, $form_data, $_is_cron = false, $_is_frontend = false, $step = 1, $initial_row = 0, $time_per_step = -1 ){
+    function save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored, $roles_appeared, $users_deleted = array() ){
+        set_transient( 'acui_columns', $columns, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_headers', $headers, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_headers_filtered', $headers_filtered, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_positions', $positions, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_errors', $errors, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_errors_totals', $errors_totals, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_results', $results, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_users_created', $users_created, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_users_updated', $users_updated, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_users_ignored', $users_ignored, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_roles_appeared', $roles_appeared, 15 * MINUTE_IN_SECONDS );
+        set_transient( 'acui_users_deleted', $users_deleted, 15 * MINUTE_IN_SECONDS );
+    }
+
+    function import_users( $file, $form_data, $_is_cron = false, $_is_frontend = false, $step = 1, $initial_row = 0, $time_per_step = -1, $total_rows = 0, $is_batch = false ){
+        if( !function_exists( 'wp_delete_user' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/user.php' );
+        }
+        
         $time_start = microtime( true );
 
-        if( $time_per_step == -1 )
+        if( $time_per_step == -1 || $time_per_step > ACUI_IMPORT_BATCH_SIZE ) // If it's not batch, or a large limit (legacy)
             @set_time_limit( 0 );
 
         global $errors, $errors_totals, $is_frontend, $is_cron;
@@ -729,11 +996,11 @@ class ACUI_Import{
         $is_cron = $_is_cron;
         $is_backend = !$is_frontend && !$is_cron;
         $row = $initial_row;
+        $limit = ($time_per_step > 0 && $time_per_step <= 100) ? ACUI_IMPORT_BATCH_SIZE : 0;
 
         $settings = $this->prepare_settings( $form_data );
 
         @ini_set( 'auto_detect_line_endings', TRUE );
-        $delimiter = ACUIHelper()->detect_delimiter( $file );
 
         ACUIHelper()->maybe_disable_wordpress_core_emails();
 
@@ -752,6 +1019,9 @@ class ACUI_Import{
             $users_created = array();
             $users_updated = array();
             $users_ignored = array();
+
+            $roles_appeared = $settings['role_default'];
+            $users_deleted = array();
         }
         else{
             $columns = get_transient( 'acui_columns' );
@@ -768,18 +1038,27 @@ class ACUI_Import{
             $users_created = get_transient( 'acui_users_created' );
             $users_updated = get_transient( 'acui_users_updated' );
             $users_ignored = get_transient( 'acui_users_ignored' );
+
+            $roles_appeared = get_transient( 'acui_roles_appeared' );
+            $users_deleted = get_transient( 'acui_users_deleted' );
+            if( !is_array( $users_deleted ) ) $users_deleted = array();
         }
 
-        if( $step == 1 ){
-            do_action( 'before_acui_import_users' );       
+        echo '<div class="wrap">';
 
-            echo '<div class="wrap">';
+        if( $step == 1 ){
+            do_action( 'acui_before_import_users' );       
+
             echo '<h2>' . apply_filters( 'acui_log_main_title', __('Importing users','import-users-from-csv-with-meta') ) . '</h2>';
 
             echo apply_filters( "acui_log_header", "<h3>" . __('Ready to registers','import-users-from-csv-with-meta') . "</h3>" );
             echo apply_filters( "acui_log_header_first_row_explanation", "<p>" . __('First row represents the format of the sheet','import-users-from-csv-with-meta') . "</p>" );
-        }       
+        } else {
+            ACUIHelper()->print_table_header_footer( $headers, false );
+        }
 
+        $file = apply_filters( 'acui_import_file_path', $file, $form_data );
+        $delimiter = ACUIHelper()->detect_delimiter( $file );
         $manager = new SplFileObject( $file );
         if( $initial_row != 0 )
             $manager->seek( $initial_row );
@@ -814,6 +1093,11 @@ class ACUI_Import{
 
                 $result = $this->import_user( $row, $columns, $headers, $data, $positions, $form_data, $settings );
 
+                if( empty( $result['role'] ) )
+                    $result['role'] = array();
+
+                $roles_appeared = array_unique( array_intersect( $roles_appeared, $result['role'] ) );
+
                 switch( $result['result'] ){
                     case 'created':
                         $results['created']++;
@@ -832,118 +1116,174 @@ class ACUI_Import{
                 }
             }
 
-            if( $this->time_exceeded( $time_start, $time_per_step ) ){
-                $this->save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored );
-                
+            if( $limit > 0 && ($row - $initial_row) >= $limit ){
+                $this->save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored, $roles_appeared, $users_deleted );
+
                 if( $is_cron ){
                     as_enqueue_async_action( 'acui_cron_process_step', array( 'step' => $step + 1, 'initial_row' => $row ) );
                 }
-                break;
+
+                ACUIHelper()->print_table_end( false );
+                echo '</div>';
+                return array( 'row' => $row, 'done' => false, 'results' => $results, 'errors_count' => count( $errors ) );
+            }
+
+            if( $this->time_exceeded( $time_start, $time_per_step ) ){
+                $this->save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored, $roles_appeared, $users_deleted );
+
+                if( $is_cron ){
+                    as_enqueue_async_action( 'acui_cron_process_step', array( 'step' => $step + 1, 'initial_row' => $row ) );
+                }
+                ACUIHelper()->print_table_end( false );
+                echo '</div>';
+                return array( 'row' => $row, 'done' => false, 'results' => $results, 'errors_count' => count( $errors ) );
             }
         endwhile;
 
-        ACUIHelper()->print_table_end();
+        $is_last_step = ($total_rows == 0) || ($row >= $total_rows + 1);
 
-        ACUIHelper()->print_errors( $errors );
+        if( $is_last_step || $time_per_step == -1 ){
 
-        ACUIHelper()->maybe_enable_wordpress_core_emails();
+            ACUIHelper()->print_table_end( true, $headers );
 
-        // delete all users that have not been imported
-        $delete_users_flag = false;
-        $delete_users_assign_posts = false;
-        $change_role_not_present_flag = false;
+            if( !$is_batch ){
+                ACUIHelper()->print_errors( $errors );
+            }
 
-        if( $settings['delete_users_not_present'] == 'yes' ){
-            $delete_users_flag = true;
-            $delete_users_assign_posts = $settings['delete_users_assign_posts'];
-        }
+            ACUIHelper()->maybe_enable_wordpress_core_emails();
 
-        if( $is_cron && get_option( "acui_cron_delete_users" ) ){
-            $delete_users_flag = true;
-            $delete_users_assign_posts = get_option( "acui_cron_delete_users_assign_posts");
-        }
-
-        if( $is_backend && $settings['change_role_not_present'] == 'yes' ){
-            $change_role_not_present_flag = true;
-            $change_role_not_present_role = $settings['change_role_not_present_role'];
-        }
-
-        if( $is_cron && !empty( get_option( "acui_cron_change_role_not_present" ) ) ){
-            $change_role_not_present_flag = true;
-            $change_role_not_present_role = get_option( "acui_cron_change_role_not_present_role");
-        }
-
-        if( $is_frontend && !empty( get_option( "acui_frontend_change_role_not_present" ) ) ){
-            $change_role_not_present_flag = true;
-            $change_role_not_present_role = get_option( "acui_frontend_change_role_not_present_role");
-        }
-
-        if( $errors_totals['errors'] > 0 || $errors_totals['warnings'] > 0 ){ // if there is some problem of some kind importing we won't proceed with delete or changing role to users not present to avoid problems
+            // delete all users that have not been imported
             $delete_users_flag = false;
+            $delete_users_assign_posts = false;
             $change_role_not_present_flag = false;
-        }
 
-        $users_registered = array_merge( $users_created, $users_updated, $users_ignored );
-        $users_deleted = array();
+            if( $settings['delete_users_not_present'] == 'yes' ){
+                $delete_users_flag = true;
+                $delete_users_assign_posts = $settings['delete_users_assign_posts'];
+            }
 
-        if( $delete_users_flag ):
+            if( $is_cron && get_option( "acui_cron_delete_users" ) ){
+                $delete_users_flag = true;
+                $delete_users_assign_posts = get_option( "acui_cron_delete_users_assign_posts");
+            }
+
+            if( $is_backend && $settings['change_role_not_present'] == 'yes' ){
+                $change_role_not_present_flag = true;
+                $change_role_not_present_role = $settings['change_role_not_present_role'];
+            }
+
+            if( $is_cron && !empty( get_option( "acui_cron_change_role_not_present" ) ) ){
+                $change_role_not_present_flag = true;
+                $change_role_not_present_role = get_option( "acui_cron_change_role_not_present_role");
+            }
+
+            if( $is_frontend && !empty( get_option( "acui_frontend_change_role_not_present" ) ) ){
+                $change_role_not_present_flag = true;
+                $change_role_not_present_role = get_option( "acui_frontend_change_role_not_present_role");
+            }
+
+            if( $errors_totals['errors'] > 0 || $errors_totals['warnings'] > 0 ){ // if there is some problem of some kind importing we won't proceed with delete or changing role to users not present to avoid problems
+                $delete_users_flag = false;
+                $change_role_not_present_flag = false;
+            }
+
+            $users_registered = array_merge( $users_created, $users_updated, $users_ignored );
+            $users_deleted = array();
+
             $exclude_roles = array_diff( array_keys( wp_roles()->roles ), array_keys( ACUIHelper()->get_editable_roles() ) ); // remove editable roles
 
-            if ( !in_array( 'administrator', $exclude_roles )){ // just to be sure
+            if ( !in_array( 'administrator', $exclude_roles  )){ // just to be sure
                 $exclude_roles[] = 'administrator';
             }
 
-            $args = array( 
-                'fields' => array( 'ID' ),
-                'role__not_in' => $exclude_roles,
-                'exclude' => array( get_current_user_id() ), // current user never cannot be deleted
-            );
+            if( $delete_users_flag ):
+                $args = array( 
+                    'fields' => array( 'ID' ),
+                    'role__not_in' => $exclude_roles,
+                    'exclude' => apply_filters( 'acui_exclude_users_to_delete', array( get_current_user_id() ) ), // current user never cannot be deleted
+                );
 
-            if( $settings['delete_users_only_specified_role'] ){
-                $args[ 'role__in' ] = $settings['role_default'];
-            }
+                if( $settings['delete_users_only_specified_role'] || ($settings['not_present_same_role'] == 'yes') ){
+                    $args[ 'role__in' ] = $roles_appeared;
+                }
 
-            $all_users = get_users( $args );
-            $all_users_ids = array_map( function( $element ){ return intval( $element->ID ); }, $all_users );
-            $users_to_remove = array_diff( $all_users_ids, $users_registered );
+                if( $settings['not_present_only_imported'] === 'yes' ){
+                    $args['meta_key'] = '_acui_imported';
+                    $args['meta_value'] = '1';
+                }
 
-            $delete_users_assign_posts = ( get_userdata( $delete_users_assign_posts ) === false ) ? false : $delete_users_assign_posts;
-            $results['deleted'] = count( $users_to_remove );
+                $all_users = get_users( $args );
+                $all_users_ids = array_map( function( $element ){ return intval( $element->ID ); }, $all_users );
+                $users_to_remove = array_diff( $all_users_ids, $users_registered );
 
-            foreach ( $users_to_remove as $user_id ) {
-                ( empty( $delete_users_assign_posts ) ) ? wp_delete_user( $user_id ) : wp_delete_user( $user_id, $delete_users_assign_posts );
-                array_push( $users_deleted, $user_id );
-            }
-        endif;
+                $delete_users_assign_posts = ( get_userdata( $delete_users_assign_posts ) === false ) ? false : $delete_users_assign_posts;
+                $results['deleted'] = count( $users_to_remove );
 
-        if( $change_role_not_present_flag && !$delete_users_flag ):
-            require_once( ABSPATH . 'wp-admin/includes/user.php');	
+                foreach ( $users_to_remove as $user_id ) {
+                    ( empty( $delete_users_assign_posts ) ) ? wp_delete_user( $user_id ) : wp_delete_user( $user_id, $delete_users_assign_posts );
+                    array_push( $users_deleted, $user_id );
+                }
+            endif;
 
-            $all_users = get_users( array( 
-                'fields' => array( 'ID' ),
-                'role__not_in' => array( 'administrator' )
-            ) );
-            
-            foreach ( $all_users as $user ) {
-                if( !in_array( $user->ID, $users_registered ) ){
-                    $user_object = new WP_User( $user->ID );
+            if( $change_role_not_present_flag && !$delete_users_flag ):
+                $args = array( 
+                    'fields' => array( 'ID' ),
+                    'role__not_in' => $exclude_roles,
+                    'exclude' => apply_filters( 'acui_exclude_users_to_change_role', array( get_current_user_id() ) ),
+                );
+
+                if( $settings['not_present_same_role'] == 'yes' ){
+                    $args[ 'role__in' ] = $roles_appeared;
+                }
+
+                if( $settings['not_present_only_imported'] === 'yes' ){
+                    $args['meta_key'] = '_acui_imported';
+                    $args['meta_value'] = '1';
+                }
+
+                $all_users = get_users( $args );
+                $all_users_ids = array_map( function( $element ){ return intval( $element->ID ); }, $all_users );
+                $users_to_change_role = array_diff( $all_users_ids, $users_registered );
+                
+                foreach ( $users_to_change_role as $user_to_change_role ) {
+                    $user_object = new WP_User( $user_to_change_role );
                     $user_object->set_role( $change_role_not_present_role );
                 }
+            endif;
+            
+            if( !$is_batch ){
+                ACUIHelper()->print_results( $results, $errors );
+
+                if( !$is_frontend )
+                    ACUIHelper()->print_end_of_process();
+
+                if( !$is_frontend && !$is_cron )
+                    ACUIHelper()->execute_datatable();
             }
-        endif;
-        
-        ACUIHelper()->print_results( $results, $errors );
-        
-        if( !$is_frontend )
-            ACUIHelper()->print_end_of_process();
+            else{
+                $this->save_transients( $columns, $headers, $headers_filtered, $positions, $errors, $errors_totals, $results, $users_created, $users_updated, $users_ignored, $roles_appeared, $users_deleted );
+            }
 
-        if( !$is_frontend && !$is_cron )
-            ACUIHelper()->execute_datatable();
+            @ini_set( 'auto_detect_line_endings', FALSE );
 
-        @ini_set( 'auto_detect_line_endings', FALSE );
+            set_transient( 'acui_last_import_results', array( 'created' => $users_created, 'updated' => $users_updated, 'deleted' => $users_deleted, 'ignored' => $users_ignored ) );
 
-        set_transient( 'acui_last_import_results', array( 'created' => $users_created, 'updated' => $users_updated, 'deleted' => $users_deleted, 'ignored' => $users_ignored ) );
-        do_action( 'acui_after_import_users', $users_created, $users_updated, $users_deleted, $users_ignored );
+            if( $time_per_step == -1 ) // Only call if not batch, batch calls it in ajax_import_users_batch
+                do_action( 'acui_after_import_users', $users_created, $users_updated, $users_deleted, $users_ignored );
+
+        }
+
         echo '</div>';
+
+        return array(
+            'row' => $row,
+            'done' => true,
+            'results' => isset( $results ) ? $results : array( 'created' => 0, 'updated' => 0, 'deleted' => 0 ),
+            'errors_count' => isset( $errors ) ? count( $errors ) : 0,
+        );
     }
 }
+
+global $acui_import;
+$acui_import = new ACUI_Import();
+$acui_import->hooks();

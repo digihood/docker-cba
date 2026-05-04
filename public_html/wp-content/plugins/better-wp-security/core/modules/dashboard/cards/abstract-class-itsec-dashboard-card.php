@@ -44,6 +44,13 @@ abstract class ITSEC_Dashboard_Card {
 	abstract public function query_for_data( array $query_args, array $settings );
 
 	/**
+	 * Get the module ID this card belongs to.
+	 *
+	 * @return string|null The module ID, or null if the card doesn't belong to a module.
+	 */
+	abstract public function get_module_id(): ?string;
+
+	/**
 	 * Get the card type.
 	 *
 	 * @return string

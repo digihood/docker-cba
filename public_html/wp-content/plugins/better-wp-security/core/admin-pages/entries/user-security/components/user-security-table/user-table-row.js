@@ -103,7 +103,7 @@ export function UserTableRow( { user, isMedium, isLarge } ) {
 					<StyledUser>
 						<StyledCheckboxControl
 							checked={ isChecked }
-							onChange={ ( ) => {
+							onChange={ () => {
 								toggleSelectedUser( user );
 							} }
 							label={

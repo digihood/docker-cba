@@ -2,6 +2,24 @@
 
 ## Changelog
 
+### Version: 4.1 (2025.09.28)
+
+* **new** tested with WordPress 6.8
+* **new** tested and compatible with `PHP` 8.4
+* **new** additional functions for logging
+* **edit** improvements to plugin initialization
+* **edit** various small improvements and tweaks
+* **edit** expanded support for Dev4Press Library
+* **edit** Kint Pretty Print Library 6.0.1
+* **fix** minor issue with PHP 8.4 and error reporting
+
+### Version: 4.0 (2024.11.02)
+
+* **new** tested with WordPress 6.7
+* **new** tested and compatible with `PHP` 8.4 RC 3
+* **new** using composer to load `Kint` library
+* **new** various constants for KINT library control
+
 ### Version: 3.9.2 (2024.08.23)
 
 * **fix** one more issue with the access to OPCache status information
@@ -24,16 +42,3 @@
 * **edit** updates to the plugin readme file
 * **edit** small changes related to the PHP 8.3 compatibility
 * **fix** various PHP notices related to PHP 8.1 and newer
-
-### Version: 3.7 (2024.01.23)
-
-* **edit** changes related to WordPress and PHP code standards
-* **edit** updated Query object for page query conditionals
-* **edit** updated Dev4Press Library Query detection versions
-* **fix** few compare statements written as assignment
-
-### Version: 3.6 (2023.12.15)
-
-* **edit** Increase Kint Library depth levels to 12
-* **edit** Kint Pretty Print Library 5.1.0
-* **fix** Small issue with getting the OPCache version when not allowed by the server

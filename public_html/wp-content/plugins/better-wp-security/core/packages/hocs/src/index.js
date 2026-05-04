@@ -1,6 +1,5 @@
 export { default as withProps } from './with-props';
 export { default as withDebounceHandler } from './with-debounce-handler';
-export { default as withPropChangeCallback } from './with-prop-change-callback';
 export { default as withInterval } from './with-interval';
 export { default as withWidth } from './with-width';
 export { default as withPressedModifierKeys } from './with-pressed-modifier-keys';
@@ -13,3 +12,4 @@ export { default as useLocalStorage } from './use-local-storage';
 export { default as useMergeRefs } from './use-merge-refs';
 export { default as useSet } from './use-set';
 export { default as useFeatureFlag } from './use-feature-flag';
+export { default as useDetectedIp } from './use-detected-ip';

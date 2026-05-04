@@ -95,6 +95,13 @@ if ( ! class_exists( 'ITSEC_Lib_Utility' ) ) {
 		}
 
 		/**
+		 * Returns true if the web server is nginx.
+		 */
+		public static function is_nginx(): bool {
+			return self::get_web_server() === 'nginx';
+		}
+
+		/**
 		 * Updates the supplied content to use the same line endings.
 		 *
 		 * @since 1.15.0

@@ -1,20 +1,63 @@
 <?php
 
-use Kint\Renderer\AbstractRenderer;
+use Kint\Kint;
+use Kint\Renderer\RichRenderer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once DEBUGPRESS_PLUGIN_PATH . 'vendor/kint/autoload.php';
+if ( ! defined( 'DEBUGPRESS_KINT_DISABLED_CLASS_METHOD' ) ) {
+	define( 'DEBUGPRESS_KINT_DISABLED_CLASS_METHOD', false );
+}
 
-Kint::$depth_limit = 12;
+if ( ! defined( 'DEBUGPRESS_KINT_DISABLED_CLASS_STATICS' ) ) {
+	define( 'DEBUGPRESS_KINT_DISABLED_CLASS_STATICS', false );
+}
 
-Kint\Renderer\RichRenderer::$folder = false;
-Kint\Renderer\RichRenderer::$theme  = 'aante-light.css';
-Kint\Renderer\RichRenderer::$sort   = AbstractRenderer::SORT_FULL;
+if ( ! defined( 'DEBUGPRESS_KINT_DISABLED_COLOR' ) ) {
+	define( 'DEBUGPRESS_KINT_DISABLED_COLOR', false );
+}
+
+if ( ! defined( 'DEBUGPRESS_KINT_DEPTH_LIMIT' ) ) {
+	define( 'DEBUGPRESS_KINT_DEPTH_LIMIT', 12 );
+}
+
+if ( ! defined( 'DEBUGPRESS_KINT_THEME' ) ) {
+	define( 'DEBUGPRESS_KINT_THEME', 'aante-light.css' );
+}
+
+Kint::$depth_limit = DEBUGPRESS_KINT_DEPTH_LIMIT;
+
+if ( DEBUGPRESS_KINT_DISABLED_CLASS_METHOD ) {
+	Kint::$plugins[6] = null;
+}
+
+if ( DEBUGPRESS_KINT_DISABLED_CLASS_STATICS ) {
+	Kint::$plugins[7] = null;
+}
+
+if ( DEBUGPRESS_KINT_DISABLED_COLOR ) {
+	Kint::$plugins[10] = null;
+}
+
+RichRenderer::$folder = false;
+RichRenderer::$theme  = DEBUGPRESS_KINT_THEME;
 
 do_action( 'debugpress-printer-loaded-kint' );
+
+/**
+ * Pretty print replacement that outputs the provided variables for debugging purposes.
+ *
+ * @param mixed ...$value One or more variables to be dumped for debugging.
+ *
+ * @return void
+ */
+function debugpress_p( ...$value ) {
+	foreach ( $value as $v ) {
+		Kint::dump( $v );
+	}
+}
 
 /**
  * Main `print_r` pretty print replacement that can pretty print and format (almost) anything you want including

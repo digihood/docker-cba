@@ -13,11 +13,10 @@ function flying_pages_settings() {
         $keywords = trim($_POST['ignore_keywords']) ? array_map('trim', explode("\n", str_replace("\r", "", sanitize_textarea_field($_POST['ignore_keywords'])))) : [];
 
         update_option('flying_pages_config_ignore_keywords', $keywords);
-        update_option('flying_pages_config_delay', $_POST['mouse_hover_only'] ? sanitize_text_field($_POST['mouse_hover_only']) 
-                                                                              : sanitize_text_field($_POST['delay']));
+        update_option('flying_pages_config_delay', sanitize_text_field($_POST['mouse_hover_only'] ?? $_POST['delay'] ?? false));
         update_option('flying_pages_config_max_rps', sanitize_text_field($_POST['max_rps']));
         update_option('flying_pages_config_hover_delay', sanitize_text_field($_POST['hover_delay']));
-        update_option('flying_pages_config_disable_on_login', sanitize_text_field($_POST['disable_on_login']));
+        update_option('flying_pages_config_disable_on_login', sanitize_text_field($_POST['disable_on_login'] ?? false));
 
         echo '<div class="notice notice-success is-dismissible"><p>Settings have been saved! Please clear cache if you\'re using a cache plugin</p></div>';
     }

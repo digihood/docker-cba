@@ -68,7 +68,7 @@ export default function Active() {
 		query( 'main', { ...nextFilters, ...QUERY_ARGS } );
 	};
 
-	const onReset = ( ) => {
+	const onReset = () => {
 		setFilters( initialFilter );
 		query( 'main', { ...initialFilter, ...QUERY_ARGS } );
 		onApply( initialFilter );

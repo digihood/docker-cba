@@ -416,10 +416,10 @@ const FIELDS = [
 		allowSubFields: {
 			example: 'user-agent',
 			sanitize( value ) {
-				return value.toUpperCase().replace( '-', '_' );
+				return value.toUpperCase().replaceAll( '-', '_' );
 			},
 			display( value ) {
-				return value.toLowerCase().replace( '_', '-' );
+				return value.toLowerCase().replaceAll( '_', '-' );
 			},
 		},
 	},

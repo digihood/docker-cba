@@ -51,7 +51,8 @@ class ITSEC_Scheduler_Cron extends ITSEC_Scheduler {
 	public function run_recurring_event( $id ) {
 
 		$storage = $this->get_options();
-		$data    = $storage['recurring'][ $id ]['data'];
+
+		$data = $storage['recurring'][ $id ]['data'] ?? [];
 
 		$job = $this->make_job( $id, $data );
 

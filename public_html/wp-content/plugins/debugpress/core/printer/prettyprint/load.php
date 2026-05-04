@@ -6,7 +6,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Dev4Press\Plugin\DebugPress\Printer\PrettyPrint\PrettyPrint;
 
-require_once DEBUGPRESS_PLUGIN_PATH . 'vendor/prettyprint/PrettyPrint.php';
+/**
+ * Pretty print replacement that outputs the provided variables for debugging purposes.
+ *
+ * @param mixed ...$value One or more variables to be dumped for debugging.
+ *
+ * @return void
+ */
+function debugpress_p( ...$value ) {
+	foreach ( $value as $v ) {
+		$n = PrettyPrint::instance( $v );
+
+		$n->render();
+	}
+}
 
 /**
  * Main `print_r` pretty print replacement that can pretty print and format (almost) anything you want including

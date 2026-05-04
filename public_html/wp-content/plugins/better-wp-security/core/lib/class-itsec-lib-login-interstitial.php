@@ -540,7 +540,7 @@ class ITSEC_Lib_Login_Interstitial {
 			$result = array();
 		}
 
-		if ( $args['same_browser'] ) {
+		if ( $args['same_browser'] && $interstitial->allows_continuing_async_action( $action ) ) {
 			$this->render_current_interstitial_or_login( $session, array(
 				'delete'        => false,
 				'allow_interim' => false,

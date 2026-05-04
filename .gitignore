@@ -2,3 +2,4 @@ node_modules/
 data/ibtmp1
 data/mysql.sock
 data/*.sock
+data/ib_buffer_pool

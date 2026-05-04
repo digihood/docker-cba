@@ -6,10 +6,9 @@ import styled from '@emotion/styled';
 /**
  * Internal dependencies
  */
-import { ErrorList } from '@ithemes/security-ui';
 import { PrimarySchemaFormInputs } from '@ithemes/security-schema-form';
 
-export const StyledErrorList = styled( ErrorList )`
+export const StyledMessageBar = styled.div`
 	margin: 0 1.5rem 1rem;
 `;
 

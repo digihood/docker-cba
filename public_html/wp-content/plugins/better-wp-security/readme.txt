@@ -1,12 +1,14 @@
 === Solid Security – Password, Two Factor Authentication, and Brute Force Protection ===
-Contributors: ithemes, timothyblynjacobs, jthillithemes, lisacee, solidwp
+Contributors: ithemes, timothyblynjacobs, lisacee, solidwp
 Tags: security, malware, two factor authentication, brute force protection, password protection
-Requires at least: 6.3
-Tested up to: 6.6
-Stable tag: 9.3.3
-Requires PHP: 7.3
+Requires at least: 6.5
+Tested up to: 6.9
+Stable tag: 9.4.7
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+Harden your site security with Login Security, Two-Factor Authentication (2FA), Vulnerability Scanner, Firewall, and more. Formerly iThemes Security.
 
 == License ==
 Released under the terms of the GNU General Public License.
@@ -97,13 +99,23 @@ Local Brute Force Protection - Automatically identify and stop the most common m
 
 - **File Change Detection** (Basic and Pro) - Solid Security logs changes made to your website that can help detect malicious activity on your website.
 
-- **Site Scanner** (Basic and Pro) - Enable twice-daily checks for known vulnerabilities of WordPress core file, plugins and themes. Using the Google Safe Browsing API, the Site Scan also checks your Google’s blocklist status and will alert you if Google has found any malware on your website.
+- **Site Scanner (Basic and Pro)** – Schedule checks to run four times per day (Basic) or hourly (Pro) for known vulnerabilities of WordPress core file, plugins and themes. Using the Google Safe Browsing API, the Site Scan also checks your Google’s blocklist status and will alert you if Google has found any malware on your website.
+
+- **Patchstack integration (Pro)** - Automated virtual patching of some vulnerabilities before you even have a chance to address them yourself, and before a plugin or theme vendor or developer can even issue a patch.
 
 - **Site Scanner** (Pro) - Unlock Version Management to automatically apply a patch to vulnerable software detected by the Site Scan when one is available.
 
 - **User Logging** (Pro) - Keep a record of user activity in your WordPress security logs, including login/logout, user registration, adding/removing plugins, switching themes, changes to posts and pages, and more.
 
 - **Version Management** (Pro) - The Version Management feature in Solid Security Pro allows you to auto-update WordPress, plugins, and themes. Beyond that, Version Management also has options to harden your website when you are running outdated software and scan for old websites.
+
+= 🧠 Smarter, More Actionable Vulnerability Prioritization =
+
+Not all vulnerabilities pose the same level of risk, and the traditional Common Vulnerability Scoring System (CVSS) score doesn’t always reflect the realities of running a WordPress site.
+
+Solid Security now uses the Patchstack Priority score, which goes beyond CVSS to provide a real-world risk assessment tailored to WordPress. It factors in how likely a vulnerability is to be exploited and its actual impact on your site.
+
+With Patchstack Priority, you get a clearer picture of what really matters, helping you focus on the vulnerabilities that pose the greatest risk, and worry less about noise from low-impact issues.
 
 = 🛠️ Website Security Utilities =
 
@@ -174,6 +186,74 @@ Manage more than one WordPress site? Release lockouts and keep your themes, plug
 8. Automated vulnerability patching with Patchstack (Pro)
 
 == Changelog ==
+
+= 9.4.7 =
+* Bug Fix: Prevent email retry loops by ensuring the scheduled notification properties are saved.
+
+= 9.4.6 =
+* Enhancement: Update Patchstack details for existing vulnerabilities.
+
+= 9.4.5 =
+* Tweak: Ensure generated Nginx config rules are valid for customized directory structures.
+
+= 9.4.4 =
+* Tweak: The Solid Security Basic and Solid Security Pro plugins can no longer be active at the same time.
+* Tweak: Config files now show "Solid Security" instead of "iThemes Security".
+* Tweak: Improved Database Backups dashboard widget when the feature is disabled.
+* Tweak: Clarify the 2FA onboarding email confirmation message.
+* Tweak: All Gutenberg blocks use API version 3.
+* Security: Update the "tmp" npm package.
+* Bug Fix: Vulnerable Software dashboard card didn't render properly.
+* Bug Fix: Firewall rules that depend on HTTP headers didn't work correctly in all cases.
+* Bug Fix: PHP Warning: Undefined array key 1 core/admin-pages/logs-list-table.php.
+* Bug Fix: Logs will appear in the correct order regardless of database version.
+* Bug Fix: PHP Warning: Array offset on value of type null core/modules/security-check-pro/class-itsec-security-check-pro.php.
+
+= 9.4.3 =
+* Enhancement: Send notification about new vulnerabilities found during manual scan.
+* Tweak: Show mitigated vulnerabilities and ensure all unresolved vulnerabilities are visible on the Site Scan page.
+
+= 9.4.2 =
+* Bug Fix: PHP notice about early translations loading on the settings screen.
+
+= 9.4.1 =
+* Bug Fix: Missing assets in release 9.4.0.
+
+= 9.4.0 =
+* Important: Solid Security now requires PHP 7.4 or later.
+* New: Patchstack Priority tells you how quickly you should address a vulnerability so you can focus on the most critical issues.
+* New: The Security Digest email includes a complete list of vulnerabilities affecting your site.
+* Enhancement: The Site Scan email now only includes newly found vulnerabilities to prevent notification fatigue.
+* Enhancement: Site Scans now run four times daily to detect new vulnerabilities.
+* Tweak: Make frontend JS code compatible with React 18.
+
+= 9.3.10 =
+* Tweak: Update SolidWP Logo
+
+= 9.3.9 =
+* Tweak: Reduce number of steps in the onboarding sequence.
+* Bug Fix: Notification Center settings could not be properly saved.
+
+= 9.3.8 =
+* Tweak: Delete older JS files that were causing false-positives on scans. They have not been used since the UI was rewritten in React.
+* Security: Update StellarWP Telemetry library to improve authorization checks.
+
+= 9.3.7 =
+* Enhancement: Use block API Version 3 for the Security Profile block.
+* Bug Fix: PHP warning when HTTP_HOST not set.
+
+= 9.3.6 =
+* Enhancement: Better surface Login Security features during onboarding.
+
+= 9.3.5 =
+* Bug Fix: PHP warning about translations being loaded too early.
+
+= 9.3.4 =
+* Important: Solid Security now requires WordPress 6.5 or later.
+* Tweak: Add a new `solid_security_mail_site_logo` filter to modify the Site Logo used in email notifications.
+* Bug Fix: PHP fatal error on shutdown due to missing Event class on some sites.
+* Bug Fix: PHP warning on Site Health page.
+* Bug Fix: PHP warning in the SSL module on some server setups.
 
 = 9.3.3 =
 * Enhancement: Improve highlighting settings search results.

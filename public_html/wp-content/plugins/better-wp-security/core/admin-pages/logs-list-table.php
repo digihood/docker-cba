@@ -101,20 +101,32 @@ final class ITSEC_Logs_List_Table extends ITSEC_WP_List_Table {
 		}
 
 		if ( 'details' === $column_name || 'id' === $column_name ) {
-			return;
+			return '';
 		} else if ( 'timestamp' === $column_name ) {
-			list( $date, $time ) = explode( ' ', $item[$column_name] );
-			$url = self::get_self_link( array( 'filters' => "$column_name|$date%" ) );
-			return '&nbsp;<a class="dashicons dashicons-filter" href="' . esc_url( $url ) . '" title="' . esc_attr__( 'Show only entries for this day', 'better-wp-security' ) . '">&nbsp;</a>';
+			// Validate timestamp format before attempting to parse.
+			if ( false === strpos( $item[ $column_name ], ' ' ) ) {
+				return '';
+			}
+
+			[ $date ] = explode( ' ', $item[ $column_name ], 2 );
+
+			$url = self::get_self_link( [ 'filters' => "$column_name|$date%" ] );
+
+			return sprintf(
+				'&nbsp;<a class="dashicons dashicons-filter" href="%s" title="%s">&nbsp;</a>',
+				esc_url( $url ),
+				esc_attr__( 'Show only entries for this day', 'better-wp-security' )
+			);
 		} else if ( empty( $item[$column_name] ) ) {
-			return;
+			return '';
 		}
 
 		if ( false === strpos( $item['code'], '::' ) ) {
 			$code = $item['code'];
 			$data = array();
 		} else {
-			list( $code, $data ) = explode( '::', $item['code'], 2 );
+			[ $code, $data ] = explode( '::', $item['code'], 2 );
+
 			$data = explode( ',', $data );
 		}
 
@@ -137,10 +149,28 @@ final class ITSEC_Logs_List_Table extends ITSEC_WP_List_Table {
 			unset( $current_vars['paged'] );
 		}
 
-		$vars = array_merge_recursive( $current_vars, $vars );
+		// Clean up empty filter values from current vars before merging.
+		if ( isset( $current_vars['filters'] ) && is_array( $current_vars['filters'] ) ) {
+			$current_vars['filters'] = array_values( array_filter( $current_vars['filters'], function( $value ) {
+				return ! empty( $value );
+			} ) );
+
+			// If no filters remain, remove the filters key entirely.
+			if ( empty( $current_vars['filters'] ) ) {
+				unset( $current_vars['filters'] );
+			}
+		}
+
+		// Normalize filters to always be an array to prevent malformed URLs.
+		if ( isset( $vars['filters'] ) && is_string( $vars['filters'] ) ) {
+			$vars['filters'] = [ $vars['filters'] ];
+		}
+
+		// Merge and replace filters.
+		$vars = array_merge( $current_vars, $vars );
 
 		if ( ! isset( $vars['page'] ) ) {
-			$vars = array_merge( array( 'page' => $_GET['page'] ), $vars );
+			$vars = array_merge( [ 'page' => $_GET['page'] ], $vars );
 		}
 
 		return network_admin_url( 'admin.php?' . http_build_query( $vars, '', '&' ) );
@@ -189,9 +219,26 @@ final class ITSEC_Logs_List_Table extends ITSEC_WP_List_Table {
 		$filters = array();
 
 		foreach ( (array) $raw_filters as $var ) {
-			list( $field, $value ) = explode( '|', $var, 2 );
+			// Skip empty or invalid filter strings.
+			if ( empty( $var ) || ! is_string( $var ) ) {
+				continue;
+			}
 
-			$filters[$field] = $value;
+			// Ensure filter contains the pipe "|".
+			if ( false === strpos( $var, '|' ) ) {
+				continue;
+			}
+
+			$parts = explode( '|', $var, 2 );
+
+			// Ensure we have both field and value.
+			if ( count( $parts ) !== 2 || empty( $parts[0] ) ) {
+				continue;
+			}
+
+			[ $field, $value ] = $parts;
+
+			$filters[ $field ] = $value;
 		}
 
 		if ( ! isset( $filters['type'] ) ) {
@@ -306,7 +353,8 @@ final class ITSEC_Logs_List_Table extends ITSEC_WP_List_Table {
 				$code = $item['code'];
 				$data = array();
 			} else {
-				list( $code, $data ) = explode( '::', $item['code'], 2 );
+				[ $code, $data ] = explode( '::', $item['code'], 2 );
+
 				$data = explode( ',', $data );
 			}
 

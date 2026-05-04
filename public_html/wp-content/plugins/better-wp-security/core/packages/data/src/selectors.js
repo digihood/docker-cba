@@ -140,3 +140,7 @@ export function hasPatchstack( state ) {
 export function isLiquidWebCustomer( state ) {
 	return state.index?.is_lw_customer || null;
 }
+
+export function getAdminUrl( state ) {
+	return state.adminUrl;
+}

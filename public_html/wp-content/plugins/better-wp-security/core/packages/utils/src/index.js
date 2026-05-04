@@ -3,6 +3,7 @@
  */
 import { cloneDeep, get, isPlainObject, pick } from 'lodash';
 import Ajv from 'ajv';
+import { customizeValidator } from '@rjsf/validator-ajv8';
 
 /**
  * WordPress dependencies
@@ -417,65 +418,154 @@ export function timeSince( date ) {
 }
 
 /**
- * Grabs a global instance of Ajv.
+ * Validates whether a string is a valid email address.
+ *
+ * THis matches the logic from WordPress's is_email() function.
+ *
+ * @param {string} email The email address to validate.
+ * @return {string|false} Returns the email address if valid, false otherwise.
+ */
+export function isEmail( email ) {
+	if ( ! email || typeof email !== 'string' ) {
+		return false;
+	}
+
+	// Test for the minimum length the email can be.
+	if ( email.length < 6 ) {
+		return false;
+	}
+
+	// Test for an @ character after the first position.
+	const atIndex = email.indexOf( '@', 1 );
+	if ( atIndex === -1 ) {
+		return false;
+	}
+
+	// Split out the local and domain parts.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const [ local, domain ] = email.split( '@' );
+
+	// LOCAL PART
+	// Test for invalid characters.
+	if ( ! /^[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~\.-]+$/.test( local ) ) {
+		return false;
+	}
+
+	// DOMAIN PART
+	// Test for sequences of periods.
+	if ( /\.{2,}/.test( domain ) ) {
+		return false;
+	}
+
+	// Test for leading and trailing periods and whitespace.
+	if ( domain.trim().replace( /^\.|\.$/g, '' ) !== domain ) {
+		return false;
+	}
+
+	// Split the domain into subs.
+	const subs = domain.split( '.' );
+
+	// Assume the domain will have at least two subs.
+	if ( subs.length < 2 ) {
+		return false;
+	}
+
+	// Loop through each sub.
+	for ( const sub of subs ) {
+		// Test for leading and trailing hyphens and whitespace.
+		if ( sub.trim().replace( /^-|-$/g, '' ) !== sub ) {
+			return false;
+		}
+
+		// Test for invalid characters.
+		if ( ! /^[a-z0-9-]+$/i.test( sub ) ) {
+			return false;
+		}
+	}
+
+	// Congratulations, your email made it!
+	return email;
+}
+
+const customFormats = {
+	html: {
+		type: 'string',
+		validate() {
+			// Validating HTML isn't something we can realistically do.
+			// We accept everything and can then kses it on the server.
+			return true;
+		},
+	},
+	'relative-file-path': {
+		type: 'string',
+		validate( value ) {
+			if ( value.includes( '../' ) ) {
+				return false;
+			}
+
+			return true;
+		},
+	},
+	'file-path': {
+		type: 'string',
+		validate( value ) {
+			if ( ! value.startsWith( '/' ) ) {
+				return false;
+			}
+
+			if ( value.includes( '../' ) ) {
+				return false;
+			}
+
+			return true;
+		},
+	},
+	directory: {
+		type: 'string',
+		validate( value ) {
+			if ( ! value.startsWith( '/' ) ) {
+				return false;
+			}
+
+			if ( value.includes( '../' ) ) {
+				return false;
+			}
+
+			return true;
+		},
+	},
+	email: {
+		type: 'string',
+		validate( value ) {
+			return isEmail( value );
+		},
+	},
+};
+
+/**
+ * Grabs a global instance of Ajv. It's used for validation settings on saving
+ * with data store.
  *
  * @return {Ajv.Ajv} The ajv instance.
  */
 export function getAjv() {
 	if ( ! getAjv.instance ) {
-		getAjv.instance = new Ajv( { schemaId: 'id' } );
-		getAjv.instance.addMetaSchema(
-			require( 'ajv/lib/refs/json-schema-draft-04.json' )
-		);
-		getAjv.instance.addFormat( 'html', {
-			type: 'string',
-			validate() {
-				// Validating HTML isn't something we can realistically do.
-				// We accept everything and can then kses it on the server.
-				return true;
-			},
-		} );
-		getAjv.instance.addFormat( 'relative-file-path', {
-			type: 'string',
-			validate( value ) {
-				if ( value.includes( '../' ) ) {
-					return false;
-				}
-
-				return true;
-			},
-		} );
-		getAjv.instance.addFormat( 'file-path', {
-			type: 'string',
-			validate( value ) {
-				if ( ! value.startsWith( '/' ) ) {
-					return false;
-				}
-
-				if ( value.includes( '../' ) ) {
-					return false;
-				}
-
-				return true;
-			},
-		} );
-		getAjv.instance.addFormat( 'directory', {
-			type: 'string',
-			validate( value ) {
-				if ( ! value.startsWith( '/' ) ) {
-					return false;
-				}
-
-				if ( value.includes( '../' ) ) {
-					return false;
-				}
-
-				return true;
-			},
-		} );
+		getAjv.instance = new Ajv( { strict: false, formats: customFormats } );
 	}
 
 	return getAjv.instance;
+}
+
+/**
+ * Grabs a global instance of RJSF validator. It's required for creating RJSF forms
+ * and used by RJSF internally.
+ */
+export function getRjsfValidator() {
+	if ( ! getRjsfValidator.instance ) {
+		getRjsfValidator.instance = customizeValidator( { customFormats, ajvOptionsOverrides: { strict: false } } );
+	}
+
+	return getRjsfValidator.instance;
 }
 
 /**

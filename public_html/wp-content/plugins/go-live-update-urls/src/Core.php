@@ -22,6 +22,7 @@ class Core {
 	 */
 	protected function hook(): void {
 		add_action( 'go-live-update-urls/database/before-update', [ $this, 'raise_resource_limits' ], 0, 0 );
+		add_action( 'go-live-update-urls/database/before-counting', [ $this, 'raise_resource_limits' ], 0, 0 );
 		add_action( 'go-live-update-urls/database/after-update', [ $this, 'flush_caches' ] );
 		add_filter( 'go-live-update-urls/database/memory-limit_memory_limit', [ $this, 'raise_memory_limit' ], 0, 0 );
 		add_filter( 'plugin_action_links_' . static::PLUGIN_FILE, [ $this, 'plugin_action_link' ] );
@@ -78,30 +79,12 @@ class Core {
 	 * @return string
 	 */
 	public function raise_memory_limit() {
-		return static::MEMORY_LIMIT;
+		return self::MEMORY_LIMIT;
 	}
 
 
 	/**
-	 * Like `sanitize_text_field` except we don't remove
-	 * URL encoded characters and HTML tags.
-	 *
-	 * @see        go_live_update_urls_sanitize_field()
-	 *
-	 * @deprecated in favor of go_live_update_urls_sanitize_field
-	 *
-	 * @param int|float|string $value - User provided value to sanitize.
-	 *
-	 * @return string
-	 */
-	public function sanitize_field( $value ): string {
-		_deprecated_function( __METHOD__, '6.7.2', 'go_live_update_urls_sanitize_field' );
-		return go_live_update_urls_sanitize_field( $value );
-	}
-
-
-	/**
-	 * Quick and dirty update of entire blog
+	 * Quick and dirty update of the entire blog
 	 *
 	 * Mostly used for unit testing and future WP-CLI command
 	 *
@@ -123,19 +106,22 @@ class Core {
 
 
 	/**
-	 * Display custom action links in plugins list.
+	 * Display custom action links in the plugin list.
 	 *
 	 * 1. Settings.
-	 * 2. Go PRO.
+	 * 2. Documentation.
+	 * 3. Go PRO.
 	 *
-	 * @param array $actions - Array of actions and their link.
+	 * @param array<string, string> $actions - Array of actions and their link.
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function plugin_action_link( array $actions ) {
-		$actions['settings'] = sprintf( '<a href="%1$s">%2$s</a>', Admin::instance()->get_url(), __( 'Settings', 'go-live-update-urls' ) );
+		$actions['documentation'] = \sprintf( '<a href="%s" target="_blank">%s</a>',
+			'https://onpointplugins.com/go-live-update-urls/go-live-update-urls-usage/?utm_source=wp-plugins&utm_campaign=documentation&utm_medium=wp-dash', __( 'Documentation', 'go-live-update-urls' ) );
+		$actions['settings'] = \sprintf( '<a href="%1$s">%2$s</a>', Admin::instance()->get_url(), __( 'Settings', 'go-live-update-urls' ) );
 		if ( ! \defined( 'GO_LIVE_UPDATE_URLS_PRO_VERSION' ) ) {
-			$actions['go-pro'] = sprintf( '<a href="%1$s" target="_blank" style="color:#3db634;font-weight:700;">%2$s</a>', 'https://onpointplugins.com/product/go-live-update-urls-pro/?utm_source=wp-plugins&utm_campaign=gopro&utm_medium=wp-dash', __( 'Go PRO', 'go-live-update-urls' ) );
+			$actions['go-pro'] = \sprintf( '<a href="%1$s" target="_blank" style="color:#3db634;font-weight:700;">%2$s</a>', 'https://onpointplugins.com/product/go-live-update-urls-pro/?utm_source=wp-plugins&utm_campaign=gopro&utm_medium=wp-dash', __( 'Go PRO', 'go-live-update-urls' ) );
 		}
 		return $actions;
 	}

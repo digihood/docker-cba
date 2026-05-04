@@ -14,7 +14,7 @@ import {
 	chevronLeftSmall,
 	chevronRightSmall,
 	settings as filterIcon,
-	warning,
+	caution as warning,
 } from '@wordpress/icons';
 import { Dropdown } from '@wordpress/components';
 
@@ -89,7 +89,7 @@ export default function Database() {
 		fetchQueryNextPage( 'main', 'replace' );
 	};
 
-	const onReset = ( ) => {
+	const onReset = () => {
 		setFilters( initialFilter );
 		query( 'main', initialFilter );
 		onApply( initialFilter );

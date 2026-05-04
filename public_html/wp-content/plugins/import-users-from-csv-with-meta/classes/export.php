@@ -8,7 +8,7 @@ class ACUI_Exporter{
 		$upload_dir = wp_upload_dir();
 		$this->path_csv = $upload_dir['basedir'] . "/export-users.csv";
 
-        add_action( 'init', array( $this, 'download_export_file' ) );
+        add_action( 'init', array( $this, 'download_export_file' ), 11 );
         add_action( 'admin_init', array( $this, 'download_export_file' ) );
 		add_action( 'wp_ajax_acui_export_users_csv', array( $this, 'export_users_csv' ) );
 		add_action( 'wp_ajax_acui_export_save_settings', array( $this, 'ajax_save_settings' ) );
@@ -91,27 +91,32 @@ class ACUI_Exporter{
 	?>
 	<div id="acui_export_results"></div>
 
-	<h3 id="acui_export_users_header"><?php _e( 'Export users', 'import-users-from-csv-with-meta' ); ?></h3>
 	<form class="acui_exporter">
 		<table class="form-table">
 			<tbody>
 				<tr id="acui_role_wrapper" valign="top">
 					<th scope="row"><?php _e( 'Role', 'import-users-from-csv-with-meta' ); ?></th>
 					<td>
-                        <?php ACUIHTML()->select( array(
-                            'options' => ACUI_Helper::get_editable_roles(),
-                            'name' => 'role',
+                        <?php 
+						ACUIHTML()->select( array(
+                            'options' => ACUI_Helper::get_editable_roles( false ),
+                            'name' => 'role[]',
                             'show_option_all' => false,
-                            'show_option_none' => __( 'All roles', 'import-users-from-csv-with-meta' ),
-							'selected' => $settings->get( 'role' ),
+                            'show_option_none' => false,
+							'multiple' => true,
+							'selected' => is_array( $settings->get( 'role' ) ) ? $settings->get( 'role' ) : array( $settings->get( 'role' ) ),
+							'style' => 'width:100%;'
                         )); ?>
 					</td>
 				</tr>
 				<tr id="acui_columns" valign="top">
 					<th scope="row"><?php _e( 'Columns', 'import-users-from-csv-with-meta' ); ?></th>
 					<td>
-						<?php ACUIHTML()->textarea( array( 'name' => 'columns', 'value' => $settings->get( 'columns' ) ) ); ?>
-						<span class="description"><?php _e( 'You can use this field to set which columns must be exported and in which order. If you leave it empty, all columns will be exported. Use a list of fields separated by commas, for example', 'import-users-from-csv-with-meta' ); ?>: user_email,first_name,last_name</span>
+						<?php ACUIHTML()->textarea( array( 'name' => 'columns', 'value' => $settings->get( 'columns' ), 'style' => 'width:100%;' ) ); ?>
+						<span class="description">
+							<?php _e( 'You can use this field to set which columns must be exported and in which order. If you leave it empty, all columns will be exported. Use a list of fields separated by commas, for example', 'import-users-from-csv-with-meta' ); ?>: user_email,first_name,last_name<br/>
+							<?php _e( 'You can also name each column with a different name to the data following this method', 'import-users-from-csv-with-meta' ); ?>: user_email=>Email,first_name=>First name,last_name=>Last name<br/>
+						</span>
 					</td>
 				</tr>
 				<tr id="acui_user_created_wrapper" valign="top">
@@ -145,7 +150,7 @@ class ACUI_Exporter{
 					<th scope="row"><?php _e( 'Order fields alphabetically', 'import-users-from-csv-with-meta' ); ?></th>
 					<td>
                         <?php ACUIHTML()->checkbox( array( 'name' => 'order_fields_alphabetically', 'current' => 'yes', 'compare_value' => $settings->get( 'order_fields_alphabetically' ) ) ); ?>
-						<span class="description"><?php _e( "Order all columns alphabetically to check your data more easily. The first two columns won't be affected", 'import-users-from-csv-with-meta' ); ?></span>
+						<span class="description"><?php _e( "Order all columns alphabetically to check your data more easily.", 'import-users-from-csv-with-meta' ); ?></span>
 					</td>
 				</tr>
                 <tr id="acui_order_fields_double_encapsulate_serialized_values" valign="top">
@@ -172,8 +177,6 @@ class ACUI_Exporter{
 			</tbody>
 		</table>
 
-		<input type="hidden" name="action" value="acui_export_users_csv"/>
-		
 		<?php wp_nonce_field( 'codection-security', 'security' ); ?>
 
         <div class="user-exporter-progress-wrapper">
@@ -187,6 +190,8 @@ class ACUI_Exporter{
 		$( "input[name='from']" ).change( function() {
 			$( "input[name='to']" ).attr( 'min', $( this ).val() );
 		})
+
+		$( '#role' ).select2();
 
 		$( '#convert_timestamp' ).on( 'click', function() {
 			if( $('#convert_timestamp').is(':checked') ){
@@ -203,9 +208,9 @@ class ACUI_Exporter{
 				'security': '<?php echo wp_create_nonce( "codection-security" ); ?>'
 			};
 
-			$.post(ajaxurl, data, function(response) {
+			$.post( ajaxurl, data, function( response ) {
 				alert( response.data.message );
-			});
+			} );
 		} );
 	} )
 	</script>
@@ -257,24 +262,42 @@ class ACUI_Exporter{
 			wp_die( __( 'Only users who are allowed to create users can export them.', 'import-users-from-csv-with-meta' ) );
     
         $step = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
-                
+		        
         $exporter = new ACUI_Batch_Exporter();
+
+		if( isset( $_POST['role'] ) ){
+			if( !is_array( $_POST['role'] ) )
+				$_POST['role'] = explode( ',', $_POST['role'] );
+
+			if( !array_filter( $_POST['role'] ) )
+				unset( $_POST['role'] );
+		}
+
+		$role = isset($_POST['role']) ? $_POST['role'] : array();
+		if( !is_array( $role ) ){
+			$role = array( $role );
+		}
+
+		$exporter->set_role( isset( $_POST['role'] ) ? array_map( 'sanitize_text_field', $role ) : '' );
+        $exporter->set_from( isset( $_POST['from'] ) ? sanitize_text_field( $_POST['from'] ) : '' );
+        $exporter->set_to( isset( $_POST['to'] ) ? sanitize_text_field( $_POST['to'] ) : '' );
+		$exporter->fill_total_rows( $step == 1 );	
 
 		if( $step == 1 ){
 			delete_transient( 'acui_export_bad_character_formulas_values_cleaned' );
 			$this->save_settings();
 		}
-               
-        $exporter->set_page( $step );
-        $exporter->set_delimiter( sanitize_text_field( $_POST['delimiter'] ) );
-        $exporter->set_role( sanitize_text_field( $_POST['role'] ) );
-        $exporter->set_from( sanitize_text_field( $_POST['from'] ) );
-        $exporter->set_to( sanitize_text_field( $_POST['to'] ) );
-        $exporter->set_convert_timestamp( $_POST['convert_timestamp'] );
-        $exporter->set_datetime_format( sanitize_text_field( $_POST['datetime_format'] ) );
-        $exporter->set_order_fields_alphabetically( $_POST['order_fields_alphabetically'] );
-        $exporter->set_double_encapsulate_serialized_values( $_POST['double_encapsulate_serialized_values'] );
-		$exporter->set_display_arrays_as_comma_separated_list_of_values( $_POST['display_arrays_as_comma_separated_list_of_values'] );
+
+		if( isset( $_POST['filename'] ) && !empty( $_POST['filename'] ) )
+			$exporter->set_filename( sanitize_file_name( $_POST['filename'] ) );
+
+		$exporter->set_page( $step );
+		$exporter->set_delimiter( isset( $_POST['delimiter'] ) ? sanitize_text_field( $_POST['delimiter'] ) : '' );
+        $exporter->set_convert_timestamp( isset( $_POST['convert_timestamp'] ) ? $_POST['convert_timestamp'] : '' );
+        $exporter->set_datetime_format( isset( $_POST['datetime_format'] ) ? sanitize_text_field( $_POST['datetime_format'] ) : '' );
+        $exporter->set_order_fields_alphabetically( isset( $_POST['order_fields_alphabetically'] ) ? $_POST['order_fields_alphabetically'] : '' );
+        $exporter->set_double_encapsulate_serialized_values( isset( $_POST['double_encapsulate_serialized_values'] ) ? $_POST['double_encapsulate_serialized_values'] : '' );
+		$exporter->set_display_arrays_as_comma_separated_list_of_values( isset( $_POST['display_arrays_as_comma_separated_list_of_values'] ) ? $_POST['display_arrays_as_comma_separated_list_of_values'] : '' );
         $exporter->set_filtered_columns( ( isset( $_POST['columns'] ) && !empty( $_POST['columns'] ) ) ? $_POST['columns'] : array() );
         $exporter->set_orderby( ( isset( $_POST['orderby'] ) && !empty( $_POST['orderby'] ) ) ? sanitize_text_field( $_POST['orderby'] ) : '' );
         $exporter->set_order( ( isset( $_POST['order'] ) && !empty( $_POST['order'] ) ) ? sanitize_text_field( $_POST['order'] ) : 'ASC' );
@@ -289,12 +312,15 @@ class ACUI_Exporter{
                 'filename' => $exporter->get_filename()
             );
 
+			$current_url = isset( $_POST['current_url'] ) ? sanitize_text_field( $_POST['current_url'] ) : admin_url( 'tools.php?page=acui&tab=export' );
+
             wp_send_json_success(
                 array(
                     'step' => 'done',
                     'percentage' => 100,
-                    'url' => add_query_arg( $query_args, admin_url( 'tools.php?page=acui&tab=export' ) ),
-					'results' => $this->get_results()
+                    'url' => add_query_arg( $query_args, $current_url ),
+					'results' => $this->get_results(),
+					'filename' => $exporter->get_filename()
                 )
             );
         } else {
@@ -303,6 +329,7 @@ class ACUI_Exporter{
                     'step' => ++$step,
                     'total_steps' => $exporter->get_total_steps(),
                     'percentage' => $exporter->get_percent_complete(),
+					'filename' => $exporter->get_filename()
                 )
             );
         }
@@ -322,9 +349,10 @@ class ACUI_Exporter{
 	function save_settings(){
 		$settings = array();
 
-		isset( $_POST['settings'] ) ? parse_str( $_POST['settings'], $settings) : parse_str( $_POST['form'], $settings);
-
+		isset( $_POST['settings'] ) ? parse_str( $_POST['settings'], $settings) : parse_str( $_POST['form'], $settings );
+		
 		ACUISettings()->save_multiple( 'export_backend', $settings );
 	}
 }
+global $acui_exporter;
 $acui_exporter = new ACUI_Exporter();

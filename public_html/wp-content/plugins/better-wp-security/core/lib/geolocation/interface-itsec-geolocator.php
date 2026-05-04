@@ -10,7 +10,14 @@ interface ITSEC_Geolocator {
 	 *
 	 * @param string $ip
 	 *
-	 * @return array|WP_Error With 'lat', 'long', 'label' and 'credit' fields. Label and credit ARE safe.
+	 * @return array{
+	 *     label: string,
+	 *     credit: string,
+	 *     lat?: float,
+	 *     long?: float,
+	 *     country?: string,
+	 *     country_code?: string,
+	 * }|WP_Error Label and credit are sanitized.
 	 */
 	public function geolocate( $ip );
 

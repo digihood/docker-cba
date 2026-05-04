@@ -83,27 +83,27 @@ class Admin_Dashboard_Nav {
 	}
 
 	/**
-	 * Get dashbaord navigation links
+	 * Get dashboard navigation links
 	 *
 	 * @return array
 	 */
 	private function get_nav_links() {
 		$links = [
-			'modules'       => [
+			'modules' => [
 				'id'    => 'modules',
 				'url'   => '',
 				'args'  => 'view=modules',
 				'cap'   => 'manage_options',
 				'title' => esc_html__( 'Modules', 'rank-math' ),
 			],
-			'help'          => [
+			'help'    => [
 				'id'    => 'help',
 				'url'   => '',
 				'args'  => 'view=help',
 				'cap'   => 'manage_options',
 				'title' => esc_html__( 'Help', 'rank-math' ),
 			],
-			'wizard'        => [
+			'wizard'  => [
 				'id'    => 'wizard',
 				'url'   => 'wizard',
 				'args'  => '',

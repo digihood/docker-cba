@@ -29,14 +29,10 @@ import {
  * SolidWP dependencies
  */
 import { MODULES_STORE_NAME, toolsStore } from '@ithemes/security.packages.data';
-import {
-	Button,
-	MessageList,
-	Text,
-	TextVariant,
-} from '@ithemes/ui';
-import { ErrorList } from '@ithemes/security-ui';
+import { Button, Text, TextVariant } from '@ithemes/ui';
+import { ResultSummary } from '@ithemes/security-ui';
 import { PrimarySchemaFormInputs } from '@ithemes/security-schema-form';
+import { getAjv } from '@ithemes/security-utils';
 
 /**
  * Internal dependencies
@@ -46,14 +42,12 @@ import {
 	StyledToolContainer,
 	StyledToolHeading,
 	StyledCardBody,
-	StyledResult,
 	StyledTextContainer,
 	StyledHelpText,
 	StyledInputContainer,
 	StyledToolActionContainer,
 	StyledToolActionMessage,
 } from './styles';
-import { getAjv } from '../../utils';
 
 export default function Tools() {
 	const { tools, activeModules, isLoaded } = useSelect( ( select ) => ( {
@@ -126,21 +120,6 @@ function ToolPanel( { tool, className, ...rest } ) {
 				/>
 			</StyledCardBody>
 		</StyledToolContainer>
-	);
-}
-
-function ResultSummary( { result, schemaError } ) {
-	return (
-		<StyledResult>
-			<ErrorList schemaError={ schemaError } apiError={ result?.error } />
-
-			<MessageList messages={ result?.success ?? [] } type="success" />
-
-			<MessageList messages={ result?.warning ?? [] } type="warning" />
-
-			<MessageList messages={ result?.info ?? [] } type="info" />
-
-		</StyledResult>
 	);
 }
 

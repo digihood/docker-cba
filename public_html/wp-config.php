@@ -1,9 +1,9 @@
 <?php
 
-// BEGIN iThemes Security - Do not modify or remove this line
-// iThemes Security Config Details: 2
+// BEGIN Solid Security - Do not modify or remove this line
+// Solid Security Config Details: 2
 define( 'DISALLOW_FILE_EDIT', true ); // Disable File Editor - Security > Settings > WordPress Tweaks > File Editor
-// END iThemes Security - Do not modify or remove this line
+// END Solid Security - Do not modify or remove this line
 
 define( 'ITSEC_ENCRYPTION_KEY', 'bkN3Vl5yOyl+ODB+YDk2czBNe35RW30+Jjp+LnleOXUvU3VKaGZ7RGR7UXNMfnIsbT40RzVAMUVrNWlVNHJyeg==' );
 

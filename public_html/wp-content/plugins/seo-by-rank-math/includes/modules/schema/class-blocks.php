@@ -41,10 +41,14 @@ class Blocks {
 			return;
 		}
 
+		wp_register_style( 'rank-math-common', rank_math()->plugin_url() . 'assets/admin/css/common.css', null, rank_math()->version );
 		wp_register_style(
 			'rank-math-block-admin',
 			rank_math()->plugin_url() . 'assets/admin/css/blocks.css',
-			null,
+			[
+				'rank-math-common',
+				'dashicons',
+			],
 			rank_math()->version
 		);
 
@@ -52,16 +56,18 @@ class Blocks {
 		new Block_FAQ();
 		new Block_HowTo();
 		new Block_TOC();
+		new Block_Schema();
 	}
 
 	/**
 	 * Create a new (Rank Math) block category.
 	 *
-	 * @param array $categories Array of block categories.
+	 * @param array|null $categories Array of block categories.
 	 *
 	 * @return array
 	 */
 	public function block_categories( $categories ) {
+		$categories = empty( $categories ) ? [] : $categories;
 		return array_merge(
 			$categories,
 			[
@@ -88,14 +94,6 @@ class Blocks {
 				'faq'   => $this->is_block_faq(),
 				'howTo' => $this->is_block_howto(),
 			]
-		);
-
-		wp_enqueue_script(
-			'rank-math-block-faq',
-			rank_math()->plugin_url() . 'assets/admin/js/blocks.js',
-			[],
-			rank_math()->version,
-			true
 		);
 	}
 

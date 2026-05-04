@@ -2,14 +2,7 @@
 
 namespace iThemesSecurity\Dashboard\Cards;
 
-use iThemesSecurity\Site_Scanner\Repository\Scans_Repository;
-
 class Security_Summary_Card extends \ITSEC_Dashboard_Card {
-
-	/** @var Repository */
-	private $repository;
-
-	public function __construct( Scans_Repository $repository ) { $this->repository = $repository; }
 
 	public function get_slug() {
 		return 'security-summary';
@@ -28,6 +21,10 @@ class Security_Summary_Card extends \ITSEC_Dashboard_Card {
 			'defaultW' => 2,
 			'defaultH' => 1,
 		];
+	}
+
+	public function get_module_id(): ?string {
+		return 'dashboard';
 	}
 
 	public function query_for_data( array $query_args, array $settings ) {

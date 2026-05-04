@@ -14,14 +14,14 @@ class Database {
 	use Singleton;
 
 	/**
-	 * Get list of tables we treat as serialized when updating
+	 * Get the list of tables we treat as serialized when updating
 	 *
 	 * @since   5.0.0
 	 *
-	 * @return array( %table_name% => %table_column% )
+	 * @return array<string, string> - array( %table_name% => %table_column% )
 	 */
 	public function get_serialized_tables() {
-		global $wpdb;
+		$wpdb = $this->get_wpdb();
 		// Default tables with serialized data.
 		$serialized_tables = [
 			$wpdb->options     => 'option_value',
@@ -67,7 +67,7 @@ class Database {
 	 * @return string[]
 	 */
 	public function get_core_tables() {
-		global $wpdb;
+		$wpdb = $this->get_wpdb();
 
 		$tables = [
 			$wpdb->posts,
@@ -133,10 +133,10 @@ class Database {
 	 *
 	 * @since 5.0.1
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function get_all_table_names() {
-		global $wpdb;
+		$wpdb = $this->get_wpdb();
 		$query = "SELECT TABLE_NAME as TableName FROM information_schema.TABLES WHERE TABLE_SCHEMA='" . $wpdb->dbname . "' AND TABLE_NAME LIKE '" . $wpdb->esc_like( $wpdb->prefix ) . "%'";
 
 		// Site 1's 'LIKE wp_%' will return all tables in the database,
@@ -157,9 +157,9 @@ class Database {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string $old_url - the old URL.
-	 * @param string $new_url - the new URL.
-	 * @param array  $tables  - the tables we are going to update.
+	 * @param string   $old_url - the old URL.
+	 * @param string   $new_url - the new URL.
+	 * @param string[] $tables  - the tables we are going to update.
 	 *
 	 * @return array<string, int>
 	 */
@@ -226,7 +226,7 @@ class Database {
 	 * @return int
 	 */
 	public function update_column( $table, $column, $old_url, $new_url ): int {
-		global $wpdb;
+		$wpdb = $this->get_wpdb();
 
 		$count = $this->count_column_urls( $table, $column, $old_url );
 		$update_query = 'UPDATE ' . $table . ' SET `' . $column . '` = replace(`' . $column . '`, %s, %s)';
@@ -243,7 +243,7 @@ class Database {
 
 
 	/**
-	 * Count of number of rows in a table which contain the old URL.
+	 * Count of the number of rows in a table which contain the old URL.
 	 *
 	 * When updating, the serialized data is updated first and this
 	 * counts the leftovers.
@@ -260,11 +260,21 @@ class Database {
 	 * @return int
 	 */
 	public function count_column_urls( $table, $column, $old_url ): int {
-		global $wpdb;
+		$wpdb = $this->get_wpdb();
 
 		$query = "SELECT SUM( ROUND( ( LENGTH( `{$column}` ) - LENGTH( REPLACE( `{$column}`, %s, '' ) ) ) / LENGTH( %s ) ) ) from `{$table}`";
 
 		return (int) $wpdb->get_var( $wpdb->prepare( $query, [ $old_url, $old_url ] ) );
+	}
+
+
+	/**
+	 * Access the wpdb object safely.
+	 *
+	 * @return \wpdb
+	 */
+	public function get_wpdb(): \wpdb {
+		return $GLOBALS['wpdb'];
 	}
 
 
@@ -281,7 +291,7 @@ class Database {
 	 * @return bool
 	 */
 	protected function supports_skipping( $table ) {
-		if ( empty( Skip_Rows::instance()->get_skipped( $table ) ) || null === Skip_Rows::instance()->get_primary_key( $table ) ) {
+		if ( null === Skip_Rows::instance()->get_skipped( $table ) || null === Skip_Rows::instance()->get_primary_key( $table ) ) {
 			return false;
 		}
 

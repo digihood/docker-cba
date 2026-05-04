@@ -105,7 +105,7 @@ export const getEditedSettings = createSelector(
 
 export function getEditedSetting( state, module, setting ) {
 	return (
-		state.settingEdits[ module ]?.[ setting ] ||
+		state.settingEdits[ module ]?.[ setting ] ??
 		state.settings[ module ]?.[ setting ]
 	);
 }
@@ -130,6 +130,10 @@ export function areSettingsDirty( state, module ) {
 
 export function getError( state, module ) {
 	return state.errors[ module ];
+}
+
+export function getResult( state, module ) {
+	return state.results[ module ];
 }
 
 export function __unstableGetAllSettings( state ) {

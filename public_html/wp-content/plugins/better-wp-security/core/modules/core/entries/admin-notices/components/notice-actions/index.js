@@ -9,7 +9,7 @@ import { isEmpty, map } from 'lodash';
 import { Dropdown } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { closeSmall as closeIcon, moreHorizontalMobile as moreIcon } from '@wordpress/icons';
+import { closeSmall as closeIcon, moreHorizontal as moreIcon } from '@wordpress/icons';
 
 /**
  * iThemes dependencies

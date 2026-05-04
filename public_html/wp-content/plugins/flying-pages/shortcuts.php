@@ -11,6 +11,6 @@ function flying_pages_add_action_links($links) {
         $plugin_shortcuts[] =
       '<a href="https://flyingpress.com?ref=flying-pages" target="_blank" style="color:#3db634;">Get FlyingPress</a>';
     }
-
+    
     return array_merge($links, $plugin_shortcuts);
 }

@@ -254,12 +254,26 @@ final class ITSEC_Log_Util {
 			$query .= ' WHERE ' . implode( ' AND ', $where_entries );
 		}
 
-		if ( ! $get_count ) {
-			if ( ! is_array( $sort_by_column ) ) {
-				$sort_by_column = array( "$sort_by_column $sort_direction" );
-			}
+	if ( ! $get_count ) {
+		if ( ! is_array( $sort_by_column ) ) {
+			$sort_by_column = array( "$sort_by_column $sort_direction" );
+		}
 
-			$query .= ' ORDER BY ' . implode( ', ', $sort_by_column );
+		// Add id ASC as a secondary sort as a tie-breaker to ensure deterministic ordering.
+		$needs_id_sort = true;
+
+		foreach ( $sort_by_column as $sort ) {
+			if ( preg_match( '/^id\s+/', $sort ) ) {
+				$needs_id_sort = false;
+				break;
+			}
+		}
+		
+		if ( $needs_id_sort ) {
+			$sort_by_column[] = "id ASC";
+		}
+
+		$query .= ' ORDER BY ' . implode( ', ', $sort_by_column );
 
 
 			if ( $limit > 0 ) {

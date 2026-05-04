@@ -49,7 +49,7 @@ return static function ( Container $c ) {
 			'circle_callback' => function () use ( $c ) {
 				return $c[ Database_Repository::class ]->count_bans( new Filters() );
 			},
-		] );
+		], 'ban-users' );
 
 		return $cards;
 	} );

@@ -2,7 +2,9 @@
 
 namespace iThemesSecurity\Lib\REST;
 
+use iThemesSecurity\Lib\Result;
 use iThemesSecurity\Module_Config;
+use ITSEC_Response;
 
 final class Settings_Controller extends \WP_REST_Controller {
 
@@ -227,13 +229,19 @@ final class Settings_Controller extends \WP_REST_Controller {
 			$settings[ $setting ] = new \stdClass();
 		}
 
-		return new \WP_REST_Response( $settings );
+		$response = new \WP_REST_Response( $settings );
+
+		$response_headers = Result::from_response()->as_rest_response()->get_headers();
+		$response->set_headers( $response_headers );
+		ITSEC_Response::get_instance()->reset_messages();
+
+		return $response;
 	}
 
 	public function get_item_schema() {
 		return [
 			'title'      => 'ithemes-security-settings',
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'$schema'    => 'http://json-schema.org/draft-07/schema#',
 			'type'       => 'object',
 			'properties' => [],
 		];

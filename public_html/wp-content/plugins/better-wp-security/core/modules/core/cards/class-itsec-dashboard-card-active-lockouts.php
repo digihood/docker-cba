@@ -77,6 +77,13 @@ class ITSEC_Dashboard_Card_Active_Lockouts extends ITSEC_Dashboard_Card {
 		return $args;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get_module_id(): ?string {
+		return 'core';
+	}
+
 	public function get_links() {
 
 		/** @var ITSEC_Lockout $itsec_lockout */

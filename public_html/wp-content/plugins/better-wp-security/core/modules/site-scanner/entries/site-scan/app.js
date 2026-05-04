@@ -82,7 +82,7 @@ function VulnerabilityIssue( { issue } ) {
 					<Text text={ __( 'Action Details:', 'better-wp-security' ) } weight={ TextWeight.HEAVY } />
 					{ issue.meta.details.fixed_in ? (
 						<ScanIssueText>
-							{ __( 'The software needs to be updated to have the latest improvements released by the developer. ', 'better-wp-security' ) }
+							{ __( 'The software needs to be updated to have the latest improvements released by the developer.', 'better-wp-security' ) }
 							{ createInterpolateElement(
 								__( 'View the <a>Vulnerability Details <icon/></a> for more info.', 'better-wp-security' ),
 								{

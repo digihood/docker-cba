@@ -12,12 +12,18 @@ class ACUI_Multisite{
 
 		add_filter( 'acui_restricted_fields', array( $this, 'restricted_fields' ), 10, 1 );
 		add_action( 'acui_documentation_after_plugins_activated', array( $this, 'documentation' ) );
-		add_action( 'post_acui_import_single_user', array( $this, 'assign' ), 10, 4 );
+		add_action( 'acui_post_import_single_user', array( $this, 'assign' ), 10, 4 );
 		add_filter( 'acui_email_apply_wildcards', array( $this, 'email_apply_wildcards' ), 10, 2 );
 		add_action( 'acui_email_wildcards_list_elements', array( $this, 'email_wildcards_list_elements' ) );
 	}
 
 	function restricted_fields( $acui_restricted_fields ){
+		global $wpdb;
+		foreach ( $this->sites as $site ) {
+			$prefix = $wpdb->get_blog_prefix( $site->blog_id );
+			$acui_restricted_fields[] = $prefix . 'capabilities';
+			$acui_restricted_fields[] = $prefix . 'user_level';
+		}
 		return array_merge( $acui_restricted_fields, array( 'blogs' ) );
 	}
 

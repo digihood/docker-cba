@@ -1,0 +1,852 @@
+/* ============================================================
+   Net Worth Calculator — net-worth.css
+   ============================================================ */
+
+:root {
+  --nw-color-primary: #1e3a5f;
+  --nw-color-accent-green: #2ecc71;
+  --nw-color-accent-red: #e74c3c;
+  --nw-color-accent-orange: #f39c12;
+  --nw-color-asset: #3498db;
+  --nw-color-liability: #e74c3c;
+  --nw-color-card: #ffffff;
+  --nw-color-border: #e0e0e0;
+  --nw-color-bg: #f8f9fa;
+  --nw-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --nw-radius: 8px;
+}
+
+/* ---- Base ---- */
+.net-worth *,
+.net-worth *::before,
+.net-worth *::after {
+  box-sizing: border-box;
+}
+
+.net-worth {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #333;
+  background: var(--nw-color-bg);
+}
+
+/* ---- Hero ---- */
+.net-worth__hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 60%, #2b6cb0 100%);
+  color: #fff;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.net-worth__hero-title {
+  margin: 0 0 12px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.net-worth__hero-desc {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.88;
+}
+
+/* ---- Layout ---- */
+.net-worth__layout {
+  display: grid;
+  grid-template-columns: 60% 38%;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  align-items: start;
+}
+
+/* ---- Form column ---- */
+.net-worth__form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---- Section ---- */
+.net-worth__section {
+  background: var(--nw-color-card);
+  border-radius: var(--nw-radius);
+  box-shadow: var(--nw-shadow);
+  padding: 20px 24px;
+}
+
+.net-worth__section-title {
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--nw-color-primary);
+}
+
+.net-worth__section-title--assets {
+  color: var(--nw-color-asset);
+}
+
+.net-worth__section-title--liabilities {
+  color: var(--nw-color-liability);
+}
+
+.net-worth__section p {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* ---- Category accordion ---- */
+.net-worth__category {
+  border: 1px solid var(--nw-color-border);
+  border-radius: var(--nw-radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.net-worth__category:last-child {
+  margin-bottom: 0;
+}
+
+.net-worth__category-title {
+  margin: 0;
+}
+
+.net-worth__category-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0f4f8;
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--nw-color-primary);
+  text-align: left;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.net-worth__category-toggle:hover {
+  background: #e2eaf4;
+}
+
+.net-worth__category-toggle span:first-child {
+  flex: 1;
+}
+
+.net-worth__category-total {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--nw-color-asset);
+  min-width: 80px;
+  text-align: right;
+}
+
+.net-worth__category[data-type="liability"] .net-worth__category-total {
+  color: var(--nw-color-liability);
+}
+
+.net-worth__toggle-icon {
+  font-size: 0.75rem;
+  transition: transform 0.2s;
+  color: #999;
+}
+
+.net-worth__category.is-open .net-worth__toggle-icon {
+  transform: rotate(180deg);
+}
+
+.net-worth__category-items {
+  padding: 8px 0;
+  display: none;
+}
+
+.net-worth__category.is-open .net-worth__category-items {
+  display: block;
+}
+
+/* ---- Item ---- */
+.net-worth__item {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.net-worth__item:last-child {
+  border-bottom: none;
+}
+
+.net-worth__item--expenses {
+  padding: 0;
+}
+
+.net-worth__item-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.net-worth__item-label {
+  font-size: 0.875rem;
+  color: #444;
+  flex: 1;
+  cursor: pointer;
+}
+
+/* ---- Input row ---- */
+.net-worth__input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.net-worth__input,
+#nw-monthly-expenses {
+  flex: 1;
+  max-width: 200px;
+  padding: 7px 10px;
+  border: 1px solid var(--nw-color-border);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #333;
+  transition: border-color 0.15s;
+}
+
+.net-worth__input:focus,
+#nw-monthly-expenses:focus {
+  outline: none;
+  border-color: var(--nw-color-primary);
+  box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.12);
+}
+
+.net-worth__unit {
+  font-size: 0.85rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+/* ---- Tooltip button ---- */
+.net-worth__tooltip-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #bbb;
+  background: #f0f4f8;
+  color: #555;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.net-worth__tooltip-btn:hover {
+  background: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+  color: #fff;
+}
+
+/* ---- Scale bar ---- */
+.net-worth__scale {
+  background: var(--nw-color-card);
+  border-radius: var(--nw-radius);
+  box-shadow: var(--nw-shadow);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.net-worth__scale-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.net-worth__scale-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.net-worth__scale-amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.net-worth__scale-side--assets .net-worth__scale-amount {
+  color: var(--nw-color-asset);
+}
+
+.net-worth__scale-side--liabilities .net-worth__scale-amount {
+  color: var(--nw-color-liability);
+}
+
+.net-worth__scale-bar {
+  flex: 1;
+  display: flex;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #e8ecf0;
+}
+
+.net-worth__scale-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.net-worth__scale-fill--assets {
+  background: var(--nw-color-asset);
+}
+
+.net-worth__scale-fill--liabilities {
+  background: var(--nw-color-liability);
+}
+
+/* ---- Actions ---- */
+.net-worth__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---- Buttons ---- */
+.net-worth__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--nw-radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-decoration: none;
+}
+
+.net-worth__btn--primary {
+  background: var(--nw-color-primary);
+  color: #fff;
+  border-color: var(--nw-color-primary);
+}
+
+.net-worth__btn--primary:hover {
+  background: #163052;
+  border-color: #163052;
+}
+
+.net-worth__btn--secondary {
+  background: var(--nw-color-asset);
+  color: #fff;
+  border-color: var(--nw-color-asset);
+}
+
+.net-worth__btn--secondary:hover {
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+.net-worth__btn--outline {
+  background: transparent;
+  color: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+}
+
+.net-worth__btn--outline:hover {
+  background: var(--nw-color-primary);
+  color: #fff;
+}
+
+/* ---- Snapshot section ---- */
+.net-worth__snapshot {
+  background: var(--nw-color-card);
+  border-radius: var(--nw-radius);
+  box-shadow: var(--nw-shadow);
+  padding: 20px 24px;
+}
+
+.net-worth__snapshot h3 {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--nw-color-primary);
+}
+
+/* ---- CTA register (guest) ---- */
+.net-worth__cta-register {
+  background: #ebf8ff;
+  border: 1px solid #bee3f8;
+  border-radius: var(--nw-radius);
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.net-worth__cta-register p {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: #2c5282;
+}
+
+/* ---- Results column ---- */
+.net-worth__results-col {
+  position: sticky;
+  top: 80px;
+}
+
+.net-worth__results-panel {
+  background: var(--nw-color-card);
+  border-radius: var(--nw-radius);
+  box-shadow: var(--nw-shadow);
+  padding: 20px 20px 24px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- Result header (net worth) ---- */
+.net-worth__result-header {
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--nw-color-border);
+}
+
+.net-worth__result-header-label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.net-worth__result-header-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--nw-color-primary);
+  transition: color 0.3s;
+}
+
+.net-worth__result-header-value.is-negative {
+  color: var(--nw-color-accent-red);
+}
+
+.net-worth__result-header-value.is-positive {
+  color: var(--nw-color-accent-green);
+}
+
+/* ---- Cards ---- */
+.net-worth__card {
+  background: #f8f9fa;
+  border: 1px solid var(--nw-color-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.net-worth__card-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #888;
+}
+
+.net-worth__card-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.net-worth__card-hint {
+  font-size: 0.78rem;
+  color: #999;
+}
+
+/* ---- Barometer ---- */
+.net-worth__barometer {
+  background: #f8f9fa;
+  border: 1px solid var(--nw-color-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.net-worth__barometer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  color: #555;
+  font-weight: 600;
+}
+
+.net-worth__barometer-track {
+  height: 10px;
+  border-radius: 5px;
+  background: #e0e0e0;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.net-worth__barometer-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  background: var(--nw-color-accent-green);
+  transition: width 0.4s ease, background 0.3s;
+}
+
+.net-worth__barometer-fill.is-orange {
+  background: var(--nw-color-accent-orange);
+}
+
+.net-worth__barometer-fill.is-red {
+  background: var(--nw-color-accent-red);
+}
+
+.net-worth__barometer-status {
+  font-size: 0.78rem;
+  color: #666;
+}
+
+/* ---- Resilience block ---- */
+.net-worth__resilience {
+  background: #f8f9fa;
+  border: 1px solid var(--nw-color-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.net-worth__resilience-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.net-worth__resilience-value.is-green {
+  color: var(--nw-color-accent-green);
+}
+
+.net-worth__resilience-value.is-orange {
+  color: var(--nw-color-accent-orange);
+}
+
+.net-worth__resilience-value.is-red {
+  color: var(--nw-color-accent-red);
+}
+
+.net-worth__resilience-hint {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+/* ---- Chart ---- */
+.net-worth__chart {
+  padding: 8px 0 4px;
+}
+
+.net-worth__chart-title {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--nw-color-primary);
+}
+
+/* ---- Warning ---- */
+.net-worth__warning {
+  background: #fff8e1;
+  border-left: 4px solid var(--nw-color-accent-orange);
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  color: #7d4e00;
+}
+
+.net-worth__warning p {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+}
+
+/* ---- Result message ---- */
+.net-worth__message {
+  border-radius: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--nw-color-border);
+  background: #f8f9fa;
+}
+
+.net-worth__message.is-red {
+  background: #fff5f5;
+  border-color: #fed7d7;
+}
+
+.net-worth__message.is-orange {
+  background: #fffbeb;
+  border-color: #fbd38d;
+}
+
+.net-worth__message.is-green {
+  background: #f0fff4;
+  border-color: #9ae6b4;
+}
+
+.net-worth__message h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--nw-color-primary);
+}
+
+.net-worth__message p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* ---- Recommendation ---- */
+.net-worth__recommendation {
+  background: #ebf8ff;
+  border: 1px solid #bee3f8;
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+
+.net-worth__recommendation h4 {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c5282;
+}
+
+.nw-recommendation-card {
+  display: block;
+  padding: 8px 10px;
+  background: #fff;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--nw-color-primary);
+  text-decoration: none;
+  border: 1px solid #bee3f8;
+  transition: background 0.15s;
+}
+
+.nw-recommendation-card:hover {
+  background: #dbeafe;
+}
+
+.nw-recommendation-card:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Save status ---- */
+#nw-save-status {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+  padding: 4px 0;
+}
+
+#nw-save-status.is-saving {
+  color: #888;
+}
+
+#nw-save-status.is-saved {
+  color: var(--nw-color-accent-green);
+}
+
+#nw-save-status.is-error {
+  color: var(--nw-color-accent-red);
+}
+
+/* ---- Modal ---- */
+.net-worth__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.net-worth__modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  width: 90%;
+  max-width: 480px;
+}
+
+.net-worth__modal-inner {
+  background: #fff;
+  border-radius: var(--nw-radius);
+  padding: 28px 32px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+
+.net-worth__modal-inner h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: var(--nw-color-primary);
+}
+
+.net-worth__modal-inner p {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.net-worth__modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.net-worth__modal-close:hover {
+  color: #333;
+}
+
+.net-worth__modal-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--nw-color-border);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.net-worth__modal-input:focus {
+  outline: none;
+  border-color: var(--nw-color-primary);
+}
+
+#nw-modal-status {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  min-height: 20px;
+}
+
+#nw-modal-status.is-success {
+  color: var(--nw-color-accent-green);
+}
+
+#nw-modal-status.is-error {
+  color: var(--nw-color-accent-red);
+}
+
+/* ---- Tooltip popup ---- */
+.net-worth__tooltip-popup {
+  position: fixed;
+  z-index: 1200;
+  background: #222;
+  color: #fff;
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  border-radius: 5px;
+  max-width: 260px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+/* ---- Snapshot prompt ---- */
+#nw-snapshot-prompt {
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  color: #276749;
+}
+
+/* ============================================================
+   Responsive — mobile (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .net-worth__hero {
+    padding: 32px 20px;
+  }
+
+  .net-worth__hero-title {
+    font-size: 1.5rem;
+  }
+
+  .net-worth__layout {
+    grid-template-columns: 1fr;
+    padding: 20px 16px;
+    gap: 20px;
+  }
+
+  .net-worth__results-col {
+    position: static;
+  }
+
+  .net-worth__results-panel {
+    overflow-y: visible;
+    max-height: none;
+  }
+
+  .net-worth__scale {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .net-worth__scale-bar {
+    width: 100%;
+  }
+
+  .net-worth__scale-side {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .net-worth__input,
+  #nw-monthly-expenses {
+    max-width: 100%;
+  }
+
+  .net-worth__actions {
+    flex-direction: column;
+  }
+
+  .net-worth__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .net-worth__modal {
+    width: 95%;
+  }
+
+  .net-worth__modal-inner {
+    padding: 20px 18px;
+  }
+}

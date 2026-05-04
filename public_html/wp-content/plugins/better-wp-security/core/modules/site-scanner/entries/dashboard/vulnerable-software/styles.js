@@ -8,18 +8,15 @@ import styled from '@emotion/styled';
  */
 import {
 	brush as themeIcon,
-	check as checkIcon,
-	closeSmall as closeIcon,
 	plugins as pluginIcon,
 	wordpress as coreIcon,
 } from '@wordpress/icons';
-import { Icon } from '@wordpress/components';
 
 /**
  * SolidWP dependencies
  */
 import { List, Surface, Text } from '@ithemes/ui';
-import { VulnerabilityMitigated, VulnerabilitySuccess } from '@ithemes/security-style-guide';
+import { VulnerabilitySuccess } from '@ithemes/security-style-guide';
 
 export function vulnerabilityIcon( type ) {
 	switch ( type ) {
@@ -31,36 +28,6 @@ export function vulnerabilityIcon( type ) {
 			return coreIcon;
 		default:
 			return undefined;
-	}
-}
-
-export function severityColor( score ) {
-	switch ( true ) {
-		case score === null:
-			return '#CECECE';
-		case score < 3:
-			return '#B8E6BF';
-		case score < 7:
-			return '#FFC518';
-		case score < 9:
-			return '#FFABAF';
-		default:
-			return '#D63638';
-	}
-}
-
-export function statusIcon( status ) {
-	switch ( status ) {
-		case '':
-			return <StyledStatusRedCircle icon={ closeIcon } style={ { fill: '#D75A4B' } } />;
-		case 'auto-updated':
-		case 'deactivated':
-		case 'deleted':
-		case 'updated':
-			return <StyledStatusCheck icon={ checkIcon } style={ { fill: '#FFFFFF' } } />;
-		case 'patched':
-			return <VulnerabilityMitigated />;
-		default:
 	}
 }
 
@@ -83,17 +50,58 @@ export const StyledContainer = styled( Surface )`
 
 export const StyledBrand = styled.div`
 	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-`;
+	flex-direction: ${ ( { direction } ) => direction === 'row' ? 'row' : 'column' };
+	gap:  ${ ( { direction } ) => direction === 'row' && '0.5rem' };
+	align-items: ${ ( { direction } ) => direction === 'row' ? 'center' : 'flex-end' };
 
-export const StyledBrandSmall = styled( StyledBrand )`
-	margin-left: 1rem;
 	& span {
-		font-size: 0.5rem;
+		font-size: ${ ( { isSmall } ) => isSmall && '0.5rem' };
 	}
 	& svg {
-		width: 100px;
+		width: ${ ( { isSmall } ) => isSmall && '100px' };
+	}
+`;
+
+export const StyledTitleContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+`;
+
+export const StyledDivider = styled.hr`
+	width: 1px;
+	height: 1rem;
+	margin: 0;
+	background-color: ${ ( { theme } ) => theme.colors.border.muted };
+`;
+
+export const StyledGetPro = styled.a`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.25rem 0.75rem;
+	border: ${ ( { isSmall, theme } ) => ! isSmall && `1px solid ${ theme.colors.border.muted }` };
+	border-radius: 0.25rem;
+	text-decoration: none;
+	
+	& svg {
+		flex: 1 0 24px;
+	}
+`;
+
+export const StyledGetProText = styled.div`
+	display: flex;
+	flex-direction: column;
+	
+	& > span {
+		color: ${ ( { theme } ) => theme.colors.text.muted };
+		
+		&:first-of-type {
+			font-weight: 600;
+			color: #6817c5;
+		}
 	}
 `;
 
@@ -114,25 +122,6 @@ export const StyledVulnerabilitySuccess = styled( VulnerabilitySuccess )`
 
 export const StyledSuccessText = styled( Text )`
 	padding: ${ ( { theme: { getSize } } ) => `0 ${ getSize( 0.5 ) }` };
-`;
-
-export const StyledSeverity = styled( Text )`
-	padding: 1.5px 6.5px;
-	background-color: ${ ( { backgroundColor } ) => backgroundColor };
-	border-radius: 2px;
-	width:35px;
-	display: flex;
-	justify-content: center;
-`;
-
-export const StyledStatusCheck = styled( Icon )`
-	background-color: #438C56;
-	border-radius: 2rem;
-`;
-
-export const StyledStatusRedCircle = styled( Icon )`
-	background-color: #FFABAF;
-	border-radius: 2rem;
 `;
 
 // Table-specific styles

@@ -108,6 +108,10 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 				return $question->get_id() === $answer['question'];
 			} );
 
+			if ( ! $question ) {
+				continue;
+			}
+
 			$user_groups = array_map( function ( $user_group ) {
 				return ( new User_Group( $user_group['id'] ) )
 					->set_label( $user_group['label'] )
@@ -124,6 +128,7 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 				$answer['user_groups_settings'] ?? [],
 				$answer['canonical_group_substitutions'] ?? [],
 				$answer['modules'] ?? [],
+				$answer['disabled'] ?? [],
 				$answer['settings'] ?? []
 			);
 		}
@@ -140,6 +145,12 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 			if ( is_wp_error( $answered ) ) {
 				return $answered;
 			}
+
+			do_action( 'stellarwp/telemetry/ithemes-security/event', 'onboard-question', [
+				'type'     => $request['id'],
+				'question' => $latest['question'],
+				'answer'   => $latest['answer'],
+			] );
 		}
 
 		return $controller;
@@ -186,6 +197,7 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 				'question'                      => $previous->get_question()->get_id(),
 				'answer'                        => $previous->get_answer(),
 				'modules'                       => $previous->get_enabled_modules(),
+				'disabled'                      => $previous->get_disabled_modules(),
 				'settings'                      => $previous->get_settings(),
 				'user_groups'                   => array_map(
 					function ( $user_group ) { return $user_group->jsonSerialize(); },
@@ -203,7 +215,7 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 		if ( ! $this->schema ) {
 			$this->schema = [
 				'title'      => 'ithemes-security-site-type',
-				'$schema'    => 'http://json-schema.org/draft-04/schema#',
+				'$schema'    => 'http://json-schema.org/draft-07/schema#',
 				'type'       => 'object',
 				'properties' => [
 					'id'            => [
@@ -257,6 +269,13 @@ final class Site_Types_Controller extends \WP_REST_Controller {
 									'type'        => [ 'array', 'object', 'boolean', 'number', 'integer', 'string' ],
 								],
 								'modules'                       => [
+									'type'     => 'array',
+									'readonly' => true,
+									'items'    => [
+										'type' => 'string',
+									],
+								],
+								'disabled'                      => [
 									'type'     => 'array',
 									'readonly' => true,
 									'items'    => [

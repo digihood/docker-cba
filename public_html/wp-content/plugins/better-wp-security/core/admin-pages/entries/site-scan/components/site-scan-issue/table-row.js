@@ -16,15 +16,14 @@ import store from '../../store';
  * Internal dependencies
  */
 import {
-	severityColor,
-	severityText,
 	StyledCombinedColumns,
 	StyledDetailsContainer,
 	StyledRowDetailsContainer,
 	StyledScanInfo,
-	StyledSeverity,
 	StyledAction,
 } from './styles';
+import { Priority } from '@ithemes/security-ui';
+import ScanIssueStatus from './scan-issue-status';
 
 export default function TableRow( { icon, issue, isLarge, children } ) {
 	const { component } = useSelect( ( select ) => ( {
@@ -50,11 +49,10 @@ export default function TableRow( { icon, issue, isLarge, children } ) {
 							</StyledScanInfo>
 						</td>
 						<td>
-							<StyledSeverity
-								weight={ 600 }
-								backgroundColor={ severityColor( issue.severity ) }
-								text={ severityText( issue.severity ) }
-							/>
+							<Priority priority={ issue.severity } />
+						</td>
+						<td>
+							<ScanIssueStatus issue={ issue } />
 						</td>
 					</>
 				) }
@@ -69,15 +67,13 @@ export default function TableRow( { icon, issue, isLarge, children } ) {
 									<Text as="p" text={ issue.description } />
 									}
 								</>
-
 							</StyledCombinedColumns>
 						</td>
 						<td>
-							<StyledSeverity
-								weight={ 600 }
-								backgroundColor={ severityColor( issue.severity ) }
-								text={ severityText( issue.severity ) }
-							/>
+							<StyledCombinedColumns>
+								<Priority priority={ issue.severity } />
+								<ScanIssueStatus issue={ issue } />
+							</StyledCombinedColumns>
 						</td>
 					</>
 				) }

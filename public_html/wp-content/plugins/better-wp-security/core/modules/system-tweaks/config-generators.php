@@ -68,8 +68,7 @@ final class ITSEC_System_Tweaks_Config_Generators {
 			$rewrites .= "\t\tRewriteRule ^$wp_includes/theme-compat/ - [F]\n";
 
 			$hide_dirs = implode( '|', array( 'git', 'svn' ) );
-			$rewrites  .= "\t\tRewriteCond %{REQUEST_FILENAME} -f\n";
-			$rewrites  .= "\t\tRewriteRule (^|.*/)\.({$hide_dirs})/.* - [F]\n";
+			$rewrites  .= "\t\tRewriteRule (^|.*/)\.({$hide_dirs}) - [F]\n";
 		}
 
 		if ( $input['uploads_php'] ) {
@@ -85,7 +84,7 @@ final class ITSEC_System_Tweaks_Config_Generators {
 		}
 
 		if ( $input['plugins_php'] ) {
-			$dir = ITSEC_Lib_Utility::get_relative_url_path( WP_PLUGIN_URL );
+			$dir = ITSEC_Lib_Utility::get_relative_url_path( plugins_url() );
 
 			if ( ! empty( $dir ) ) {
 				$dir = preg_quote( $dir );
@@ -123,75 +122,74 @@ final class ITSEC_System_Tweaks_Config_Generators {
 		require_once( ITSEC_Core::get_core_dir() . '/lib/class-itsec-lib-utility.php' );
 
 		$input = ITSEC_Modules::get_settings( 'system-tweaks' );
-		$wp_includes = WPINC;
 
 		if ( $input['protect_files'] ) {
 			$config_file = ITSEC_Lib::get_htaccess();
+			$config_file = $config_file !== '' && str_starts_with( $config_file, ABSPATH )
+				? substr( $config_file, strlen( ABSPATH ) )
+				: 'nginx.conf';
+			$config_file = ITSEC_Lib::get_home_root() . $config_file;
 
-			if ( 0 === strpos( $config_file, ABSPATH ) ) {
-				$config_file = '/' . substr( $config_file, strlen( ABSPATH ) );
-			} else {
-				$config_file = '/nginx.conf';
-			}
+			$admin_path = ITSEC_Lib::get_url_path( admin_url() );
+			$includes_path = ITSEC_Lib::get_url_path( includes_url() );
 
 			$modification .= "\n";
 			$modification .= "\t# " . __( 'Protect System Files - Security > Settings > System Tweaks > System Files', 'better-wp-security' ) . "\n";
-			$modification .= "\tlocation = /wp-admin/install.php { deny all; }\n";
+			$modification .= "\tlocation = $admin_path/install.php { deny all; }\n";
 			$modification .= "\tlocation = $config_file { deny all; }\n";
 			$modification .= "\tlocation ~ /\.htaccess$ { deny all; }\n";
 			$modification .= "\tlocation ~ /readme\.html$ { deny all; }\n";
 			$modification .= "\tlocation ~ /readme\.txt$ { deny all; }\n";
 			$modification .= "\tlocation ~ /wp-config.php$ { deny all; }\n";
-			$modification .= "\tlocation ~ ^/wp-admin/includes/ { deny all; }\n";
+			$modification .= "\tlocation ~ ^$admin_path/includes/ { deny all; }\n";
 
 			if ( ! is_multisite() || ! get_site_option( 'ms_files_rewriting' ) ) {
 				// nginx can only reliably block PHP files in wp-includes if requests to wp-includes/ms-files.php are
 				// not required. This is because there is no skip directive as Apache has.
-				$modification .= "\tlocation ~ ^/$wp_includes/[^/]+\.php$ { deny all; }\n";
+				$modification .= "\tlocation ~ ^$includes_path/[^/]+\.php$ { deny all; }\n";
 			}
 
-			$modification .= "\tlocation ~ ^/$wp_includes/js/tinymce/langs/.+\.php$ { deny all; }\n";
-			$modification .= "\tlocation ~ ^/$wp_includes/theme-compat/ { deny all; }\n";
-			$modification .= "\tlocation ~ ^.*/\.git/.*$ { deny all; }\n";
-			$modification .= "\tlocation ~ ^.*/\.svn/.*$ { deny all; }\n";
+			$modification .= "\tlocation ~ ^$includes_path/js/tinymce/langs/.+\.php$ { deny all; }\n";
+			$modification .= "\tlocation ~ ^$includes_path/theme-compat/ { deny all; }\n";
+			$modification .= "\tlocation ~ /\.(git|svn) { deny all; }\n";
 		}
 
 		// Rewrite Rules for Disable PHP in Uploads
 		if ( $input['uploads_php'] ) {
-			$dir = ITSEC_Lib_Utility::get_relative_upload_url_path();
+			$dir = ITSEC_Lib::get_url_path( (string) (wp_upload_dir()['baseurl'] ?? '') );
 
-			if ( ! empty( $dir ) ) {
+			if ( $dir !== '' ) {
 				$dir = preg_quote( $dir );
 
 				$modification .= "\n";
 				$modification .= "\t# " . __( 'Disable PHP in Uploads - Security > Settings > System Tweaks > PHP in Uploads', 'better-wp-security' ) . "\n";
-				$modification .= "\tlocation ~ ^/$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
+				$modification .= "\tlocation ~ ^$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
 			}
 		}
 
 		// Rewrite Rules for Disable PHP in Plugins
 		if ( $input['plugins_php'] ) {
-			$dir = ITSEC_Lib_Utility::get_relative_url_path( WP_PLUGIN_URL );
+			$dir = ITSEC_Lib::get_url_path( plugins_url() );
 
-			if ( ! empty( $dir ) ) {
+			if ( $dir !== '' ) {
 				$dir = preg_quote( $dir );
 
 				$modification .= "\n";
 				$modification .= "\t# " . __( 'Disable PHP in Plugins - Security > Settings > System Tweaks > PHP in Plugins', 'better-wp-security' ) . "\n";
-				$modification .= "\tlocation ~ ^/$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
+				$modification .= "\tlocation ~ ^$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
 			}
 		}
 
 		// Rewrite Rules for Disable PHP in Themes
 		if ( $input['themes_php'] ) {
-			$dir = ITSEC_Lib_Utility::get_relative_url_path( get_theme_root_uri() );
+			$dir = ITSEC_Lib::get_url_path( get_theme_root_uri() );
 
 			if ( ! empty( $dir ) ) {
 				$dir = preg_quote( $dir );
 
 				$modification .= "\n";
 				$modification .= "\t# " . __( 'Disable PHP in Themes - Security > Settings > System Tweaks > PHP in Themes', 'better-wp-security' ) . "\n";
-				$modification .= "\tlocation ~ ^/$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
+				$modification .= "\tlocation ~ ^$dir/.*\.(?:php[1-7]?|pht|phtml?|phps)$ { deny all; }\n";
 			}
 		}
 

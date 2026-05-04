@@ -17,18 +17,23 @@ class ITSEC_Dashboard_Card_Line_Graph extends ITSEC_Dashboard_Card {
 	/** @var array */
 	private $data_config;
 
+	/** @var string|null */
+	private $module;
+
 	/**
 	 * ITSEC_Dashboard_Card_Line_Graph constructor.
 	 *
-	 * @param string $slug
-	 * @param string $label
-	 * @param array  $size
-	 * @param array  $data_config
+	 * @param string      $slug
+	 * @param string      $label
+	 * @param array       $data_config
+	 * @param array       $size
+	 * @param string|null $module
 	 */
-	public function __construct( $slug, $label, array $data_config, array $size = array() ) {
+	public function __construct( $slug, $label, array $data_config, array $size = array(), ?string $module = null ) {
 		$this->slug        = $slug;
 		$this->label       = $label;
 		$this->data_config = $data_config;
+		$this->module      = $module;
 		$this->size        = wp_parse_args( $size, array(
 			'minW'     => 2,
 			'minH'     => 1,
@@ -122,5 +127,12 @@ class ITSEC_Dashboard_Card_Line_Graph extends ITSEC_Dashboard_Card {
 	 */
 	public function get_size() {
 		return $this->size;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_module_id(): ?string {
+		return $this->module;
 	}
 }

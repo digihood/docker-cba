@@ -6,6 +6,8 @@ use iThemesSecurity\Lib\REST;
 use iThemesSecurity\Lib\Site_Types;
 use iThemesSecurity\Lib\Stellar_Container;
 use iThemesSecurity\Strauss\StellarWP\Telemetry\Config as Telemetry;
+use iThemesSecurity\Strauss\StellarWP\Telemetry\Events\Event as TelemetryEvent;
+use ITSEC_Lib_Headers;
 use ITSEC_Lib_Upgrader;
 use iThemesSecurity\Strauss\Pimple\Container;
 use wpdb;
@@ -150,6 +152,10 @@ return static function ( Container $c ) {
 		);
 	};
 
+	$c[ TelemetryEvent::class ] = static function ( Container $c ) {
+		return new TelemetryEvent( $c[ Strauss\StellarWP\Telemetry\Telemetry\Telemetry::class ] );
+	};
+
 	$c[ Telemetry::class ] = static function ( Container $c ) {
 		$telemetry = new Telemetry();
 		$telemetry::set_container( new Stellar_Container( $c ) );
@@ -157,5 +163,9 @@ return static function ( Container $c ) {
 		$telemetry::set_stellar_slug( 'solid-security' );
 
 		return $telemetry;
+	};
+
+	$c[ Headers\ITSEC_Headers_Sanitizer::class ] = static function () {
+		return new Headers\ITSEC_Headers_Sanitizer();
 	};
 };

@@ -1,0 +1,715 @@
+/* ================================================================
+   Retirement Savings Calculator – styles
+   Prefix: retirement-savings
+   ================================================================ */
+
+:root {
+    --rs-color-primary:     #1a365d;
+    --rs-color-primary-mid: #2c5282;
+    --rs-color-accent:      #3182ce;
+    --rs-color-accent-light:#63b3ed;
+    --rs-color-green:       #38a169;
+    --rs-color-green-bg:    #f0fff4;
+    --rs-color-green-border:#68d391;
+    --rs-color-orange:      #dd6b20;
+    --rs-color-orange-bg:   #fffaf0;
+    --rs-color-orange-border:#f6ad55;
+    --rs-color-red:         #e53e3e;
+    --rs-color-red-bg:      #fff5f5;
+    --rs-color-red-border:  #fc8181;
+    --rs-color-bg:          #f7fafc;
+    --rs-color-card:        #ffffff;
+    --rs-color-border:      #e2e8f0;
+    --rs-color-text:        #2d3748;
+    --rs-color-muted:       #718096;
+    --rs-radius:            8px;
+    --rs-shadow:            0 2px 8px rgba(0, 0, 0, 0.08);
+    --rs-shadow-md:         0 4px 16px rgba(0, 0, 0, 0.12);
+    --rs-results-width:     360px;
+}
+
+/* ================================================================
+   Base
+   ================================================================ */
+.retirement-savings {
+    font-family: inherit;
+    color: var(--rs-color-text);
+    background: var(--rs-color-bg);
+    min-height: 100vh;
+}
+
+/* ================================================================
+   Hero
+   ================================================================ */
+.retirement-savings__hero {
+    background: linear-gradient(135deg, var(--rs-color-primary) 0%, var(--rs-color-primary-mid) 100%);
+    color: #fff;
+    padding: 56px 24px 48px;
+}
+
+.retirement-savings__hero .container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.retirement-savings__hero-title {
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 700;
+    margin: 0 0 14px;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.retirement-savings__hero-desc {
+    font-size: 17px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.87);
+    margin: 0;
+    max-width: 640px;
+}
+
+/* ================================================================
+   Error banner
+   ================================================================ */
+.retirement-savings__error-banner {
+    background: var(--rs-color-red-bg);
+    border-bottom: 2px solid var(--rs-color-red);
+    padding: 12px 0;
+}
+
+.retirement-savings__error-banner .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    color: var(--rs-color-red);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ================================================================
+   Main layout
+   ================================================================ */
+.retirement-savings__main {
+    padding: 32px 0 64px;
+}
+
+.retirement-savings__main > .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.retirement-savings__layout {
+    display: grid;
+    grid-template-columns: 1fr var(--rs-results-width);
+    gap: 28px;
+    align-items: start;
+}
+
+/* ================================================================
+   Form column
+   ================================================================ */
+.retirement-savings__form-col {
+    min-width: 0;
+}
+
+/* ================================================================
+   Sections (form cards)
+   ================================================================ */
+.retirement-savings__section {
+    background: var(--rs-color-card);
+    border: 1px solid var(--rs-color-border);
+    border-radius: var(--rs-radius);
+    box-shadow: var(--rs-shadow);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+}
+
+.retirement-savings__section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--rs-color-primary);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rs-color-border);
+}
+
+.retirement-savings__section-note {
+    font-size: 13px;
+    color: var(--rs-color-muted);
+    margin: -8px 0 20px;
+    line-height: 1.5;
+}
+
+/* ================================================================
+   Fields
+   ================================================================ */
+.retirement-savings__field {
+    margin-bottom: 24px;
+}
+
+.retirement-savings__field:last-child {
+    margin-bottom: 0;
+}
+
+.retirement-savings__field-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.retirement-savings__field-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rs-color-text);
+    line-height: 1.4;
+    cursor: default;
+}
+
+.retirement-savings__unit {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--rs-color-muted);
+    background: var(--rs-color-bg);
+    border: 1px solid var(--rs-color-border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   Slider row
+   ================================================================ */
+.retirement-savings__slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.retirement-savings__slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--rs-color-border);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.retirement-savings__slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--rs-color-accent);
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px var(--rs-color-accent);
+    transition: box-shadow 0.15s;
+}
+
+.retirement-savings__slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.25);
+}
+
+.retirement-savings__slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--rs-color-accent);
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px var(--rs-color-accent);
+}
+
+.retirement-savings__slider:focus {
+    background: #bee3f8;
+}
+
+/* ================================================================
+   Number inputs
+   ================================================================ */
+.retirement-savings__slider-row .retirement-savings__number-input {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.retirement-savings__input-row {
+    display: flex;
+    align-items: center;
+}
+
+.retirement-savings__number-input {
+    border: 1px solid var(--rs-color-border);
+    border-radius: var(--rs-radius);
+    padding: 8px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--rs-color-text);
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -moz-appearance: textfield;
+    text-align: right;
+}
+
+.retirement-savings__number-input::-webkit-outer-spin-button,
+.retirement-savings__number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.retirement-savings__number-input:focus {
+    outline: none;
+    border-color: var(--rs-color-accent);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.18);
+}
+
+.retirement-savings__number-input--wide {
+    width: 180px;
+}
+
+/* ================================================================
+   Tooltip button & popup
+   ================================================================ */
+.retirement-savings__tooltip-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--rs-color-accent-light);
+    background: #ebf8ff;
+    color: var(--rs-color-accent);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    line-height: 1;
+    padding: 0;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.retirement-savings__tooltip-btn:hover {
+    background: var(--rs-color-accent);
+    color: #fff;
+    border-color: var(--rs-color-accent);
+}
+
+.retirement-savings__tooltip-popup {
+    position: absolute;
+    top: 28px;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid var(--rs-color-border);
+    border-radius: var(--rs-radius);
+    box-shadow: var(--rs-shadow-md);
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--rs-color-text);
+    max-width: 280px;
+    min-width: 180px;
+    pointer-events: none;
+}
+
+/* Ensure the field-header is the containing block for the popup */
+.retirement-savings__field-header {
+    position: relative;
+}
+
+/* ================================================================
+   Share
+   ================================================================ */
+.retirement-savings__share {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.retirement-savings__share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: 1.5px solid var(--rs-color-accent);
+    border-radius: var(--rs-radius);
+    background: #fff;
+    color: var(--rs-color-accent);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.retirement-savings__share-btn:hover {
+    background: var(--rs-color-accent);
+    color: #fff;
+}
+
+.retirement-savings__share-msg {
+    font-size: 13px;
+    color: var(--rs-color-green);
+    font-weight: 500;
+}
+
+/* ================================================================
+   Results column
+   ================================================================ */
+.retirement-savings__results-col {
+    min-width: 0;
+}
+
+.retirement-savings__results-panel {
+    background: var(--rs-color-card);
+    border: 1px solid var(--rs-color-border);
+    border-radius: var(--rs-radius);
+    box-shadow: var(--rs-shadow-md);
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 120px);
+    position: sticky;
+    top: 80px;
+}
+
+/* ================================================================
+   Result header (years to retirement)
+   ================================================================ */
+.retirement-savings__result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--rs-color-primary);
+    color: #fff;
+}
+
+.retirement-savings__years-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.retirement-savings__years-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* ================================================================
+   Result cards
+   ================================================================ */
+.retirement-savings__result-card {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rs-color-border);
+}
+
+.retirement-savings__result-card--projected {
+    background: #f7fafc;
+}
+
+.retirement-savings__result-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--rs-color-muted);
+    margin-bottom: 4px;
+}
+
+.retirement-savings__result-amount {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--rs-color-primary);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.retirement-savings__result-hint {
+    font-size: 12px;
+    color: var(--rs-color-muted);
+}
+
+/* ================================================================
+   Gap block
+   ================================================================ */
+.retirement-savings__gap {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rs-color-border);
+    border-radius: 0;
+    transition: background 0.2s;
+}
+
+.retirement-savings__gap--positive {
+    background: var(--rs-color-green-bg);
+    border-left: 4px solid var(--rs-color-green);
+}
+
+.retirement-savings__gap--negative {
+    background: var(--rs-color-red-bg);
+    border-left: 4px solid var(--rs-color-red);
+}
+
+.retirement-savings__gap--moderate {
+    background: var(--rs-color-orange-bg);
+    border-left: 4px solid var(--rs-color-orange);
+}
+
+.retirement-savings__gap-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--rs-color-muted);
+    margin-bottom: 4px;
+}
+
+.retirement-savings__gap-amount {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--rs-color-text);
+    margin-bottom: 4px;
+}
+
+.retirement-savings__gap--positive .retirement-savings__gap-amount {
+    color: var(--rs-color-green);
+}
+
+.retirement-savings__gap--negative .retirement-savings__gap-amount {
+    color: var(--rs-color-red);
+}
+
+.retirement-savings__gap--moderate .retirement-savings__gap-amount {
+    color: var(--rs-color-orange);
+}
+
+.retirement-savings__gap-status {
+    font-size: 12px;
+    color: var(--rs-color-muted);
+}
+
+/* ================================================================
+   Chart
+   ================================================================ */
+.retirement-savings__chart {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rs-color-border);
+}
+
+.retirement-savings__chart canvas {
+    display: block;
+    max-width: 100%;
+}
+
+/* ================================================================
+   Future value block
+   ================================================================ */
+.retirement-savings__future-value {
+    padding: 16px 20px;
+    background: #ebf8ff;
+    border-left: 4px solid var(--rs-color-accent-light);
+    border-bottom: 1px solid var(--rs-color-border);
+}
+
+.retirement-savings__future-value-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rs-color-primary-mid);
+    margin: 0 0 6px;
+}
+
+.retirement-savings__future-value-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rs-color-primary);
+    margin: 0 0 6px;
+}
+
+.retirement-savings__future-value-note {
+    font-size: 12px;
+    color: var(--rs-color-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ================================================================
+   CTA block
+   ================================================================ */
+.retirement-savings__cta {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rs-color-border);
+    border-left: 4px solid var(--rs-color-border);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.retirement-savings__cta--positive {
+    border-left-color: var(--rs-color-green);
+    background: var(--rs-color-green-bg);
+}
+
+.retirement-savings__cta--negative {
+    border-left-color: var(--rs-color-red);
+    background: var(--rs-color-red-bg);
+}
+
+.retirement-savings__cta--moderate {
+    border-left-color: var(--rs-color-orange);
+    background: var(--rs-color-orange-bg);
+}
+
+.retirement-savings__cta-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--rs-color-text);
+    margin: 0 0 6px;
+}
+
+.retirement-savings__cta-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--rs-color-text);
+    margin: 0;
+}
+
+.retirement-savings__cta-contribution {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rs-color-primary);
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    background: rgba(49, 130, 206, 0.08);
+    border-radius: 6px;
+}
+
+/* ================================================================
+   Guest CTA
+   ================================================================ */
+.retirement-savings__guest-cta {
+    padding: 16px 20px;
+    background: var(--rs-color-bg);
+    text-align: center;
+}
+
+.retirement-savings__guest-cta p {
+    font-size: 13px;
+    color: var(--rs-color-muted);
+    margin: 0;
+    line-height: 1.55;
+}
+
+.retirement-savings__guest-cta a {
+    color: var(--rs-color-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.retirement-savings__guest-cta a:hover {
+    text-decoration: underline;
+}
+
+/* ================================================================
+   Responsive
+   ================================================================ */
+@media (max-width: 900px) {
+    .retirement-savings__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .retirement-savings__results-col {
+        order: -1;
+    }
+
+    .retirement-savings__results-panel {
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .retirement-savings__hero {
+        padding: 36px 16px 28px;
+    }
+
+    .retirement-savings__hero-title {
+        font-size: 24px;
+    }
+
+    .retirement-savings__hero-desc {
+        font-size: 15px;
+    }
+
+    .retirement-savings__main > .container {
+        padding: 0 16px;
+    }
+
+    .retirement-savings__main {
+        padding: 20px 0 40px;
+    }
+
+    .retirement-savings__section {
+        padding: 18px 16px;
+    }
+
+    .retirement-savings__slider-row .retirement-savings__number-input {
+        width: 70px;
+    }
+
+    .retirement-savings__number-input--wide {
+        width: 140px;
+    }
+
+    .retirement-savings__result-amount {
+        font-size: 19px;
+    }
+
+    .retirement-savings__years-value {
+        font-size: 20px;
+    }
+
+    .retirement-savings__share {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .retirement-savings__layout {
+        gap: 16px;
+    }
+
+    .retirement-savings__field-header {
+        flex-wrap: wrap;
+    }
+
+    .retirement-savings__slider-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .retirement-savings__slider-row .retirement-savings__number-input {
+        width: 100%;
+        text-align: left;
+    }
+
+    .retirement-savings__number-input--wide {
+        width: 100%;
+    }
+}
+
+/* ================================================================
+   Utilities
+   ================================================================ */
+[hidden] {
+    display: none !important;
+}

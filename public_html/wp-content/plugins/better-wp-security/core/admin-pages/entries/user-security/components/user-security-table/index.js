@@ -27,7 +27,7 @@ import {
 } from './styles';
 import '../../style.scss';
 
-export default function UserSecurityTable( ) {
+export default function UserSecurityTable() {
 	const { users, selectAllState } = useSelect(
 		( select ) => ( {
 			users: select( userSecurityStore ).getUsers(),
@@ -48,7 +48,7 @@ export default function UserSecurityTable( ) {
 						<StyledBulkEditTH as="th">
 							<StyledCheckboxControl
 								checked={ selectAllState === 'checked' }
-								onChange={ ( ) => {
+								onChange={ () => {
 									toggleSelectAll( 'main' );
 								} }
 								label={ __( 'Select all users', 'better-wp-security' ) }

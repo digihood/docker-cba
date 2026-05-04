@@ -33,28 +33,36 @@ if( ! class_exists( 'd1g1Links' ) )
 
     /**
     * 	Adresa přihlášení a registrace
-    *   
+    *
     * 	@author Digihood
-    * 	@return echo
+    * 	@return string
     */
-    public static function login_registration( ) 
+    public static function login_registration(): string
     {
-        return get_permalink( );
-    }    
+        $page = get_page_by_path( 'prihlaseni' );
+        return $page ? get_permalink( $page->ID ) : home_url( '/prihlaseni/' );
+    }
 
-    
     /**
-    * 	Adresa přihlášení a registrace
-    *   
+    * 	Adresa stránky Můj účet
+    *
     * 	@author Digihood
-    * 	@return echo
+    * 	@return string
     */
-    public static function my_account( ) 
+    public static function my_account(): string
     {
-        return get_permalink( );
-    }   
+        $page = get_page_by_path( 'muj-ucet' );
+        return $page ? get_permalink( $page->ID ) : home_url( '/muj-ucet/' );
+    }
 
-        
 	}
 
+}
+
+// Backward-compatible aliases used throughout the theme
+if ( ! class_exists( 'linksd1g1' ) ) {
+    class_alias( 'd1g1Links', 'linksd1g1' );
+}
+if ( ! class_exists( 'digiLinks' ) ) {
+    class_alias( 'd1g1Links', 'digiLinks' );
 }

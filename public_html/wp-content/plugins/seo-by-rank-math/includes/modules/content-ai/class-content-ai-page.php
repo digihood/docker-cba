@@ -46,7 +46,6 @@ class Content_AI_Page {
 			return;
 		}
 
-		$this->action( 'rank_math/before_help_link', 'add_credits_remaining' );
 		$this->action( 'admin_footer', 'content_editor_settings' );
 		add_filter( 'should_load_block_editor_scripts_and_styles', '__return_true' );
 	}
@@ -62,30 +61,10 @@ class Content_AI_Page {
 	}
 
 	/**
-	 * Add Credits remaining text before the help link in the admin header.
-	 */
-	public function add_credits_remaining() {
-		// Early bail if site is not connected or doesn't have a Content AI Plan.
-		if ( ! Helper::is_site_connected() || ! Helper::get_content_ai_plan() ) {
-			return;
-		}
-
-		$credits = Helper::get_credits();
-		?>
-		<div class="credits-remaining">
-			<?php echo esc_html__( 'Credits Remaining: ', 'rank-math' ); ?>
-			<strong><?php echo esc_html( $credits ); ?></strong>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Register admin page.
 	 */
 	public function register_admin_page() {
 		$uri = untrailingslashit( plugin_dir_url( __FILE__ ) );
-
-		$new_label = '<span class="rank-math-new-label" style="color:#ed5e5e;font-size:10px;font-weight:normal;">' . esc_html__( 'New!', 'rank-math' ) . '</span>';
 
 		if ( 'rank-math-content-ai-page' === Param::get( 'page' ) ) {
 			$this->content_ai->localized_data( [ 'isContentAIPage' => true ] );
@@ -97,10 +76,9 @@ class Content_AI_Page {
 			[
 				'position'   => 4,
 				'parent'     => 'rank-math',
-				// Translators: placeholder is the new label.
-				'menu_title' => sprintf( esc_html__( 'Content AI %s', 'rank-math' ), $new_label ),
+				'menu_title' => esc_html__( 'Content AI', 'rank-math' ),
 				'capability' => 'rank_math_content_ai',
-				'render'     => dirname( __FILE__ ) . '/views/main.php',
+				'render'     => __DIR__ . '/views/main.php',
 				'classes'    => [ 'rank-math-page' ],
 				'assets'     => [
 					'styles'  => [
@@ -119,7 +97,7 @@ class Content_AI_Page {
 						'wp-blocks'            => '',
 						'wp-element'           => '',
 						'wp-editor'            => '',
-						'rank-math-block-faq'  => rank_math()->plugin_url() . 'assets/admin/js/blocks.js',
+						'rank-math-components' => '',
 						'rank-math-analyzer'   => rank_math()->plugin_url() . 'assets/admin/js/analyzer.js',
 						'rank-math-content-ai' => rank_math()->plugin_url() . 'includes/modules/content-ai/assets/js/content-ai.js',
 					],
@@ -180,7 +158,7 @@ class Content_AI_Page {
 	 */
 	public function content_editor_settings() {
 		$post                 = $this->get_content_editor_post();
-		$block_editor_context = new WP_Block_Editor_Context( [ 'post' => [] ] );
+		$block_editor_context = new WP_Block_Editor_Context( [ 'post' => $post ] );
 
 		// Flag that we're loading the block editor.
 		$current_screen = get_current_screen();
@@ -212,7 +190,7 @@ class Content_AI_Page {
 	}
 
 	/**
-	 * Remove unsed content generated from the Toolbar option of the Content AI.
+	 * Remove unused content generated from the Toolbar option of the Content AI.
 	 *
 	 * @param array $data An array of slashed, sanitized, and processed post data.
 	 */

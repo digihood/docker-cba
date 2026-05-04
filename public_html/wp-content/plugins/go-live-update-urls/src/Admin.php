@@ -15,11 +15,14 @@ class Admin {
 
 	public const NAME = 'go-live-update-urls-settings';
 
+	public const PARENT_MENU      = 'tools.php';
 	public const OLD_URL          = 'old_url';
 	public const NEW_URL          = 'new_url';
 	public const NONCE            = 'go-live-update-urls/nonce/update-tables';
 	public const TABLE_INPUT_NAME = 'go-live-update-urls/input/database-table';
 	public const SUBMIT           = 'go-live-update-urls/input/submit';
+
+	protected const CAPABILITY = 'manage_options';
 
 
 	/**
@@ -58,7 +61,7 @@ class Admin {
 			return;
 		}
 
-		$tables = \array_filter( \array_map( 'go_live_update_urls_sanitize_field', (array) $_POST[ static::TABLE_INPUT_NAME ] ) );
+		$tables = \array_filter( \array_map( 'go_live_update_urls_sanitize_field', (array) $_POST[ static::TABLE_INPUT_NAME ] ), fn( $value ) => '' !== $value );
 
 		do_action( 'go-live-update-urls/admin-page/before-update', $old_url, $new_url, $tables );
 
@@ -111,10 +114,19 @@ class Admin {
 	 * @since 5.0.0
 	 */
 	public function register_admin_page(): void {
-		add_management_page( 'Go Live Update Urls', 'Go Live', 'manage_options', static::NAME, [
-			$this,
-			'admin_page',
-		] );
+		add_submenu_page( self::PARENT_MENU, 'Go Live Update Urls', 'Go Live', $this->get_admin_capability(), self::NAME, [ $this, 'admin_page' ] );
+	}
+
+
+	/**
+	 * Get the filtered capability required to use the tools page.
+	 *
+	 * @since 6.9.0
+	 *
+	 * @return string
+	 */
+	public function get_admin_capability(): string {
+		return (string) apply_filters( 'go-live-update-urls/admin/admin-capability', self::CAPABILITY, $this );
 	}
 
 
@@ -173,7 +185,7 @@ class Admin {
 				if ( apply_filters( 'go-live-update-urls-pro/admin/use-default-checkboxes', true ) ) {
 					?>
 					<h3>
-						<?php esc_html_e( 'WordPress core tables', 'go-live-update-urls' ); ?>
+						<?php esc_html_e( 'WordPress Core Tables', 'go-live-update-urls' ); ?>
 					</h3>
 					<div class="go-live-section">
 						<p class="description" style="color:green;">
@@ -202,14 +214,14 @@ class Admin {
 					if ( \count( $custom_tables ) > 0 ) {
 						?>
 						<h3>
-							<?php esc_html_e( 'Tables created by plugins', 'go-live-update-urls' ); ?>
+							<?php esc_html_e( 'Tables Created By Plugins', 'go-live-update-urls' ); ?>
 						</h3>
 						<div class="go-live-section">
 							<p class="description" style="color:red;">
 								<strong>
 									<?php
 									/* translators: <br /> <a> </a> */
-									printf( esc_html_x( 'These tables are not safe to update with the basic version of this plugin! %1$sTo update tables created by plugins, use the %2$sPRO version%3$s.', '{<br />}{<a>}{</a>}', 'go-live-update-urls' ), '<br />', '<a href="https://onpointplugins.com/product/go-live-update-urls-pro/?utm_source=plugin-tables&utm_campaign=gopro&utm_medium=wp-dash" target="_blank">', '</a>' );
+									printf( esc_html_x( 'These tables are not safe to update with the basic version of this plugin! %1$sTo update tables created by plugins, use the %2$sPRO version.%3$s', '{<br />}{<a>}{</a>}', 'go-live-update-urls' ), '<br />', '<a href="https://onpointplugins.com/product/go-live-update-urls-pro/?utm_source=plugin-tables&utm_campaign=gopro&utm_medium=wp-dash" target="_blank">', '</a>' );
 									?>
 								</strong>
 							</p>

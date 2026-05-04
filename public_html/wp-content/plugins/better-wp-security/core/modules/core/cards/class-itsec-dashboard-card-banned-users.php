@@ -20,6 +20,10 @@ class ITSEC_Dashboard_Card_Banned_Users extends ITSEC_Dashboard_Card {
 		];
 	}
 
+	public function get_module_id(): ?string {
+		return 'core';
+	}
+
 	public function query_for_data( array $query_args, array $settings ) {
 		return [];
 	}

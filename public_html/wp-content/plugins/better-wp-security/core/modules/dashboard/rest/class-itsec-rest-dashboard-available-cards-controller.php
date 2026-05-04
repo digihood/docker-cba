@@ -96,6 +96,7 @@ class ITSEC_REST_Dashboard_Available_Cards_Controller extends ITSEC_REST_Dashboa
 			'max'        => $item->get_max(),
 			'settings'   => $item->get_settings_schema(),
 			'query_args' => $item->get_query_args(),
+			'module_id'  => $item->get_module_id(),
 		) );
 		$response->add_link( 'self', rest_url( "{$this->namespace}/{$this->rest_base}/{$item->get_slug()}" ) );
 
@@ -107,7 +108,7 @@ class ITSEC_REST_Dashboard_Available_Cards_Controller extends ITSEC_REST_Dashboa
 	 */
 	public function get_item_schema() {
 		return array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'$schema'    => 'http://json-schema.org/draft-07/schema#',
 			'title'      => 'ithemes-security-dashboard-available-card',
 			'type'       => 'object',
 			'properties' => array(
@@ -153,6 +154,10 @@ class ITSEC_REST_Dashboard_Available_Cards_Controller extends ITSEC_REST_Dashboa
 				),
 				'query_args' => array(
 					'type' => 'object',
+				),
+				'module_id' => array(
+					'type'        => array( 'string', 'null' ),
+					'description' => 'The module ID this card belongs to, or null if the card does not belong to a module.',
 				),
 			)
 		);

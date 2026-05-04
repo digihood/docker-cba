@@ -92,6 +92,13 @@ class ITSEC_Dashboard_Card_Database_Backup extends ITSEC_Dashboard_Card {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public function get_module_id(): ?string {
+		return 'backup';
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function get_links() {

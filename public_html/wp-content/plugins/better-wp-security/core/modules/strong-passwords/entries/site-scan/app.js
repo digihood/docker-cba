@@ -31,7 +31,7 @@ export default function App() {
 				<ScanIssueDetailContent>
 					<ScanIssueDetailColumn>
 						<Text text={ __( 'Action Details:', 'better-wp-security' ) } weight={ TextWeight.HEAVY } />
-						<ScanIssueText text={ __( 'Passwords are the first line of defense to your site’s security. ', 'better-wp-security' ) } />
+						<ScanIssueText text={ __( 'Passwords are the first line of defense to your site’s security.', 'better-wp-security' ) } />
 						<ScanIssueText text={ __( 'Enable strong password enforcement to require users to setup a strong password.', 'better-wp-security' ) } />
 					</ScanIssueDetailColumn>
 				</ScanIssueDetailContent>

@@ -17,6 +17,7 @@ use RankMath\Traits\Hooker;
 use RankMath\Helpers\Locale;
 use RankMath\Admin\Admin_Helper;
 use RankMath\Helpers\Url;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -137,7 +138,7 @@ class Screen implements IScreen {
 				'locale'              => Locale::get_site_language(),
 				'localeFull'          => get_locale(),
 				'overlayImages'       => Helper::choices_overlay_images(),
-				'defautOgImage'       => Helper::get_settings( 'titles.open_graph_image', rank_math()->plugin_url() . 'assets/admin/img/social-placeholder.jpg' ),
+				'defaultOgImage'      => Helper::get_settings( 'titles.open_graph_image', rank_math()->plugin_url() . 'assets/admin/img/social-placeholder.jpg' ),
 				'customPermalinks'    => (bool) get_option( 'permalink_structure', false ),
 				'isUserRegistered'    => Helper::is_site_connected(),
 				'autoSuggestKeywords' => Helper::is_site_connected(),
@@ -155,12 +156,13 @@ class Screen implements IScreen {
 					'analytics'  => Helper::has_cap( 'analytics' ),
 					'content_ai' => Helper::has_cap( 'content_ai' ),
 				],
+				'showKeywordIntent'   => Helper::should_determine_search_intent(),
 				'assessor'            => [
 					'serpData'        => $this->get_object_values(),
 					'powerWords'      => $this->power_words(),
 					'diacritics'      => $this->diacritics(),
 					'researchesTests' => $this->get_analysis(),
-					'hasRedirection'  => Helper::is_module_active( 'redirections' ),
+					'hasRedirection'  => Helper::has_cap( 'redirections' ) && Helper::is_module_active( 'redirections' ),
 					'hasBreadcrumb'   => Helper::is_breadcrumbs_enabled(),
 				],
 				'isPro'               => defined( 'RANK_MATH_PRO_FILE' ),
@@ -169,6 +171,30 @@ class Screen implements IScreen {
 				'trendsUpgradeLabel'  => esc_html__( 'Upgrade', 'rank-math' ),
 				'trendsPreviewImage'  => esc_url( rank_math()->plugin_url() . 'assets/admin/img/trends-preview.jpg' ),
 				'currentEditor'       => $editor,
+				'homepageData'        => [
+					'assessor' => [
+						'powerWords'      => $this->power_words(),
+						'diacritics'      => $this->diacritics(),
+						'researchesTests' => $this->get_analysis(),
+						'hasBreadcrumb'   => Helper::is_breadcrumbs_enabled(),
+						'serpData'        => [
+							'title'               => Helper::get_settings( 'titles.homepage_title' ),
+							'description'         => Helper::get_settings( 'titles.homepage_description', '' ),
+							'titleTemplate'       => '%sitename% %page% %sep% %sitedesc%',
+							'descriptionTemplate' => '',
+							'focusKeywords'       => '',
+							'breadcrumbTitle'     => Helper::get_settings( 'general.breadcrumbs_home_label' ),
+							'robots'              => $this->normalize_robots( Helper::get_settings( 'titles.homepage_robots' ) ),
+							'advancedRobots'      => $this->normalize_advanced_robots( Helper::get_settings( 'titles.homepage_advanced_robots' ) ),
+
+							// Facebook.
+							'facebookTitle'       => Helper::get_settings( 'titles.homepage_facebook_title', '' ),
+							'facebookDescription' => Helper::get_settings( 'titles.homepage_facebook_description', '' ),
+							'facebookImage'       => Helper::get_settings( 'titles.homepage_facebook_image', '' ),
+							'facebookImageID'     => Helper::get_settings( 'titles.homepage_facebook_image_id', '' ),
+						],
+					],
+				],
 			]
 		);
 
@@ -340,12 +366,13 @@ class Screen implements IScreen {
 	 * @param string $manual To load any screen manually.
 	 */
 	public function load_screen( $manual = '' ) {
-		if ( Admin_Helper::is_post_edit() || 'post' === $manual ) {
+		if ( Admin_Helper::is_post_edit() || 'post' === $manual || Helper::is_site_editor() ) {
 			$this->screen = new Post_Screen();
 			return;
 		}
 
-		if ( Admin_Helper::is_term_edit() || 'term' === $manual ) {
+		$doing_quick_edit = Param::request( 'action' ) === 'inline-save-tax';
+		if ( Admin_Helper::is_term_edit() || 'term' === $manual || $doing_quick_edit ) {
 			$this->screen = new Taxonomy_Screen();
 			return;
 		}

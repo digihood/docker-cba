@@ -16,9 +16,10 @@ import { useMemo } from '@wordpress/element';
 import { MODULES_STORE_NAME } from '@ithemes/security.packages.data';
 import { appendClassNameAtPath } from '../../utils';
 import {
-	StyledErrorList,
+	StyledMessageBar,
 	StyledPrimarySchemaFormInputs,
 } from './styles';
+import { ErrorList, ResultSummary } from '@ithemes/security-ui';
 
 export default function ModuleFormInputs( {
 	module,
@@ -33,9 +34,10 @@ export default function ModuleFormInputs( {
 		`itsec-configure-${ module.id }`
 	);
 
-	const { apiError } = useSelect(
+	const { apiError, result } = useSelect(
 		( select ) => ( {
 			apiError: select( MODULES_STORE_NAME ).getError( module.id ),
+			result: select( MODULES_STORE_NAME ).getResult( module.id ),
 		} ),
 		[ module.id ]
 	);
@@ -72,7 +74,10 @@ export default function ModuleFormInputs( {
 
 	return (
 		<>
-			<StyledErrorList apiError={ apiError } />
+			<StyledMessageBar>
+				<ErrorList apiError={ apiError } />
+				<ResultSummary result={ result } />
+			</StyledMessageBar>
 			<StyledPrimarySchemaFormInputs
 				ref={ ref }
 				tagName="div"

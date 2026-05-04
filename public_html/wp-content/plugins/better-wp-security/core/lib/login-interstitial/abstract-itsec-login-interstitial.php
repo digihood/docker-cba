@@ -157,4 +157,15 @@ abstract class ITSEC_Login_Interstitial {
 	public function get_priority() {
 		return 5;
 	}
+
+	/**
+	 * Determines whether the interstitial allows continuing async action.
+	 *
+	 * @param string $action The action being evaluated.
+	 *
+	 * @return bool
+	 */
+	public function allows_continuing_async_action( $action ) {
+		return true;
+	}
 }

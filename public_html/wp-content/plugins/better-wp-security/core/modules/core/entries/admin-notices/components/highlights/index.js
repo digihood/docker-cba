@@ -93,5 +93,9 @@ function getAvailableHighlights() {
 			slug: 'site-scanner-report',
 			label: __( 'Site Scan Report', 'better-wp-security' ),
 		},
+		{
+			slug: 'security-headers-check',
+			label: __( 'Security Headers Check', 'better-wp-security' ),
+		},
 	];
 }

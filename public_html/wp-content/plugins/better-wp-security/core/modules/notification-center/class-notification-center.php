@@ -778,6 +778,7 @@ final class ITSEC_Notification_Center {
 	 * @param bool     $silent             If true, will not update last sent times or destroy data. Defaults to false.
 	 *
 	 * @return array Notification slugs keyed to send success.
+	 * @since 8.7.2 Write directly to storage to avoid settings validation that could silently block saving due to validation errors.
 	 */
 	public function send_scheduled_notifications( $notification_slugs, $silent = false ) {
 
@@ -799,22 +800,31 @@ final class ITSEC_Notification_Center {
 			return $sent;
 		}
 
-		$settings = ITSEC_Modules::get_settings( 'notification-center' );
+		$storage = ITSEC_Storage::get( 'notification-center' );
+
+		if ( ! is_array( $storage ) ) {
+			$storage = array();
+		}
 
 		foreach ( $notification_slugs as $slug ) {
-
-			// Only clear queued data if the notification was actually able to be sent.
 			if ( ! empty( $sent[ $slug ] ) ) {
-				$settings['data'][ $slug ]      = array();
-				$settings['last_sent'][ $slug ] = ITSEC_Core::get_current_time_gmt();
+				$storage['data'][ $slug ]      = array();
+				$storage['last_sent'][ $slug ] = ITSEC_Core::get_current_time_gmt();
 			} else {
 				// Retry sending the notification in 6 hours.
-				$settings['resend_at'][ $slug ] = ITSEC_Core::get_current_time_gmt() + 6 * HOUR_IN_SECONDS;
+				$storage['resend_at'][ $slug ] = ITSEC_Core::get_current_time_gmt() + 6 * HOUR_IN_SECONDS;
 			}
 		}
 
-		ITSEC_Modules::set_settings( 'notification-center', $settings );
-		ITSEC_Storage::save();
+		// Using ITSEC_Storage to avoid settings schema validation that could silently
+		// block saving due to validation errors.
+		ITSEC_Storage::set( 'notification-center', $storage );
+
+		if ( ! ITSEC_Storage::save() ) {
+			ITSEC_Log::add_error( 'notification_center', 'save_failed', array(
+				'notifications' => $notification_slugs,
+			) );
+		}
 
 		return $sent;
 	}

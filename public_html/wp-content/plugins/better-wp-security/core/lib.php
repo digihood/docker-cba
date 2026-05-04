@@ -265,6 +265,33 @@ final class ITSEC_Lib {
 	}
 
 	/**
+	 * Get the list of Central IPs.
+	 *
+	 * @return string[]
+	 */
+	static function get_trusted_ips() {
+		return apply_filters( 'solid_security_trusted_ips', array() );
+	}
+
+	/**
+	 * Determines whether a given IP address from Central and should be trusted.
+	 *
+	 * @return boolean true if IP is Central or false
+	 */
+	static function is_ip_trusted( ) {
+		$ip = self::get_ip();
+		$trusted_ips = self::get_trusted_ips();
+		
+		foreach ( $trusted_ips as $trusted_ip ) {
+			if ( ITSEC_Lib_IP_Tools::intersect( $ip, $trusted_ip ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Checks if the given IP is banned.
 	 *
 	 * @param string $ip IP address to check.
@@ -714,7 +741,7 @@ final class ITSEC_Lib {
 			return substr( $path, strlen( $prefix ) );
 		}
 
-		return '';
+		return $path;
 	}
 
 	/**
@@ -2423,11 +2450,12 @@ final class ITSEC_Lib {
 	/**
 	 * Evaluate whether this site passes the given requirements.
 	 *
-	 * @param array $requirements
+	 * @param array $requirements The requirements list. Formatted according to the schema.
+	 * @param bool  $add_messages Whether to add error messages.
 	 *
 	 * @return WP_Error
 	 */
-	public static function evaluate_requirements( array $requirements ) {
+	public static function evaluate_requirements( array $requirements, bool $add_messages = true ) {
 		$schema = [
 			'type'                 => 'object',
 			'additionalProperties' => false,
@@ -2501,45 +2529,65 @@ final class ITSEC_Lib {
 					$version = $requirement[ $key ];
 
 					if ( version_compare( ITSEC_Core::get_plugin_version(), $version, '<' ) ) {
-						$error->add(
-							'version',
-							sprintf( __( 'You must be running at least version %s of Solid Security.', 'better-wp-security' ), $version )
-						);
+						if ( $add_messages ) {
+							$error->add(
+								'version',
+								sprintf( __( 'You must be running at least version %s of Solid Security.', 'better-wp-security' ), $version )
+							);
+						} else {
+							$error->add( 'version', '' );
+						}
 					}
 
 					break;
 				case 'ssl':
 					if ( $requirement !== is_ssl() ) {
-						$error->add(
-							'ssl',
-							$requirement ? __( 'Your site must support SSL.', 'better-wp-security' ) : __( 'Your site must not support SSL.', 'better-wp-security' )
-						);
+						if ( $add_messages ) {
+							$error->add(
+								'ssl',
+								$requirement ? __( 'Your site must support SSL.', 'better-wp-security' ) : __( 'Your site must not support SSL.', 'better-wp-security' )
+							);
+						} else {
+							$error->add( 'ssl', '' );
+						}
 					}
 					break;
 				case 'feature-flags':
 					foreach ( $requirement as $flag ) {
 						if ( ! ITSEC_Lib_Feature_Flags::is_enabled( $flag ) ) {
-							$error->add(
-								'feature-flags',
-								sprintf(
-									__( 'The \'%s\' feature flag must be enabled.', 'better-wp-security' ),
-									( ITSEC_Lib_Feature_Flags::get_flag_config( $flag )['title'] ?? $flag ) ?: $flag
-								)
-							);
+							if ( $add_messages ) {
+								$error->add(
+									'feature-flags',
+									sprintf(
+										__( 'The \'%s\' feature flag must be enabled.', 'better-wp-security' ),
+										( ITSEC_Lib_Feature_Flags::get_flag_config( $flag )['title'] ?? $flag ) ?: $flag
+									)
+								);
+							} else {
+								$error->add( 'feature-flags', '' );
+							}
 						}
 					}
 					break;
 				case 'multisite':
 					if ( $requirement === 'enabled' && ! is_multisite() ) {
-						$error->add(
-							'multisite',
-							__( 'Multisite must be enabled.', 'better-wp-security' )
-						);
+						if ( $add_messages ) {
+							$error->add(
+								'multisite',
+								__( 'Multisite must be enabled.', 'better-wp-security' )
+							);
+						} else {
+							$error->add( 'multisite', '' );
+						}
 					} elseif ( $requirement === 'disabled' && is_multisite() ) {
-						$error->add(
-							'multisite',
-							__( 'Multisite is not supported.', 'better-wp-security' )
-						);
+						if ( $add_messages ) {
+							$error->add(
+								'multisite',
+								__( 'Multisite is not supported.', 'better-wp-security' )
+							);
+						} else {
+							$error->add( 'multisite', '' );
+						}
 					}
 					break;
 				case 'server':
@@ -2554,6 +2602,11 @@ final class ITSEC_Lib {
 					} );
 
 					if ( $missing ) {
+						if ( ! $add_messages ) {
+							$error->add( 'server', '' );
+							break;
+						}
+
 						if ( count( $missing ) === 1 ) {
 							$message = sprintf( __( 'The %s PHP extension is required.', 'better-wp-security' ), ITSEC_Lib::first( $missing ) );
 						} else {
@@ -2573,14 +2626,26 @@ final class ITSEC_Lib {
 					break;
 				case 'load':
 					if ( $requirement === 'normal' && ITSEC_Core::is_loading_early() ) {
-						$error->add( 'load', __( 'Loading Solid Security via an MU-Plugin is not supported.', 'better-wp-security' ) );
+						if ( $add_messages ) {
+							$error->add( 'load', __( 'Loading Solid Security via an MU-Plugin is not supported.', 'better-wp-security' ) );
+						} else {
+							$error->add( 'load', '' );
+						}
 					} elseif ( $requirement === 'early' && ! ITSEC_Core::is_loading_early() ) {
-						$error->add( 'load', __( 'Loading Solid Security without an MU-Plugin is not supported.', 'better-wp-security' ) );
+						if ( $add_messages ) {
+							$error->add( 'load', __( 'Loading Solid Security without an MU-Plugin is not supported.', 'better-wp-security' ) );
+						} else {
+							$error->add( 'load', '' );
+						}
 					}
 					break;
 				case 'ip':
 					if ( ! ITSEC_Lib_IP_Detector::is_configured() ) {
-						$error->add( 'ip', __( 'You must select an IP Detection method in Global Settings.', 'better-wp-security' ) );
+						if ( $add_messages ) {
+							$error->add( 'ip', __( 'You must select an IP Detection method in Global Settings.', 'better-wp-security' ) );
+						} else {
+							$error->add( 'ip', '' );
+						}
 					}
 					break;
 			}
@@ -2860,5 +2925,24 @@ final class ITSEC_Lib {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Build a "oneOf" schema from a given map.
+	 *
+	 * This method generates an array of oneOf entries based on the provided map, where each schema
+	 * includes an "enum" and a "title" key.
+	 *
+	 * @param array $map An associative array where keys are the enum values and values are the titles.
+	 *
+	 * @return array An array of schemas, each containing "enum" and "title" entries.
+	 */
+	public static function build_one_of_schema( array $map ): array {
+		$result = [];
+		foreach ( $map as $enum => $title ) {
+			$result[] = ['enum' => [$enum], 'title' => $title];
+		}
+
+		return $result;
 	}
 }

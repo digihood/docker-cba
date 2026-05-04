@@ -4,6 +4,11 @@
 import { MessageList } from '@ithemes/ui';
 import { transformApiErrorToList } from '@ithemes/security-utils';
 
+/**
+ * Internal dependencies
+ */
+import Markup from '../markup';
+
 export default function ErrorList( {
 	errors,
 	apiError,
@@ -22,9 +27,14 @@ export default function ErrorList( {
 		return null;
 	}
 
+	// Render messages with Markup to support HTML links.
+	const renderedMessages = all.map( ( message, index ) => (
+		<Markup key={ index } content={ message } noWrap tagName="span" />
+	) );
+
 	return (
 		<MessageList
-			messages={ all }
+			messages={ renderedMessages }
 			heading={ title }
 			className={ className }
 			hasBorder={ hasBorder }

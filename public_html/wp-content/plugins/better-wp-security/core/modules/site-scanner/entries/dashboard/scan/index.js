@@ -127,7 +127,7 @@ function MalwareScan( { card, config } ) {
 										/>
 										<td>
 											<Text
-												indicator={ ( ) => {
+												indicator={ () => {
 													if ( status === 'clean' ) {
 														return '#7ad03a';
 													} else if ( status === 'error' ) {

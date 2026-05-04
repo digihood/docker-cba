@@ -69,6 +69,7 @@ if( ! class_exists( 'd1g1RegisterStylesScripts' ) )
       }
       wp_enqueue_style( 'fonts', get_template_directory_uri() . $this->styles_directory . '/fonts.css', array());
       wp_enqueue_style( 'slideout-menu', get_template_directory_uri() . $this->specific_styles_directory . '/slideout-menu.css', array());
+      wp_enqueue_style( 'calculator-list', get_template_directory_uri() . '/assets/styles/specific-css/calculator-list.css', array());
 
       // Register javacript
       $apptime = filemtime( get_stylesheet_directory() . $this->scripts_directory . '/app.js');

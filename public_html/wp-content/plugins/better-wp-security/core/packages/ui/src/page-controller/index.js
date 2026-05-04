@@ -25,7 +25,7 @@ const PageControlIcon = () => (
 );
 
 export default function PageControl( { currentPage, numberOfPages, setCurrentPage, onClose, allowNavigation = true } ) {
-	const next = ( ) => {
+	const next = () => {
 		setCurrentPage( currentPage + 1 );
 	};
 

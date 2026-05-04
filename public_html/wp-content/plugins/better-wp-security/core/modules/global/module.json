@@ -24,8 +24,7 @@
     "manage_group": {
       "type": "multiple",
       "title": "Manage Solid Security",
-      "description": "Allow users to manage Solid Security.",
-      "default": "administrator"
+      "description": "Allow users to manage Solid Security."
     }
   },
   "settings": {
@@ -112,15 +111,25 @@
       },
       "log_type": {
         "type": "string",
-        "enum": [
-          "database",
-          "file",
-          "both"
-        ],
-        "enumNames": [
-          "Database Only",
-          "File Only",
-          "Both"
+        "oneOf": [
+          {
+            "enum": [
+              "database"
+            ],
+            "title": "Database Only"
+          },
+          {
+            "enum": [
+              "file"
+            ],
+            "title": "File Only"
+          },
+          {
+            "enum": [
+              "both"
+            ],
+            "title": "Both"
+          }
         ],
         "default": "database",
         "title": "How should event logs be kept",

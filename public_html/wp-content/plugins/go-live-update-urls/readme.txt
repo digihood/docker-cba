@@ -1,28 +1,35 @@
 === Go Live Update Urls ===
-Contributors: Mat Lipe, onpointplugins
+Contributors: onpointplugins, Mat Lipe
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paypal%40onpointplugins%2ecom&lc=US&item_name=Go%20Live%20Update%20Urls&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: search and replace, database, urls, domain, update urls
 Requires at least: 6.2.0
-Tested up to: 6.6.1
+Tested up to: 6.9.1
 Requires PHP: 7.4.0
-Stable tag: 6.8.0
+Stable tag: 7.0.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Change the domain on your site with one click.
 
 == Description ==
 
-<h3>Change the domain on your site with one click.</h3>
+### Change the domain on your site with one click.
 
 Goes through entire site and replaces all instances of an old URL with a new one. Used most often when changing the domain of your site.
 
-<h3>Features</h3>
+Automatically detects and handles special domain circumstances to give you an accurate update every time without side effects.
+
+**Developed and supported by <a href="https://onpointplugins.com/go-live-update-urls/" target="_blank">OnPoint Plugins</a>.**
+
+### Features
+
 * Database table by table selection.
 * Updates serialized data in core tables.
+* Updates encoded URL.
 * Easy to use admin page - which may be found under Tools.
 * Works on both multisite and single site installs.
 
-<h3>Updates Entire Site including</h3>
+### Updates Entire Site Including
+
 * Posts
 * Pages
 * Image URLs
@@ -54,9 +61,10 @@ Send pull requests via the <a href="https://github.com/lipemat/go-live-update-ur
 <h3>Go PRO</h3>
 Our [PRO version](https://onpointplugins.com/product/go-live-update-urls-pro/?utm_source=readme&utm_campaign=gopro&utm_medium=dot-org) brings additional functionality to this plugin. Check out [the demo](https://onpointplugins.com/go-live-update-urls/go-live-update-urls-pro-demo/?utm_source=demo&utm_campaign=gopro&utm_medium=dot-org) to see if the PRO version is useful for you.
 
-* Updates database tables created by plugins without fear of breaking.
+* Updates database tables created by plugins.
 * Database tables are organized into simple intuitive sections.
-* Ability to choose between a full table or sections.
+* Ability to choose between tables or sections.
+* Ability to convert relative URL into absolute URL.
 * Updates serialized data across any table.
 * Updates encoded URL across any table.
 * Updates JSON data across any table.
@@ -64,11 +72,12 @@ Our [PRO version](https://onpointplugins.com/product/go-live-update-urls-pro/?ut
 * URL testing report is provided for peace of mind.
 * Option to fix common mistakes automatically when entering a URL.
 * View and use history of your site's address.
-* Predictive URLs automatically fill in the "Old URL" and "New URL.".
-* Real time reporting of count and location of urls which will be updated. **NEW**
-* Report of count and location of urls which were updated. **NEW**
-* WP-CLI support for updating URLs from the command line.
-* Priority Support with access to members only support area.
+* Accessible update history including count and location of updated URL. **New**
+* Predictive URL automatically fill in the "Old URL" and "New URL."
+* Real time reporting of count and location of URL which will be updated.
+* Report of count and location of URL which were updated.
+* WP-CLI support for updating URL from the command line.
+* Priority support with access to members only support area.
 
 == Installation ==
 
@@ -112,6 +121,50 @@ If you find you are running into issues with custom tables, you may want to chec
 3. Update prevented due to incomplete data entered.
 
 == Changelog ==
+= 7.0.7 =
+* Added a link to documentation in the plugin list.
+* Introduced a `get_wpdb` method on the `Database` class.
+* Improved PHPDocs in the Updates class.
+* Updated NodeJS to version 22.21.1.
+* Tested to WordPress 6.9.0.
+
+= 7.0.6 =
+* Tested to WordPress 6.8.2.
+* Required PRO version 7.1.0+.
+
+= 7.0.5 =
+* Officially added support for PHP 8.4.
+* Improved `Skip_Rows` unit testing.
+* Tested to WordPress 6.8.1.
+
+= 7.0.4 =
+* Improve labels on tools page.
+* Simplified the readme.
+* Tested to WordPress 6.8.0.
+* Required PRO version 7.0.4+.
+
+= 7.0.3 =
+* Added original plugin author to the readme.
+* Upgraded PHPStan to version 2.
+* Updated nanoid to latest version to resolve dependency vulnerability.
+* Tested to WordPress 6.7.2.
+
+= 7.0.2 =
+* Adjusted memory limit during counting to assure all tables are counted.
+
+= 7.0.1 =
+* Improved readme.
+* Tested to WordPress 6.7.1.
+
+= 7.0.0 =
+* Introduced class constants for admin capability and parent menu.
+* Introduced `Admin::get_admin_capability` method.
+* Introduced `go-live-update-urls/admin/admin-capability` filter.
+* Removed deprecated `Core::sanitize_field` method.
+* Converted GitHub Actions and Git hooks to distributed versions.
+* Tested to WordPress 6.6.2.
+* Required PRO version 7.0.0+.
+
 = 6.8.0 =
 * Added support for PHP based translations.
 * Bumped required WordPress version to 6.2.0.

@@ -189,6 +189,10 @@ class ITSEC_Core_Active implements Runnable {
 			"wp.data.dispatch( 'ithemes-security/core' ).__unstableLoadInitialFeatureFlags( %s );",
 			wp_json_encode( ITSEC_Lib_Feature_Flags::get_enabled() )
 		) );
+		wp_add_inline_script( 'itsec-packages-data', sprintf(
+			"wp.data.dispatch( 'ithemes-security/core' ).receiveAdminUrl( %s );",
+			wp_json_encode( admin_url('/') )
+		) );
 	}
 
 	public function add_live_reload() {

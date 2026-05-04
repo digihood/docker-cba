@@ -7,8 +7,12 @@ use iThemesSecurity\Lib\Site_Types\Has_Prerequisites;
 use iThemesSecurity\Lib\Site_Types\Question;
 use iThemesSecurity\Lib\Site_Types\Questions_Provider;
 use iThemesSecurity\Lib\Site_Types\Responds;
+use iThemesSecurity\Lib\Site_Types\Site_Type;
+use iThemesSecurity\Lib\Site_Types\Templated_Question;
+use iThemesSecurity\Lib\Site_Types\Templating_Site_Type;
 
 final class Global_Question_Pack implements Questions_Provider {
+
 	public function get_questions(): array {
 		$questions = [];
 
@@ -73,8 +77,7 @@ final class Global_Question_Pack implements Questions_Provider {
 
 				public function get_answer_schema(): array {
 					$schema = \ITSEC_Modules::get_settings_obj( 'global' )->get_settings_schema();
-					array_unshift( $schema['properties']['proxy_header']['enum'], '' );
-					array_unshift( $schema['properties']['proxy_header']['enumNames'], '' );
+					array_unshift( $schema['properties']['proxy_header']['oneOf'], ['enum' => [''], 'title' => ''] );
 
 					return [
 						'title'      => __( 'Select IP Source', 'better-wp-security' ),

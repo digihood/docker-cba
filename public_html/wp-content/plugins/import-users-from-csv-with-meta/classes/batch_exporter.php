@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class ACUI_Batch_Exporter{
 	protected $path = '';
-	protected $filename = 'user-export.csv';
+	protected $filename;
 	protected $limit = 50;
 	protected $exported_row_count = 0;
 	protected $row_data = array();
@@ -33,16 +33,19 @@ class ACUI_Batch_Exporter{
     
     function __construct() {
         add_filter( 'acui_export_columns', array( $this, 'maybe_order_columns_alphabetacally' ), 10, 2 );
-        add_filter( 'acui_export_columns', array( $this, 'maybe_order_columns_filtered_columns_parameter' ), 11, 2 );
 		add_filter( 'acui_export_data', array( $this, 'maybe_double_encapsulate_serialized_values' ), 8, 3 );
         add_filter( 'acui_export_data', array( $this, 'maybe_order_row_alphabetically' ), 10, 3 );
-        add_filter( 'acui_export_data', array( $this, 'maybe_order_row_filtered_columns_parameter' ), 11, 5 );
-
+		add_filter( 'acui_export_data', array( $this, 'maybe_order_row_filtered_columns_parameter' ), 11, 5 );
+        
+		$this->filename = uniqid( 'user-export-' . get_current_user_id() . '-' ) . ".csv";
 		$this->user_data = array( "user_login", "user_email", "source_user_id", "user_pass", "user_nicename", "user_url", "user_registered", "display_name" );
         $this->accepted_order_by = array( 'ID', 'display_name', 'name', 'user_name', 'login', 'user_login', 'nicename', 'user_nicename', 'email', 'user_email', 'url', 'user_url', 'registered', 'user_registered', 'post_count' );
 		$this->woocommerce_default_user_meta_keys = array( 'billing_first_name', 'billing_last_name', 'billing_email', 'billing_phone', 'billing_country', 'billing_address_1', 'billing_city', 'billing_state', 'billing_postcode', 'shipping_first_name', 'shipping_last_name', 'shipping_country', 'shipping_address_1', 'shipping_address_2', 'shipping_city', 'shipping_state', 'shipping_postcode' );
 		$this->other_non_date_keys = array( 'shipping_phone', '_vat_number', '_billing_vat_number' );
-        $this->total_rows = $this->get_total_rows();
+	}
+
+	function fill_total_rows( $recalculate_total_rows = false ){
+		$this->total_rows = $this->get_total_rows( $recalculate_total_rows );
 	}
 
     function get_non_date_keys(){
@@ -53,18 +56,11 @@ class ACUI_Batch_Exporter{
         if( !$args['order_fields_alphabetically'] )
 			return $row;
 		
-		$first_two_columns = array_slice( $row, 0, 2 );
-		$to_order_columns = array_unique( array_slice( $row, 2 ) );
-		sort( $to_order_columns, SORT_LOCALE_STRING );
-
-        return array_merge( $first_two_columns, $to_order_columns );
+		sort( $row, SORT_LOCALE_STRING );
+		return $row;
 	}
 
-    function maybe_order_columns_filtered_columns_parameter( $row, $args ){
-        return ( !is_array( $args['filtered_columns'] ) || count( $args['filtered_columns'] ) == 0 ) ? $row : $args['filtered_columns'];
-    }
-
-	function maybe_order_row_alphabetically( $row, $user,$args ){
+	function maybe_order_row_alphabetically( $row, $user, $args ){
         if( !$args['order_fields_alphabetically'] )
 			return $row;
 
@@ -82,7 +78,7 @@ class ACUI_Batch_Exporter{
 
         $row_sorted = array();
         foreach( $args['filtered_columns'] as $field ){
-            $row_sorted[ $field ] = $row[ $field ];
+            $row_sorted[ $field ] = isset( $row[ $field ] ) ? $row[ $field ] : '';
         }
 
         return $row_sorted;
@@ -114,11 +110,12 @@ class ACUI_Batch_Exporter{
 			$row[ $key ] = $key;
 		}
 
-		$this->set_columns_to_export( apply_filters( 'acui_export_columns', $row, array( 
+		$columns = apply_filters( 'acui_export_columns', $row, array( 
 			'order_fields_alphabetically' => $this->get_order_fields_alphabetically(), 
 			'double_encapsulate_serialized_values' => $this->get_double_encapsulate_serialized_values(), 
-			'filtered_columns' => $this->get_filtered_columns() ) ) 
-		);
+			'filtered_columns' => $this->get_filtered_columns() ) );
+		
+		$this->set_columns_to_export( $columns );
     }
 
 	function set_path( $path ){
@@ -133,8 +130,32 @@ class ACUI_Batch_Exporter{
 		$this->columns_to_export = $columns;
 	}
 
+	function extract_keys_names_from_columns( $columns ){
+		$elements = array_values( $columns );
+		$columns_array = array();
+
+		foreach( $elements as $element ){
+			if( strpos( $element, '=>' ) !== false ){
+				list( $key, $value ) = explode( '=>', $element );
+				$columns_array[ trim( $key ) ] = trim( $value );
+			} else {
+				$columns_array[ $element ] = trim( $element );
+			}
+		}
+
+		return $columns_array;
+	}
+
 	function get_columns_to_export() {
 		return $this->columns_to_export;
+	}
+
+	function get_columns_keys_to_export(){
+		return array_keys( $this->columns_to_export );
+	}
+
+	function get_columns_names_to_export(){
+		return ( count( $this->get_filtered_columns( 'names' ) ) > 0 ) ? array_values( $this->get_filtered_columns( 'names' ) ) : $this->columns_to_export;
 	}
 
     function set_delimiter( $delimiter ){
@@ -170,7 +191,10 @@ class ACUI_Batch_Exporter{
     }
 
     function get_role(){
-		return empty( $this->role ) ? '' : explode( ',', $this->role );
+		if( empty( $this->role ) )
+			return '';
+		
+		return is_array( $this->role ) ? $this->role : explode( ',', $this->role );
     }
 
     function set_from( $from ){
@@ -230,16 +254,22 @@ class ACUI_Batch_Exporter{
     }
 
     function set_filtered_columns( $filtered_columns ){
+        if ( ! is_array( $filtered_columns ) ) {
+            $filtered_columns = preg_replace( '/\s*,\s*/', ',', $filtered_columns );
+        }
         $filtered_columns = ( is_array( $filtered_columns ) ) ? array_map( 'sanitize_text_field', $filtered_columns ) : explode( ',', sanitize_text_field( $filtered_columns ) );
 
         if( empty( $filtered_columns[0] ) )
             $filtered_columns = array();
 
-        $this->filtered_columns = array_map( 'trim', $filtered_columns );
+        $this->filtered_columns = array_map( 'trim', $this->extract_keys_names_from_columns( $filtered_columns ) );
+		
+		if( $this->get_order_fields_alphabetically() )
+			ksort( $this->filtered_columns );
     }
 
-    function get_filtered_columns(){
-        return $this->filtered_columns;
+    function get_filtered_columns( $return = 'keys' ){
+        return ( $return == 'keys' ) ? array_keys( $this->filtered_columns ) : array_values( $this->filtered_columns );
     }
 
     function set_orderby( $orderby ){
@@ -258,9 +288,9 @@ class ACUI_Batch_Exporter{
         return $this->order;
     }
 
-    function get_total_rows(){
-        $total_rows = get_transient( 'acui_export_total_rows' );
-
+    function get_total_rows( $recalculate_total_rows = false ){
+        $total_rows = ( $recalculate_total_rows ) ? 0 : get_transient( 'acui_export_total_rows' );
+		
         if( empty( $total_rows ) ){
             $this->total_rows = $this->calculate_total();
         }
@@ -334,13 +364,13 @@ class ACUI_Batch_Exporter{
 	}
 
 	protected function export_column_headers() {
-		$columns    = $this->get_columns_to_export();
+		$columns = $this->get_columns_names_to_export();
 		$export_row = array();
-		$buffer     = fopen( 'php://output', 'w' );
+		$buffer = fopen( 'php://output', 'w' );
 		ob_start();
 
-		foreach ( $columns as $column_name ) {
-			$export_row[] = $this->format_data( $column_name );
+		foreach ( $columns as $key => $value ) {
+			$export_row[] = $this->format_data( $value );
 		}
 
 		$this->fputcsv( $buffer, $export_row );
@@ -590,12 +620,12 @@ class ACUI_Batch_Exporter{
 	function prepare_data_to_export() {
 		$users = $this->get_user_id_list();
         $this->row_data = array();
-        
+
 		foreach ( $users as $user ) {
             $row = array();
 			$userdata = get_userdata( $user );
 
-            foreach ( $this->get_user_data( $this->get_filtered_columns() ) as $key ) {
+            foreach ( $this->get_user_data() as $key ) {
 				if( $key == 'source_user_id' )
 					$row[ $key ] = $this->prepare( $key, $userdata->ID, $this->get_datetime_format(), $user );
 				else
@@ -611,7 +641,7 @@ class ACUI_Batch_Exporter{
 
             if( count( $this->get_filtered_columns() ) == 0 || in_array( 'user_email', $this->get_filtered_columns() ) || in_array( 'user_login', $this->get_filtered_columns() ) )
 			    $row = $this->maybe_fill_empty_data( $row, $user, $this->get_filtered_columns() );
-
+			
 			$row = apply_filters( 'acui_export_data', $row, $user, array( 
 				'columns' => $this->get_columns_to_export(), 
 				'datetime_format' => $this->get_datetime_format(), 
@@ -719,13 +749,12 @@ class ACUI_Batch_Exporter{
 	    $meta_keys = array();
 
         $usermeta = get_transient( 'acui_export_user_meta_keys' );
-		$usermeta = '';
-
+		
         if( empty( $usermeta ) ){
-            $usermeta = $wpdb->get_results( "SELECT distinct $wpdb->usermeta.meta_key FROM $wpdb->usermeta", ARRAY_A );
+            $usermeta = $wpdb->get_results( "SELECT distinct BINARY($wpdb->usermeta.meta_key) as meta_key FROM $wpdb->usermeta", ARRAY_A );
             set_transient( 'acui_export_user_meta_keys', $usermeta, HOUR_IN_SECONDS );
         }
-	    
+
 	  	foreach( $usermeta as $key => $value) {
 			if( $value["meta_key"] == 'role' || $value["meta_key"] == 'source_user_id' )
 				continue;

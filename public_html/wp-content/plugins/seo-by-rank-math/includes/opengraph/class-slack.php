@@ -69,7 +69,7 @@ class Slack extends OpenGraph {
 	 * @return void
 	 */
 	public function enhanced_data_tag( $key, $value ) {
-		self::$data_tag_count++;
+		++self::$data_tag_count;
 
 		$this->tag( sprintf( 'twitter:label%d', self::$data_tag_count ), $key );
 		$this->tag( sprintf( 'twitter:data%d', self::$data_tag_count ), $value );
@@ -164,8 +164,8 @@ class Slack extends OpenGraph {
 	 */
 	private function is_term() {
 		if ( is_category() || is_tag() || is_tax() ) {
-			global $wp_query;
-			return Helper::get_settings( sprintf( 'titles.tax_%s_slack_enhanced_sharing', $wp_query->get_queried_object()->taxonomy ) );
+			$object = get_queried_object();
+			return $object && Helper::get_settings( sprintf( 'titles.tax_%s_slack_enhanced_sharing', $object->taxonomy ) );
 		}
 
 		return false;
@@ -294,6 +294,10 @@ class Slack extends OpenGraph {
 
 		/**
 		 * Filter: 'rank_math/frontend/time_to_read_content' - Change the text to calculate the time to read.
+		 *
+		 * Note: Avoid using `do_shortcode()` or `the_content` here, as running complex
+		 * shortcodes (PHP logic, scripts, styles) can break the site. If shortcode
+		 * parsing is needed, handle it via a filter instead.
 		 */
 		$content = $this->do_filter( 'frontend/time_to_read_content', wp_strip_all_tags( $post->post_content ) );
 
@@ -302,7 +306,7 @@ class Slack extends OpenGraph {
 		 */
 		$words_per_minute = absint( $this->do_filter( 'frontend/time_to_read_wpm', 200 ) );
 
-		$words   = str_word_count( $content );
+		$words   = preg_match_all( '/\p{L}+/u', $content );
 		$minutes = floor( $words / $words_per_minute );
 
 		if ( $minutes > 0 ) {
@@ -353,7 +357,13 @@ class Slack extends OpenGraph {
 		$data = [];
 
 		$author = $wp_query->get_queried_object();
-		if ( ! $author ) {
+		if ( ! $author || ! is_object( $author ) || ! isset( $author->ID ) ) {
+			return $data;
+		}
+
+		// Check with get_userdata() to avoid issues with guest authors.
+		$userdata = get_userdata( $author->ID );
+		if ( ! $userdata || ! is_object( $userdata ) || ! isset( $userdata->ID ) ) {
 			return $data;
 		}
 
@@ -362,5 +372,4 @@ class Slack extends OpenGraph {
 
 		return $data;
 	}
-
 }

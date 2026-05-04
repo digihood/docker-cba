@@ -20,18 +20,23 @@ class ITSEC_Dashboard_Card_Pie_Chart extends ITSEC_Dashboard_Card {
 	/** @var array */
 	private $options;
 
+	/** @var string|null */
+	private $module;
+
 	/**
-	 * ITSEC_Dashboard_Card_Line_Graph constructor.
+	 * ITSEC_Dashboard_Card_Pie_Chart constructor.
 	 *
-	 * @param string $slug
-	 * @param string $label
-	 * @param array  $data_config
-	 * @param array  $options
+	 * @param string      $slug
+	 * @param string      $label
+	 * @param array       $data_config
+	 * @param array       $options
+	 * @param string|null $module
 	 */
-	public function __construct( $slug, $label, array $data_config, array $options = array() ) {
+	public function __construct( $slug, $label, array $data_config, array $options = array(), ?string $module = null ) {
 		$this->slug        = $slug;
 		$this->label       = $label;
 		$this->data_config = $data_config;
+		$this->module      = $module;
 
 		$options = $this->options = wp_parse_args( $options, array(
 			'size'            => array(),
@@ -149,5 +154,12 @@ class ITSEC_Dashboard_Card_Pie_Chart extends ITSEC_Dashboard_Card {
 	 */
 	public function get_size() {
 		return $this->size;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_module_id(): ?string {
+		return $this->module;
 	}
 }

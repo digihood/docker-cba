@@ -25,12 +25,13 @@ trait Post_Type {
 	/**
 	 * Check if post is indexable.
 	 *
-	 * @param int $post_id Post ID to check.
+	 * @param int  $post_id                    Post ID to check.
+	 * @param bool $should_check_excluded_list Whether to check if the post is excluded from the sitemap.
 	 *
 	 * @return boolean
 	 */
-	public static function is_post_indexable( $post_id ) {
-		if ( true === self::is_post_excluded( $post_id ) ) {
+	public static function is_post_indexable( $post_id, $should_check_excluded_list = true ) {
+		if ( $should_check_excluded_list && true === self::is_post_excluded( $post_id ) ) {
 			return false;
 		}
 
@@ -171,7 +172,7 @@ trait Post_Type {
 
 		$rank_math_allowed_post_types = [];
 		foreach ( self::get_accessible_post_types() as $post_type ) {
-			if ( false === apply_filters( 'rank_math/metabox/add_seo_metabox', Helper::get_settings( 'titles.pt_' . $post_type . '_add_meta_box', true ) ) ) {
+			if ( false === apply_filters( 'rank_math/metabox/add_seo_metabox', Helper::get_settings( 'titles.pt_' . $post_type . '_add_meta_box', 'web-story' !== $post_type ) ) ) {
 				continue;
 			}
 

@@ -1,0 +1,320 @@
+/* ================================================================
+   Auth / Login page
+   ================================================================ */
+
+/* ---- Already-logged-in banner ---- */
+.auth-logged-in {
+    background: #f7fafc;
+    padding: 64px 24px;
+    text-align: center;
+}
+
+.auth-logged-in__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.auth-logged-in__msg {
+    font-size: 17px;
+    color: #4a5568;
+    margin: 0;
+}
+
+.auth-logged-in__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ---- Hero ---- */
+.auth-hero {
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+    padding: 40px 24px 48px;
+    text-align: center;
+}
+
+.auth-hero__title {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 8px;
+}
+
+.auth-hero__sub {
+    font-size: 15px;
+    color: rgba(255,255,255,.78);
+    margin: 0;
+}
+
+/* ---- Page wrapper ---- */
+.auth-page {
+    background: #f7fafc;
+    min-height: 60vh;
+    padding: 0 0 64px;
+}
+
+/* ---- Card ---- */
+.auth-card {
+    max-width: 500px;
+    margin: -24px auto 0;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(26,54,93,.12);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- Tabs ---- */
+.auth-tabs {
+    display: flex;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 16px 8px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #718096;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.auth-tab:hover {
+    color: #2b6cb0;
+}
+
+.auth-tab--active {
+    color: #1a365d;
+    border-bottom-color: #3182ce;
+}
+
+/* ---- Panels ---- */
+.auth-panel {
+    display: none;
+    padding: 28px 32px 32px;
+}
+
+.auth-panel--active {
+    display: block;
+}
+
+/* ---- Flash messages (from d1g1Build::message) ---- */
+.auth-panel .callout {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.auth-panel .callout.success {
+    background: #f0fff4;
+    color: #276749;
+    border-color: #9ae6b4;
+}
+
+.auth-panel .callout.alert {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #feb2b2;
+}
+
+/* ---- WordPress login form override ---- */
+.auth-panel #loginform {
+    margin: 0;
+    padding: 0;
+}
+
+.auth-panel #loginform p {
+    margin-bottom: 16px;
+}
+
+.auth-panel #loginform label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+}
+
+.auth-panel #loginform input[type="text"],
+.auth-panel #loginform input[type="password"],
+.auth-panel #registration-form input[type="text"],
+.auth-panel #registration-form input[type="password"],
+.auth-panel #forgotten-form input[type="text"] {
+    width: 100%;
+    border: 1.5px solid #cbd5e0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #2d3748;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: #fff;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+.auth-panel #loginform input[type="text"]:focus,
+.auth-panel #loginform input[type="password"]:focus,
+.auth-panel #registration-form input[type="text"]:focus,
+.auth-panel #registration-form input[type="password"]:focus,
+.auth-panel #forgotten-form input[type="text"]:focus {
+    outline: none;
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 3px rgba(99,179,237,.15);
+}
+
+.auth-panel #loginform .forgetmenot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #718096;
+}
+
+.auth-panel #loginform .forgetmenot input {
+    width: auto;
+}
+
+.auth-panel #loginform #wp-submit,
+.auth-panel #registration-form input[type="submit"],
+.auth-panel #forgotten-form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: #2b6cb0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.15s;
+}
+
+.auth-panel #loginform #wp-submit:hover,
+.auth-panel #registration-form input[type="submit"]:hover,
+.auth-panel #forgotten-form input[type="submit"]:hover {
+    background: #2c5282;
+}
+
+/* ---- Registration form ---- */
+.auth-panel #registration-form {
+    margin: 0;
+}
+
+.auth-panel #registration-form p {
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.auth-panel #registration-form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+}
+
+.auth-panel .wrapper-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #4a5568;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-panel .wrapper-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ---- Forgotten password form ---- */
+.auth-panel .entry-title {
+    font-size: 14px;
+    color: #4a5568;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.auth-panel #forgotten-form p {
+    margin-bottom: 16px;
+}
+
+/* ---- Hide spam honeypot ---- */
+.auth-panel .hide {
+    display: none !important;
+}
+
+/* ---- Buttons ---- */
+.auth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    border: 1.5px solid transparent;
+}
+
+.auth-btn--primary {
+    background: #2b6cb0;
+    color: #fff;
+}
+
+.auth-btn--primary:hover {
+    background: #2c5282;
+    color: #fff;
+    text-decoration: none;
+}
+
+.auth-btn--outline {
+    background: #fff;
+    color: #4a5568;
+    border-color: #cbd5e0;
+}
+
+.auth-btn--outline:hover {
+    border-color: #a0aec0;
+    color: #2d3748;
+    text-decoration: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 560px) {
+    .auth-card {
+        margin: -16px 12px 0;
+        border-radius: 12px;
+    }
+
+    .auth-panel {
+        padding: 20px 20px 24px;
+    }
+
+    .auth-tab {
+        font-size: 12px;
+        padding: 14px 4px;
+    }
+}

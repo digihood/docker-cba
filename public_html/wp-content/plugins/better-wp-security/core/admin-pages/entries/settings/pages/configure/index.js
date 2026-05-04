@@ -28,8 +28,9 @@ import { Button, TextSize } from '@ithemes/ui';
 /**
  * Internal dependencies
  */
-import { NavigationTab } from '@ithemes/security-ui';
+import { NavigationTab, ErrorList } from '@ithemes/security-ui';
 import { MODULES_STORE_NAME } from '@ithemes/security.packages.data';
+import { transformApiErrorToList } from '@ithemes/security-utils';
 import {
 	useSettingsForm,
 	useAllowedSettingsFields,
@@ -257,40 +258,74 @@ function TabbedModulesRoute( { allModules, children } ) {
 }
 
 function SettingsActions( { modules, form } ) {
-	const { isSaving, isDirty } = useSelect( ( select ) => ( {
-		isDirty: select( MODULES_STORE_NAME ).getDirtySettings().some( ( module ) => modules.includes( module ) ),
-		isSaving: select( MODULES_STORE_NAME ).isSavingSettings( modules ),
-	} ), [ modules ] );
+	const { isSaving, isDirty, errors } = useSelect( ( select ) => {
+		const store = select( MODULES_STORE_NAME );
+		const moduleErrors = modules
+			.map( ( module ) => store.getError( module ) )
+			.filter( Boolean );
+
+		return {
+			isDirty: store.getDirtySettings().some( ( module ) => modules.includes( module ) ),
+			isSaving: store.isSavingSettings( modules ),
+			errors: moduleErrors.length > 0 ? moduleErrors : null,
+		};
+	}, [ modules ] );
 	const { resetSettingEdits } = useDispatch( MODULES_STORE_NAME );
 	const { root } = useParams();
 	const { goNext } = useNavigation();
 
+	// Only show errors above buttons for global settings page
+	// Module pages already show errors in ModuleFormInputs
+	const isGlobalSettings = modules.length === 1 && modules[ 0 ] === 'global';
+
+	// Extract error messages
+	const errorMessages = useMemo( () => {
+		if ( ! isGlobalSettings || ! errors || errors.length === 0 ) {
+			return null;
+		}
+
+		// Extract all error messages using the same transform function ErrorList uses
+		const messages = [];
+		errors.forEach( ( error ) => {
+			messages.push( ...transformApiErrorToList( error ) );
+		} );
+
+		return messages.length > 0 ? messages : null;
+	}, [ errors, isGlobalSettings ] );
+
 	return (
-		<StyledSettingsActions>
-			<Button
-				text={ __( 'Undo Changes', 'better-wp-security' ) }
-				variant="secondary"
-				onClick={ () => resetSettingEdits( modules ) }
-				disabled={ isSaving || ! isDirty }
-			/>
-			{ root === 'settings' && (
+		<>
+			{ errorMessages && (
+				<StyledSettingsActions>
+					<ErrorList errors={ errorMessages } hasBorder />
+				</StyledSettingsActions>
+			) }
+			<StyledSettingsActions>
 				<Button
-					type="submit"
-					form={ form }
-					text={ __( 'Save', 'better-wp-security' ) }
-					variant="primary"
-					isBusy={ isSaving }
+					text={ __( 'Undo Changes', 'better-wp-security' ) }
+					variant="secondary"
+					onClick={ () => resetSettingEdits( modules ) }
 					disabled={ isSaving || ! isDirty }
 				/>
-			) }
-			{ root !== 'settings' && (
-				<Button
-					text={ __( 'Next', 'better-wp-security' ) }
-					variant="primary"
-					onClick={ goNext }
-				/>
-			) }
-		</StyledSettingsActions>
+				{ root === 'settings' && (
+					<Button
+						type="submit"
+						form={ form }
+						text={ __( 'Save', 'better-wp-security' ) }
+						variant="primary"
+						isBusy={ isSaving }
+						disabled={ isSaving || ! isDirty }
+					/>
+				) }
+				{ root !== 'settings' && (
+					<Button
+						text={ __( 'Next', 'better-wp-security' ) }
+						variant="primary"
+						onClick={ goNext }
+					/>
+				) }
+			</StyledSettingsActions>
+		</>
 	);
 }
 
