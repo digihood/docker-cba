@@ -78,10 +78,21 @@ if (! class_exists('d1g1ThemeSetup')) {
       add_theme_support("title-tag");
       add_filter('widget_text', 'do_shortcode');
 
-      //ACF sections
-      if (function_exists('acf_add_options_sub_page')) {
-        acf_add_options_sub_page('Obecné nastavení');
-        acf_add_options_sub_page('Záhlaví');
+      //ACF options pages
+      if (function_exists('acf_add_options_page')) {
+        acf_add_options_page([
+          'page_title' => 'Nastavení webu',
+          'menu_title' => 'Nastavení webu',
+          'menu_slug'  => 'acf-options',
+          'capability' => 'edit_posts',
+          'redirect'   => false,
+        ]);
+        acf_add_options_sub_page([
+          'page_title' => 'Záhlaví & zápatí',
+          'menu_title' => 'Záhlaví & zápatí',
+          'menu_slug'  => 'acf-options-zahlavi',
+          'parent_slug' => 'acf-options',
+        ]);
       }
 
       // Add custom image sizes
@@ -98,9 +109,11 @@ if (! class_exists('d1g1ThemeSetup')) {
       // Register menus
       register_nav_menus(
         array(
-          'primary' => __('Hlavní menu', 'cba'),
-          'mobile' => __('Mobilní menu', 'cba'),
-          'footer' => __('Menu zápatí', 'cba')
+          'primary'  => __('Hlavní menu', 'cba'),
+          'mobile'   => __('Mobilní menu', 'cba'),
+          'footer-1' => __('Zápatí – sloupec 1', 'cba'),
+          'footer-2' => __('Zápatí – sloupec 2', 'cba'),
+          'footer-3' => __('Zápatí – sloupec 3', 'cba'),
         )
       );
 

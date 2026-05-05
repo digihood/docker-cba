@@ -1,20 +1,16 @@
 <?php
 /*
-Template Name: Stránka na celou šířku
+Template Name: Celá šířka – ACF bloky
+Template Post Type: page
 */
+if (!defined('ABSPATH')) exit;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
-get_header(); 
-
-d1g1B::container(true);
-
-	if (have_posts()) : while (have_posts()) : the_post(); 
-		get_template_part( 'parts/repeats/loop', 'page' ); 
-	endwhile; endif; 
-
-d1g1B::end_container();
-
-get_footer(); 
+get_header();
+?>
+<div class="page-blocks-wrap">
+    <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+        <?php the_content(); ?>
+    <?php endwhile; endif; ?>
+</div>
+<?php
+get_footer();

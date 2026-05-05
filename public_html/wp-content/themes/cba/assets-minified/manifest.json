@@ -1,6 +1,6 @@
 {
   "assets/scripts/js/app.js": {
-    "file": "scripts/scripts.js",
+    "file": "scripts/app.js",
     "isEntry": true,
     "src": "assets/scripts/js/app.js"
   },
@@ -19,11 +19,6 @@
     "isEntry": true,
     "src": "assets/scripts/specific-scripts/cookiebanner.js"
   },
-  "assets/scripts/specific-scripts/lazyloading.js": {
-    "file": "scripts/lazyloading.js",
-    "isEntry": true,
-    "src": "assets/scripts/specific-scripts/lazyloading.js"
-  },
   "assets/styles/specific-css/admin.css": {
     "file": "styles/admin.css",
     "isEntry": true,
@@ -34,10 +29,10 @@
     "isEntry": true,
     "src": "assets/styles/specific-css/cookiebanner.css"
   },
-  "assets/styles/specific-css/lazyloading.css": {
-    "file": "styles/lazyloading.css",
+  "assets/styles/specific-css/slideout-menu.css": {
+    "file": "styles/slideout-menu.css",
     "isEntry": true,
-    "src": "assets/styles/specific-css/lazyloading.css"
+    "src": "assets/styles/specific-css/slideout-menu.css"
   },
   "assets/styles/style.css": {
     "file": "styles/style.css",

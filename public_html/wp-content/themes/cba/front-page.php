@@ -1,26 +1,22 @@
-<?php 
+<?php
 /**
- * Šablona pro zobrazení domácí stránky
+ * Šablona domácí stránky – ACF bloky
  */
+if (!defined('ABSPATH')) exit;
 
-get_header(); 
+get_header();
 
-get_template_part('parts/page', 'banner' );
+// Pokud je nastavena domácí stránka a má ACF bloky, zobraz je
+if (have_posts()) :
+    while (have_posts()) : the_post();
+        // WordPress content (ACF bloky vložené přes editor)
+        $content = get_the_content();
+        if ($content) {
+            echo '<div class="front-page-blocks">';
+            the_content();
+            echo '</div>';
+        }
+    endwhile;
+endif;
 
-d1g1B::container(true);
-
-	d1g1B::cell( 12, 12, 12 );
-
-		if (have_posts()) : while (have_posts()) : the_post(); 
-
-			get_template_part( 'parts/repeats/loop', 'page' ); 
-
-		endwhile; endif; 
-		
-		echo d1g1TypographyDemo::demo(); 
-
-	d1g1B::end_cell( );
-
-d1g1B::end_container();
-
-get_footer(); 
+get_footer();

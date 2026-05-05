@@ -1,4 +1,40 @@
 
+// Intersection Observer pro fade-in animace (data-animate atributy)
+(function() {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                // Přidat is-visible na element nebo jeho rodiče (sekci)
+                el.classList.add('is-visible');
+                var section = el.closest('section');
+                if (section) section.classList.add('is-visible');
+                observer.unobserve(el);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    function initAnimations() {
+        document.querySelectorAll('[data-animate]').forEach(function(el) {
+            // Pokud je element již ve viewportu (hero), rovnou zobrazit
+            var rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('is-visible');
+                var section = el.closest('section');
+                if (section) section.classList.add('is-visible');
+            } else {
+                observer.observe(el);
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAnimations);
+    } else {
+        initAnimations();
+    }
+})();
+
 (function( $ ) {
 
     /* Vlastní funkce
@@ -165,17 +201,43 @@
 
     //init on load
     jQuery(window).on( "load", function() {
-        var slideout = new Slideout({
-            'panel': document.getElementById('panel'),
-            'menu': document.getElementById('menu'),
-            'padding': 256,
-            'side': 'right',
-            'tolerance': 70
-        });
+        var slideoutMenu = document.getElementById('mobile-menu');
+        if (slideoutMenu) {
+            var slideout = new Slideout({
+                'panel': document.getElementById('panel'),
+                'menu': slideoutMenu,
+                'padding': 256,
+                'side': 'right',
+                'tolerance': 70
+            });
 
-        $('.js-slideout-toggle, .slideout-menu .close-button').on('click', function(){
-            slideout.toggle();
-        }); 
+            $('.js-slideout-toggle, .slideout-menu .close-button').on('click', function(){
+                slideout.toggle();
+            });
+        }
+
+        // Search toggle
+        var searchBtn = document.getElementById('js-search-toggle');
+        var searchPanel = document.getElementById('header-search-panel');
+        if (searchBtn && searchPanel) {
+            searchBtn.addEventListener('click', function() {
+                var isHidden = searchPanel.classList.contains('hidden');
+                searchPanel.classList.toggle('hidden', !isHidden);
+                if (!isHidden) {
+                    searchBtn.setAttribute('aria-expanded', 'false');
+                } else {
+                    searchBtn.setAttribute('aria-expanded', 'true');
+                    var field = searchPanel.querySelector('input[type="search"]');
+                    if (field) field.focus();
+                }
+            });
+            document.addEventListener('click', function(e) {
+                if (!searchPanel.classList.contains('hidden') && !searchPanel.contains(e.target) && e.target !== searchBtn) {
+                    searchPanel.classList.add('hidden');
+                    searchBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
 
 
         (function ($) {

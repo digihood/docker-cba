@@ -22,3 +22,14 @@ include_once __DIR__ . '/builder/include.php';
 
 //custom
 include_once __DIR__ . '/login-registration/setup-form.php';
+
+//ACF pole a bloky
+include_once __DIR__ . '/acf/acf-general-settings.php';
+include_once __DIR__ . '/acf/acf-hero.php';
+include_once __DIR__ . '/acf/acf-info-slider.php';
+include_once __DIR__ . '/acf/acf-articles.php';
+include_once __DIR__ . '/acf/acf-calculators.php';
+include_once __DIR__ . '/acf/acf-banner.php';
+include_once __DIR__ . '/acf/acf-stories.php';
+include_once __DIR__ . '/acf/acf-faq.php';
+include_once __DIR__ . '/acf/acf-blocks-register.php';

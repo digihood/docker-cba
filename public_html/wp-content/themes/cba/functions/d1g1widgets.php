@@ -5,9 +5,10 @@ if (function_exists('register_sidebar')) {
     $widgets = [
         ['Základní lišta', 'sidebar-widgets', 'Widget Area', ''],
         ['Záhlaví', 'header-widgets', 'Header widget Area', 'header-widget'],
-        ['Zápatí 1', 'footer-1', 'Widget area for footer', 'footer-widget'],
-        ['Zápatí 2', 'footer-2', 'Widget area for footer', 'footer-widget'],
-        ['Zápatí 3', 'footer-3', 'Widget area for footer', 'footer-widget']
+        ['Zápatí 1', 'footer-1', 'Widget area for footer column 1', 'footer-widget'],
+        ['Zápatí 2', 'footer-2', 'Widget area for footer column 2', 'footer-widget'],
+        ['Zápatí 3', 'footer-3', 'Widget area for footer column 3', 'footer-widget'],
+        ['Zápatí 4', 'footer-4', 'Widget area for footer column 4', 'footer-widget'],
     ];
 
     if ( !empty( $widgets ) ) {

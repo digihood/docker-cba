@@ -444,3 +444,192 @@ input[type="submit"] {
 *::selection {
     @apply bg-primary text-white;
 }
+
+/* =============================================
+   HEADER
+   ============================================= */
+.header-main {
+    @apply border-b border-gray-mid/40;
+    transition: box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+.scrolled .header-main {
+    @apply shadow-card;
+}
+
+/* Hlavní navigace */
+.header-nav .menu {
+    @apply static;
+}
+
+.header-nav .menu li {
+    @apply relative;
+}
+
+.header-nav .menu li a {
+    @apply text-dark font-medium text-base no-underline px-2 py-1 rounded-lg hover:text-primary hover:bg-gray-light transition-all duration-200;
+}
+
+.header-nav .menu .current-menu-item > a,
+.header-nav .menu .current-menu-ancestor > a {
+    @apply text-primary;
+}
+
+/* Dropdown menu v headeru */
+.header-nav .menu .menu-item-has-children .sub-menu {
+    @apply absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-card py-3 px-2 w-56 z-50;
+    @apply border border-gray-mid/50;
+    display: none;
+    min-height: auto;
+}
+
+.header-nav .menu .menu-item-has-children:hover .sub-menu {
+    @apply block;
+}
+
+.header-nav .menu .sub-menu li a {
+    @apply block rounded-lg px-4 py-2.5 text-sm text-dark hover:text-primary hover:bg-gray-light;
+}
+
+/* =============================================
+   ZÁPATÍ
+   ============================================= */
+.footer-widget-col .widget-title,
+.footer-widget-col .h4,
+.footer-widget-col p.h4 {
+    @apply text-white font-bold text-lg mb-4;
+}
+
+.footer-widget-col a {
+    @apply text-gray hover:text-white no-underline transition-colors duration-200;
+}
+
+.footer-widget-col ul {
+    @apply space-y-2;
+}
+
+.footer-widget-col ul li {
+    @apply text-gray;
+}
+
+/* =============================================
+   ACF BLOKY – OBECNÉ
+   ============================================= */
+
+/* Fade-in animace pro sekce */
+[data-animate="fadeInLeft"] {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-animate="fadeInRight"] {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.is-visible [data-animate="fadeInLeft"],
+.is-visible [data-animate="fadeInRight"],
+[data-animate].is-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Sekce nadpisy */
+.text-h2-sm {
+    font-size: theme(fontSize.h2.sm);
+}
+.text-h2-md {
+    font-size: theme(fontSize.h2.md);
+}
+.text-h3-sm {
+    font-size: theme(fontSize.h3.sm);
+}
+
+/* Slider track fix */
+.info-slider-track {
+    overflow: hidden;
+}
+
+.info-slider-inner {
+    will-change: transform;
+}
+
+/* FAQ answer transition */
+.faq-answer {
+    transition: max-height 0.35s ease;
+}
+
+/* =============================================
+   SEARCH PANEL
+   ============================================= */
+#header-search-panel .search-form {
+    @apply flex gap-3;
+}
+
+#header-search-panel .search-field {
+    @apply flex-grow h-[50px] rounded-full border-gray-mid;
+}
+
+#header-search-panel .search-submit {
+    @apply h-[50px] rounded-full bg-primary text-white border-primary hover:bg-primary-dark min-w-[100px];
+}
+
+/* =============================================
+   PROSE – úzká stránka
+   ============================================= */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply text-dark font-bold mt-8 mb-4;
+}
+
+.prose p {
+    @apply text-dark mb-4 leading-relaxed;
+}
+
+.prose ul, .prose ol {
+    @apply pl-6 mb-5 space-y-2;
+}
+
+.prose ul li {
+    @apply list-disc text-dark;
+}
+
+.prose ol li {
+    @apply list-decimal text-dark;
+}
+
+.prose a {
+    @apply text-primary hover:underline;
+}
+
+.prose strong {
+    @apply font-bold;
+}
+
+/* =============================================
+   STORIES grid
+   ============================================= */
+@media (min-width: 1024px) {
+    .stories-grid {
+        grid-template-rows: auto auto;
+    }
+
+    .story-card.lg\:col-span-2 {
+        grid-row: span 2;
+    }
+}
+
+/* =============================================
+   Hamburger override (svg animace zachována)
+   ============================================= */
+#header-content .js-slideout-toggle {
+    position: static;
+    right: auto;
+    top: auto;
+}
+
+/* Skryjeme původní fixed hamburger z ThemeSetup */
+body > .js-slideout-toggle {
+    @apply hidden;
+}
