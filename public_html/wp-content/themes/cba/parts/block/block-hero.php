@@ -1,124 +1,82 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$badge          = get_field('hero_badge');
-$heading        = get_field('hero_heading');
-$highlight      = get_field('hero_heading_highlight');
-$text           = get_field('hero_text');
-$btn_primary    = get_field('hero_btn_primary');
-$btn_secondary  = get_field('hero_btn_secondary');
-$image          = get_field('hero_image');
-$stats          = get_field('hero_stats');
+$heading       = get_field('hero_heading');
+$highlight     = get_field('hero_heading_highlight');
+$text          = get_field('hero_text');
+$source        = get_field('hero_source') ?: 'od České bankovní asociace';
+$image         = get_field('hero_image');
+$stats         = get_field('hero_stats');
 
 if (!$heading) return;
-
-$heading_html = esc_html($heading);
-if ($highlight) {
-    $heading_html .= ' <span class="text-primary">' . esc_html($highlight) . '</span>';
-}
 ?>
-<section class="hero-section relative overflow-hidden bg-dark flex flex-col" style="min-height: clamp(560px, 90vh, 800px);" aria-label="<?= esc_attr($heading) ?>">
+<section class="hero-section relative overflow-hidden bg-dark" style="min-height:747px;" aria-label="<?= esc_attr($heading) ?>">
 
-    <!-- Diamond-clipped image (left portion) -->
-    <?php if ($image) : ?>
-        <div class="absolute left-0 top-0 bottom-0 w-[58%] pointer-events-none">
-            <div class="absolute inset-0 overflow-hidden" style="clip-path: polygon(0 0, 78% 0, 100% 50%, 78% 100%, 0 100%)">
-                <?= wp_get_attachment_image($image['ID'], 'large', false, [
-                    'class'   => 'w-full h-full object-cover',
-                    'alt'     => esc_attr($image['alt'] ?: $heading),
-                    'loading' => 'eager',
-                ]) ?>
-                <div class="absolute inset-0 bg-dark/25"></div>
-            </div>
-        </div>
-    <?php else : ?>
-        <!-- Decorative shape without image -->
-        <div class="absolute left-0 top-0 bottom-0 w-[58%] pointer-events-none">
-            <div class="absolute inset-0 overflow-hidden" style="clip-path: polygon(0 0, 78% 0, 100% 50%, 78% 100%, 0 100%)">
-                <div class="w-full h-full bg-dark-muted"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <svg class="w-32 h-32 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <!-- Subtle background decorations -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-0 right-0 w-80 h-80 bg-primary opacity-[0.06] rounded-full blur-3xl"></div>
+    <!-- Decorative circle - Union shape -->
+    <div class="absolute pointer-events-none overflow-hidden" style="left:-15%;top:-14%;width:65%;aspect-ratio:1;" aria-hidden="true">
+        <div class="w-full h-full rounded-full opacity-[0.08]" style="background:radial-gradient(circle,rgba(255,255,255,0.5) 0%,rgba(255,255,255,0) 70%);"></div>
+        <div class="absolute inset-0 rounded-full" style="border:1px solid rgba(255,255,255,0.06);"></div>
+    </div>
+    <div class="absolute pointer-events-none" style="left:-8%;top:-8%;width:52%;aspect-ratio:1;" aria-hidden="true">
+        <div class="w-full h-full rounded-full" style="border:1px solid rgba(255,255,255,0.05);"></div>
     </div>
 
-    <!-- Content: right side -->
-    <div class="container max-w-content mx-auto relative z-10 flex-1 flex items-center">
-        <div class="w-full flex justify-end">
-            <div class="w-full lg:w-[48%] py-20 lg:py-28 lg:pl-8">
+    <!-- Background image (right side) -->
+    <?php if ($image) : ?>
+    <div class="absolute right-0 top-0 bottom-0 w-[52%] pointer-events-none" aria-hidden="true">
+        <?= wp_get_attachment_image($image['ID'], 'large', false, [
+            'class'   => 'w-full h-full object-cover',
+            'alt'     => '',
+            'loading' => 'eager',
+        ]) ?>
+        <div class="absolute inset-0" style="background:linear-gradient(to right,#13576b 0%,rgba(19,87,107,0.75) 25%,rgba(19,87,107,0.2) 60%,transparent 85%);"></div>
+    </div>
+    <?php endif; ?>
 
-                <?php if ($badge) : ?>
-                    <div class="inline-flex items-center gap-2 bg-primary/15 text-primary border border-primary/25 rounded-full px-4 py-2 text-sm font-semibold mb-6">
-                        <span class="w-2 h-2 bg-primary rounded-full"></span>
-                        <?= esc_html($badge) ?>
-                    </div>
-                <?php endif; ?>
-
-                <h1 class="text-white font-bold leading-none mb-5" style="font-size: clamp(2.8rem, 6.5vw, 5.5rem); line-height: 1.04;">
-                    <?= $heading_html ?>
+    <!-- Content: text top-right -->
+    <div class="container max-w-content mx-auto relative z-10 h-full" style="padding-top:99px;">
+        <div class="flex justify-end">
+            <div class="w-full lg:w-[55%]">
+                <h1 class="font-bold text-vanilka leading-[0.9] mb-6 tracking-tight" style="font-size:clamp(3.5rem,6.9vw,100px);font-family:Montserrat,sans-serif;">
+                    <?= esc_html($heading) ?>
+                    <?php if ($highlight) : ?><br><?= esc_html($highlight) ?><?php endif; ?>
                 </h1>
-
                 <?php if ($text) : ?>
-                    <p class="text-white/70 text-lg leading-relaxed mb-3 max-w-md">
+                    <p class="text-vanilka/90 leading-relaxed mb-2" style="font-size:22px;font-family:Montserrat,sans-serif;max-width:560px;">
                         <?= esc_html($text) ?>
                     </p>
                 <?php endif; ?>
-
-                <?php if ($btn_primary || $btn_secondary) : ?>
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        <?php if ($btn_primary) : ?>
-                            <a
-                                href="<?= esc_url($btn_primary['url']) ?>"
-                                class="button primary rounded-full !py-4 !px-8 text-base font-semibold no-underline hover:no-underline inline-flex items-center gap-2"
-                                <?= !empty($btn_primary['target']) ? 'target="' . esc_attr($btn_primary['target']) . '"' : '' ?>
-                            >
-                                <?= esc_html($btn_primary['title']) ?>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($btn_secondary) : ?>
-                            <a
-                                href="<?= esc_url($btn_secondary['url']) ?>"
-                                class="inline-flex items-center gap-2 text-white border border-white/30 rounded-full py-4 px-8 text-base font-semibold hover:bg-white/10 transition-colors duration-300 no-underline"
-                                <?= !empty($btn_secondary['target']) ? 'target="' . esc_attr($btn_secondary['target']) . '"' : '' ?>
-                            >
-                                <?= esc_html($btn_secondary['title']) ?>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+                <p class="text-vanilka/70 tracking-wide text-sm" style="font-family:Montserrat,sans-serif;">
+                    <?= esc_html($source) ?>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Bottom: stats as icon cards -->
+    <!-- Bottom 4 category cards -->
     <?php if (!empty($stats)) : ?>
-        <div class="relative z-10 border-t border-white/10 bg-dark-card/60">
-            <div class="container max-w-content mx-auto">
-                <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
-                    <?php foreach ($stats as $stat) : ?>
-                        <div class="flex items-center gap-4 px-6 py-5">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                </svg>
+    <div class="absolute bottom-0 left-0 right-0 z-10">
+        <div class="container max-w-content mx-auto">
+            <div class="flex items-stretch gap-6">
+                <?php foreach (array_slice($stats, 0, 4) as $stat) : ?>
+                    <div class="flex-1 flex flex-col items-center justify-center gap-5 py-9 px-4 rounded-t-[10px]" style="background:rgba(255,255,255,0.1);">
+                        <?php if (!empty($stat['icon'])) : ?>
+                            <div class="w-[54px] h-[54px] flex items-center justify-center">
+                                <?= wp_get_attachment_image($stat['icon']['ID'], [54, 54], false, ['class' => 'w-full h-full object-contain', 'alt' => '']) ?>
                             </div>
-                            <div>
-                                <div class="text-xl font-bold text-primary leading-none"><?= esc_html($stat['number']) ?></div>
-                                <div class="text-white/55 text-xs mt-0.5 leading-snug"><?= esc_html($stat['label']) ?></div>
+                        <?php else : ?>
+                            <div class="w-[54px] h-[54px] rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.15);">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h6m-3 4h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
                             </div>
+                        <?php endif; ?>
+                        <div class="font-semibold text-white text-center uppercase tracking-[0.08em]" style="font-size:16px;font-family:Montserrat,sans-serif;line-height:1.2;">
+                            <?= esc_html($stat['label']) ?>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
+    </div>
     <?php endif; ?>
+
 </section>

@@ -7,138 +7,73 @@ $items      = get_field('slider_items');
 
 if (empty($items)) return;
 
-$unique_id = 'info-slider-' . uniqid();
-$total     = count($items);
+$unique_id = 'stats-' . uniqid();
 ?>
-<section class="info-slider-section py-16 lg:py-24 bg-gray-light overflow-hidden" aria-label="<?= esc_attr($heading ?: 'Informace') ?>">
+<section class="stats-section py-16 lg:py-24 overflow-hidden" style="background:#fff3db;" aria-label="<?= esc_attr($heading ?: 'Statistiky') ?>">
     <div class="container max-w-content mx-auto">
 
         <?php if ($heading || $subheading) : ?>
-            <div class="section-header text-center mb-12 lg:mb-16">
+            <div class="text-center mb-10 lg:mb-14">
                 <?php if ($heading) : ?>
-                    <h2 class="text-dark font-bold mb-4 text-h2-sm md:text-h2-md"><?= esc_html($heading) ?></h2>
+                    <h2 class="font-bold text-dark mb-4" style="font-size:44px;font-family:Montserrat,sans-serif;line-height:1;"><?= esc_html($heading) ?></h2>
                 <?php endif; ?>
                 <?php if ($subheading) : ?>
-                    <p class="text-gray-dark text-lg max-w-2xl mx-auto"><?= esc_html($subheading) ?></p>
+                    <p class="text-dark/70 text-lg" style="font-family:Montserrat,sans-serif;"><?= esc_html($subheading) ?></p>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
 
-        <!-- Slider with faded side previews -->
-        <div class="info-slider-wrapper relative" id="<?= esc_attr($unique_id) ?>">
-
-            <!-- Side fade overlays -->
-            <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-light to-transparent z-10 pointer-events-none"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-light to-transparent z-10 pointer-events-none"></div>
-
-            <div class="info-slider-track overflow-hidden">
-                <div class="info-slider-inner flex transition-transform duration-500 ease-in-out" data-slider-track>
-
-                    <?php foreach ($items as $index => $item) :
-                        if (empty($item['title'])) continue;
-                    ?>
-                        <div class="info-slide flex-none w-full flex justify-center px-4 lg:px-12">
-                            <div class="bg-white rounded-2xl p-10 lg:p-14 shadow-card max-w-2xl w-full text-center">
-
-                                <!-- Icon -->
-                                <?php if (!empty($item['icon'])) : ?>
-                                    <div class="flex justify-center mb-8">
-                                        <div class="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-                                            <?= wp_get_attachment_image($item['icon']['ID'], [48, 48], false, [
-                                                'class' => 'w-12 h-12 object-contain',
-                                                'alt'   => '',
-                                            ]) ?>
-                                        </div>
-                                    </div>
-                                <?php else : ?>
-                                    <div class="flex justify-center mb-8">
-                                        <div class="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-                                            <span class="text-primary text-3xl font-bold"><?= ($index + 1) ?></span>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-
-                                <!-- Stat/title text -->
-                                <h3 class="text-dark font-bold text-2xl lg:text-3xl leading-snug mb-5">
-                                    <?= esc_html($item['title']) ?>
-                                </h3>
-
-                                <!-- Description -->
-                                <?php if (!empty($item['text'])) : ?>
-                                    <p class="text-gray-dark text-lg leading-relaxed mb-9">
-                                        <?= esc_html($item['text']) ?>
-                                    </p>
-                                <?php endif; ?>
-
-                                <!-- CTA button -->
-                                <?php if (!empty($item['link'])) : ?>
-                                    <a
-                                        href="<?= esc_url($item['link']['url']) ?>"
-                                        class="button primary rounded-full !py-3.5 !px-8 font-semibold no-underline hover:no-underline inline-flex items-center gap-2 uppercase text-sm tracking-wide"
-                                        <?= !empty($item['link']['target']) ? 'target="' . esc_attr($item['link']['target']) . '"' : '' ?>
-                                    >
-                                        <?= esc_html($item['link']['title'] ?: __('Zjistit více', 'cba')) ?>
-                                    </a>
-                                <?php endif; ?>
+        <!-- Stats cards carousel -->
+        <div class="stats-carousel relative" id="<?= esc_attr($unique_id) ?>">
+            <div class="flex gap-6 items-center justify-center flex-wrap lg:flex-nowrap">
+                <?php foreach ($items as $i => $item) :
+                    if (empty($item['title'])) continue;
+                    $is_active = ($i === 0);
+                    // Extrahuj číslo z titulku pro vizuální zvýraznění
+                    preg_match('/^(\d+)/', $item['title'], $num_match);
+                    $number = $num_match[1] ?? '';
+                    $rest   = $number ? ltrim(substr($item['title'], strlen($number))) : $item['title'];
+                ?>
+                    <div class="stats-card flex-1 min-w-[260px] max-w-[380px] rounded-[25px] p-10 transition-all duration-400 <?= $is_active ? 'bg-white shadow-card' : 'bg-white/40' ?>">
+                        <?php if (!empty($item['icon'])) : ?>
+                            <div class="mb-6">
+                                <?= wp_get_attachment_image($item['icon']['ID'], [54, 54], false, ['class' => 'w-14 h-14 object-contain', 'alt' => '']) ?>
                             </div>
+                        <?php endif; ?>
+
+                        <div class="mb-4" style="font-family:Montserrat,sans-serif;">
+                            <?php if ($number) : ?>
+                                <span class="font-semibold" style="font-size:64px;line-height:1;letter-spacing:-3.2px;color:#ff6b6b;"><?= esc_html($number) ?></span>
+                                <span class="font-semibold text-dark" style="font-size:44px;line-height:1;letter-spacing:-2.2px;"><?= esc_html($rest) ?></span>
+                            <?php else : ?>
+                                <span class="font-semibold text-dark" style="font-size:44px;line-height:1;"><?= esc_html($item['title']) ?></span>
+                            <?php endif; ?>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+
+                        <?php if (!empty($item['text'])) : ?>
+                            <p class="text-dark/80 leading-relaxed mb-6" style="font-size:16px;font-family:Montserrat,sans-serif;">
+                                <?= esc_html($item['text']) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <?php if ($is_active && !empty($item['link'])) : ?>
+                            <a href="<?= esc_url($item['link']['url']) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.05em] no-underline hover:bg-primary-dark transition-colors" style="font-family:Montserrat,sans-serif;">
+                                <?= esc_html($item['link']['title'] ?: 'Jak na penzi') ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
-            <!-- Dots navigation -->
-            <?php if ($total > 1) : ?>
-                <div class="flex items-center justify-center gap-4 mt-10">
-                    <button class="w-10 h-10 rounded-full border border-gray-mid bg-white hover:bg-primary hover:border-primary hover:text-white flex items-center justify-center transition-all duration-300" aria-label="Předchozí" data-slider-prev>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <div class="flex gap-2" data-slider-dots>
-                        <?php for ($i = 0; $i < $total; $i++) : ?>
-                            <button
-                                class="h-2.5 rounded-full transition-all duration-300 <?= $i === 0 ? 'bg-primary w-6' : 'bg-gray-mid w-2.5' ?>"
-                                data-dot="<?= $i ?>"
-                                aria-label="Slide <?= ($i + 1) ?>"
-                            ></button>
-                        <?php endfor; ?>
-                    </div>
-                    <button class="w-10 h-10 rounded-full border border-gray-mid bg-white hover:bg-primary hover:border-primary hover:text-white flex items-center justify-center transition-all duration-300" aria-label="Další" data-slider-next>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </button>
+            <!-- Dots -->
+            <?php if (count($items) > 1) : ?>
+                <div class="flex justify-center gap-2 mt-8">
+                    <?php foreach ($items as $i => $item) : ?>
+                        <span class="inline-block rounded-full transition-all duration-300 <?= $i === 0 ? 'w-6 h-2.5 bg-dark' : 'w-2.5 h-2.5 bg-dark/30' ?>"></span>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>
+
     </div>
 </section>
-
-<script>
-(function() {
-    const slider = document.getElementById('<?= esc_js($unique_id) ?>');
-    if (!slider) return;
-    const track = slider.querySelector('[data-slider-track]');
-    const dots = slider.querySelectorAll('[data-dot]');
-    const prevBtn = slider.querySelector('[data-slider-prev]');
-    const nextBtn = slider.querySelector('[data-slider-next]');
-    if (!track) return;
-
-    let current = 0;
-    const total = track.children.length;
-
-    function goTo(index) {
-        current = ((index % total) + total) % total;
-        const slideWidth = track.parentElement.offsetWidth;
-        track.style.transform = 'translateX(-' + (current * slideWidth) + 'px)';
-        dots.forEach(function(d, i) {
-            d.classList.toggle('bg-primary', i === current);
-            d.classList.toggle('bg-gray-mid', i !== current);
-            d.style.width = i === current ? '24px' : '10px';
-        });
-    }
-
-    if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
-    if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
-    dots.forEach(function(d) { d.addEventListener('click', function() { goTo(parseInt(d.dataset.dot)); }); });
-
-    // Auto-advance every 6 seconds
-    setInterval(function() { goTo(current + 1); }, 6000);
-})();
-</script>

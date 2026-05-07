@@ -40,6 +40,8 @@ export default {
       'gray-mid':     '#E0D5C8',
       gray:           '#8A7A6A',
       'gray-dark':    '#5A4A3A',
+      // Vanilka — světlá vanilka pro sekce pozadí
+      vanilka:        '#fff3db',
       // Základní
       black:          '#000000',
       white:          '#FFFFFF',
@@ -81,7 +83,7 @@ export default {
     },
     fontFamily: {
       sans:    ['"Inter Variable"', 'Inter', 'sans-serif'],
-      display: ['"Inter Variable"', 'Inter', 'sans-serif'],
+      display: ['"Montserrat"', '"Inter Variable"', 'Inter', 'sans-serif'],
     },
     extend: {
       gap: {
