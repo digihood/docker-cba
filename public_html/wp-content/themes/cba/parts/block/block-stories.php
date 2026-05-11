@@ -72,7 +72,7 @@ $side_r   = $all_stories[2] ?? null;
                                 <?= wp_get_attachment_image($side_l['thumb_id'], [100, 100], false, ['class' => 'w-full h-full object-cover', 'alt' => esc_attr($side_l['author']), 'loading' => 'lazy']) ?>
                             </div>
                         <?php else : ?>
-                            <div class="w-[100px] h-[100px] rounded-full bg-dark-muted flex items-center justify-center flex-shrink-0">
+                            <div class="w-[100px] h-[100px] rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12);">
                                 <span class="text-white font-bold text-2xl"><?= mb_substr($side_l['author'], 0, 1) ?></span>
                             </div>
                         <?php endif; ?>
@@ -121,7 +121,7 @@ $side_r   = $all_stories[2] ?? null;
                                 <?= wp_get_attachment_image($side_r['thumb_id'], [100, 100], false, ['class' => 'w-full h-full object-cover', 'alt' => esc_attr($side_r['author']), 'loading' => 'lazy']) ?>
                             </div>
                         <?php else : ?>
-                            <div class="w-[100px] h-[100px] rounded-full bg-dark-muted flex items-center justify-center flex-shrink-0">
+                            <div class="w-[100px] h-[100px] rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12);">
                                 <span class="text-white font-bold text-2xl"><?= mb_substr($side_r['author'], 0, 1) ?></span>
                             </div>
                         <?php endif; ?>

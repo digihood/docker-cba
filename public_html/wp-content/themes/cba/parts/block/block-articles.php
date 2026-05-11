@@ -74,11 +74,11 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
 
         <!-- Articles grid: 1 featured left + 3 list right -->
         <?php if ($featured) : ?>
-            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.93fr] gap-6 mb-10 mt-10">
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.93fr] gap-6 mb-10 mt-10" style="align-items:start;">
 
                 <!-- Featured article -->
                 <?php $has_thumb = !empty($featured['thumb_id']); ?>
-                <article class="article-featured relative rounded-[20px] overflow-hidden group min-h-[500px] flex flex-col <?= $has_thumb ? '' : 'bg-dark' ?>">
+                <article class="article-featured relative rounded-[20px] overflow-hidden group flex flex-col <?= $has_thumb ? '' : 'bg-dark' ?>" style="height:500px;">
                     <?php if ($has_thumb) : ?>
                         <a href="<?= esc_url($featured['permalink']) ?>" class="absolute inset-0 no-underline" tabindex="-1" aria-hidden="true">
                             <?= wp_get_attachment_image($featured['thumb_id'], 'large', false, [

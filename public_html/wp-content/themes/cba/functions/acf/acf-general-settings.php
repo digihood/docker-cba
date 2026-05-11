@@ -34,6 +34,15 @@ add_action('acf/init', function () {
                 'type'  => 'tab',
             ],
             [
+                'key'   => 'field_footer_cba_logo',
+                'label' => 'Logo ČBA (zápatí)',
+                'name'  => 'footer_cba_logo',
+                'type'  => 'image',
+                'return_format' => 'array',
+                'preview_size' => 'thumbnail',
+                'instructions' => 'Logo České bankovní asociace — zobrazí se pod hlavním logem v zápatí.',
+            ],
+            [
                 'key'   => 'field_footer_desc',
                 'label' => 'Popis/slogan zápatí',
                 'name'  => 'footer_desc',

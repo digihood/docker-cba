@@ -27,19 +27,20 @@ if (!$heading) return;
         </div>
     <?php endif; ?>
 
-    <!-- Decorative Union circle (left side) -->
-    <div class="absolute pointer-events-none" style="left:-19%;top:-12%;width:65%;aspect-ratio:1;" aria-hidden="true">
-        <div class="w-full h-full rounded-full" style="border:1px solid rgba(255,255,255,0.08);"></div>
-    </div>
+    <!-- Decorative filled red Union shape (Figma: 859×859 boolean-op at section-relative -269,-113) -->
+    <div class="absolute pointer-events-none rounded-full" style="left:-18.7%;top:-12.3%;width:59.6%;aspect-ratio:1;background:#FF6B6B;" aria-hidden="true"></div>
 
-    <!-- Content -->
-    <div class="relative z-10 h-full flex flex-col items-center justify-center" style="padding-top:445px;">
-        <h2 class="font-bold text-white text-center tracking-[-6px] w-full px-8" style="font-size:clamp(4rem,8vw,120px);font-family:Montserrat,sans-serif;line-height:1;">
-            <?= esc_html($heading) ?>
-        </h2>
+    <!-- Content: lower half, left-aligned in container -->
+    <div class="relative z-10 h-full flex flex-col" style="padding-top:445px;">
+        <div class="container max-w-content mx-auto px-[50px]">
+            <h2 class="font-bold text-white text-left tracking-[-6px]" style="font-size:clamp(4rem,8vw,120px);font-family:Montserrat,sans-serif;line-height:1;">
+                <?= esc_html($heading) ?>
+            </h2>
+        </div>
 
-        <!-- Frosted glass panel -->
-        <div class="flex items-center gap-16 rounded-[10px] mt-8 px-12 py-9" style="background:rgba(255,255,255,0.1);width:1120px;max-width:100%;height:216px;">
+        <!-- Frosted glass panel: 50px inside container on each side -->
+        <div class="container max-w-content mx-auto mt-8 px-[50px]">
+        <div class="flex items-center gap-16 rounded-[10px] px-12 py-9 w-full" style="background:rgba(255,255,255,0.1);height:216px;">
 
             <!-- Description + CTA -->
             <div class="flex flex-col gap-5 flex-1 max-w-[392px]">
@@ -82,5 +83,6 @@ if (!$heading) return;
             <?php endforeach; ?>
 
         </div>
-    </div>
+        </div><!-- /container -->
+    </div><!-- /content wrapper -->
 </section>
