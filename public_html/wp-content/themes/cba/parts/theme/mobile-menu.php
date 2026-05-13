@@ -38,13 +38,12 @@ $cta = function_exists('get_field') ? get_field('header_cta', 'option') : null;
     <!-- CTA tlačítko v mobilním menu -->
     <?php if ($cta) : ?>
         <div class="mt-8 pt-6 border-t border-dark-muted">
-            <a
-                href="<?= esc_url($cta['url']) ?>"
-                class="button primary rounded-full w-full text-center !py-3.5 font-semibold no-underline"
-                <?= !empty($cta['target']) ? 'target="' . esc_attr($cta['target']) . '"' : '' ?>
-            >
-                <?= esc_html($cta['title']) ?>
-            </a>
+            <?php d1g1B::primary_link(
+                esc_html( $cta['title'] ),
+                esc_url( $cta['url'] ),
+                ! empty( $cta['target'] ) ? [ 'target' => esc_attr( $cta['target'] ) ] : [],
+                'w-full text-center'
+            ); ?>
         </div>
     <?php endif; ?>
 

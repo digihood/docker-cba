@@ -43,6 +43,14 @@ if ( ! $cba_user->is_logged_in() ) {
 
                 <?php get_template_part( 'template-parts/account/profile-form', null, [ 'cba_user' => $cba_user ] ); ?>
 
+                <?php get_template_part( 'template-parts/account/learning-profile-fields' ); ?>
+
+                <?php get_template_part( 'template-parts/account/learning-activity' ); ?>
+
+                <?php get_template_part( 'template-parts/account/learning-courses' ); ?>
+
+                <?php get_template_part( 'template-parts/account/learning-quizzes' ); ?>
+
                 <?php get_template_part( 'template-parts/account/calculator-list', null, [ 'cba_user' => $cba_user ] ); ?>
 
             </main>

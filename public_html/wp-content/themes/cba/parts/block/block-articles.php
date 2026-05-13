@@ -143,15 +143,15 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
         <!-- CTA button -->
         <?php if ($btn) : ?>
             <div class="text-center mt-6">
-                <a href="<?= esc_url($btn['url']) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-8 py-4 text-sm font-semibold uppercase tracking-[0.07em] no-underline hover:bg-primary-dark transition-colors" style="font-family:Montserrat,sans-serif;" <?= !empty($btn['target']) ? 'target="' . esc_attr($btn['target']) . '"' : '' ?>>
-                    <?= esc_html($btn['title']) ?>
-                </a>
+                <?php d1g1B::primary_link(
+                    esc_html( $btn['title'] ),
+                    esc_url( $btn['url'] ),
+                    ! empty( $btn['target'] ) ? [ 'target' => esc_attr( $btn['target'] ) ] : []
+                ); ?>
             </div>
         <?php elseif (get_permalink(get_option('page_for_posts'))) : ?>
             <div class="text-center mt-6">
-                <a href="<?= esc_url(get_permalink(get_option('page_for_posts'))) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-8 py-4 text-sm font-semibold uppercase tracking-[0.07em] no-underline hover:bg-primary-dark transition-colors" style="font-family:Montserrat,sans-serif;">
-                    Všechny články
-                </a>
+                <?php d1g1B::primary_link( esc_html__( 'Všechny články', 'cba' ), esc_url( get_permalink( get_option( 'page_for_posts' ) ) ) ); ?>
             </div>
         <?php endif; ?>
 

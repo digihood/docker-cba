@@ -14,13 +14,6 @@ function cba_login_enqueue_assets() {
     $theme_dir = get_stylesheet_directory();
     $theme_uri = get_stylesheet_directory_uri();
 
-    wp_enqueue_style(
-        'cba-login',
-        $theme_uri . '/assets/styles/specific-css/login.css',
-        [],
-        filemtime( $theme_dir . '/assets/styles/specific-css/login.css' )
-    );
-
     wp_enqueue_script(
         'cba-login-script',
         $theme_uri . '/assets/scripts/specific-scripts/login.js',

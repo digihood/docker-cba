@@ -55,6 +55,22 @@ if( ! class_exists( 'd1g1Links' ) )
         return $page ? get_permalink( $page->ID ) : home_url( '/muj-ucet/' );
     }
 
+    public static function courses(): string {
+        return home_url( '/kurzy/' );
+    }
+
+    public static function quizzes(): string {
+        return home_url( '/kvizy/' );
+    }
+
+    public static function lessons(): string {
+        return home_url( '/lekce/' );
+    }
+
+    public static function register(): string {
+        return add_query_arg( 'tab', 'register', self::login_registration() );
+    }
+
 	}
 
 }

@@ -66,11 +66,7 @@ $render_item = function($item) use ($svg_icons) {
                     <?= esc_html(wp_trim_words($calc_desc, 12, '...')) ?>
                 </p>
             <?php endif; ?>
-            <a href="<?= esc_url($calc_url) ?>"
-               class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-5 py-2.5 font-bold uppercase tracking-[0.06em] no-underline hover:bg-primary-dark transition-colors w-fit"
-               style="font-size:12px;font-family:Montserrat,sans-serif;">
-                Vypočítat
-            </a>
+            <?php d1g1B::primary_link( esc_html__( 'Vypočítat', 'cba' ), esc_url( $calc_url ) ); ?>
         </div>
     </div>
     <?php

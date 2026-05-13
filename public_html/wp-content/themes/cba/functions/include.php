@@ -23,6 +23,9 @@ include_once __DIR__ . '/builder/include.php';
 //custom
 include_once __DIR__ . '/login-registration/setup-form.php';
 
+// Learning (kvízy, kurzy, lekce, progres)
+include_once __DIR__ . '/learning/learning-include.php';
+
 //ACF pole a bloky
 include_once __DIR__ . '/acf/acf-general-settings.php';
 include_once __DIR__ . '/acf/acf-hero.php';

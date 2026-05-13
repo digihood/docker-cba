@@ -149,9 +149,11 @@ $side_r   = $all_stories[2] ?? null;
         <!-- CTA -->
         <?php if ($btn) : ?>
             <div class="text-center mt-4">
-                <a href="<?= esc_url($btn['url']) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-8 py-4 text-sm font-semibold uppercase tracking-[0.07em] no-underline hover:bg-primary-dark transition-colors" style="font-family:Montserrat,sans-serif;" <?= !empty($btn['target']) ? 'target="' . esc_attr($btn['target']) . '"' : '' ?>>
-                    <?= esc_html($btn['title']) ?>
-                </a>
+                <?php d1g1B::primary_link(
+                    esc_html( $btn['title'] ),
+                    esc_url( $btn['url'] ),
+                    ! empty( $btn['target'] ) ? [ 'target' => esc_attr( $btn['target'] ) ] : []
+                ); ?>
             </div>
         <?php endif; ?>
 

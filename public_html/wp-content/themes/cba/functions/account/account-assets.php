@@ -14,13 +14,6 @@ function cba_account_enqueue_assets() {
     $theme_dir = get_stylesheet_directory();
     $theme_uri = get_stylesheet_directory_uri();
 
-    wp_enqueue_style(
-        'cba-account',
-        $theme_uri . '/assets/styles/specific-css/account.css',
-        [],
-        filemtime( $theme_dir . '/assets/styles/specific-css/account.css' )
-    );
-
     wp_enqueue_script(
         'cba-account-script',
         $theme_uri . '/assets/scripts/specific-scripts/account.js',

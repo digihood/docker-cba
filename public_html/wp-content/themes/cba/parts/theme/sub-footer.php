@@ -15,9 +15,7 @@ $experts_btn_url = function_exists('get_field') ? get_field('experts_btn_url', '
         <p class="text-white/85 text-lg mb-8" style="font-family:Montserrat,sans-serif;">
             <?= esc_html($experts_desc ?: 'Na vaše otázky odpovídají odborníci z ČBA a z bankovních institucí') ?>
         </p>
-        <a href="<?= esc_url($experts_btn_url ?: home_url('/otazky')) ?>" class="inline-flex items-center justify-center bg-white text-primary rounded-[50px] px-8 py-4 text-sm font-semibold uppercase tracking-[0.07em] no-underline hover:bg-white/90 transition-colors" style="font-family:Montserrat,sans-serif;">
-            Přejít do Q&amp;A
-        </a>
+        <?php d1g1B::white_link( 'Přejít do Q&amp;A', esc_url($experts_btn_url ?: home_url('/otazky')) ); ?>
     </div>
 </section>
 

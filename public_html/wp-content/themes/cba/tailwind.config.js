@@ -26,15 +26,11 @@ export default {
       // CBA brand barvy (z Figma)
       primary:        '#FF6B6B',   // Losos – tlačítka, akcenty
       'primary-dark': '#E05555',
-      'primary-light':'#FF9090',
       secondary:      '#A9936D',   // Bronz – zápatí, sekundární
-      'secondary-dark':'#8A7459',
-      // Accent: tmavý teal (CBA Modra)
+      // Accent = dark (CBA Modra teal) – alias pro zpětnou kompatibilitu
       accent:         '#13576B',
-      // Tmavé pozadí – CBA Modra teal
       dark:           '#13576B',   // CBA Modra
       'dark-muted':   '#0F4658',
-      'dark-card':    '#0D3A49',
       // Šedé (teplé tóny)
       'gray-light':   '#F5F0EB',   // Teplá krémová
       'gray-mid':     '#E0D5C8',

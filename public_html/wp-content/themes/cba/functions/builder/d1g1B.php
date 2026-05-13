@@ -62,14 +62,28 @@ if( ! class_exists( 'd1g1B' ) )
         public static function link( $title, $link, $class='', $id="", $attribute=[]) { 
             echo d1g1BuilderButton::get_link($title, $link, $class, $id, $attribute);
         }
-        // defaultní primary button z linku
-        public static function primary_link($title, $link, $attribute=""){
-            echo self::link($title, $link, 'button primary', '', $attribute);
+        public static function primary_link($title, $link, $attribute=[], $extra_class=""){
+            echo d1g1BuilderButton::get_variant_link($title, $link, 'primary', $extra_class, '', $attribute);
         }
 
-        // defaultní secondary button z linku
-        public static function secondary_link($title, $link, $attribute=""){
-            echo self::link($title, $link, 'button secondary', '', $attribute);
+        public static function secondary_link($title, $link, $attribute=[], $extra_class=""){
+            echo d1g1BuilderButton::get_variant_link($title, $link, 'secondary', $extra_class, '', $attribute);
+        }
+
+        public static function outline_link($title, $link, $attribute=[], $extra_class=""){
+            echo d1g1BuilderButton::get_variant_link($title, $link, 'outline', $extra_class, '', $attribute);
+        }
+
+        public static function white_link($title, $link, $attribute=[], $extra_class=""){
+            echo d1g1BuilderButton::get_variant_link($title, $link, 'white', $extra_class, '', $attribute);
+        }
+
+        public static function success_link($title, $link, $attribute=[], $extra_class=""){
+            echo d1g1BuilderButton::get_variant_link($title, $link, 'success', $extra_class, '', $attribute);
+        }
+
+        public static function btn_class($variant='primary', $extra=""){
+            return d1g1BuilderButton::get_btn_class($variant, $extra);
         }
 
 //sekce pro obrázky a ikony
@@ -249,4 +263,8 @@ if( ! class_exists( 'd1g1B' ) )
 
     }
 
+}
+
+if ( ! class_exists( 'd1g1Build' ) ) {
+    class_alias( 'd1g1B', 'd1g1Build' );
 }

@@ -50,13 +50,13 @@ if (!$heading) return;
                     </p>
                 <?php endif; ?>
                 <?php if ($btn1) : ?>
-                    <a href="<?= esc_url($btn1['url']) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.06em] no-underline hover:bg-primary-dark transition-colors w-fit" style="font-family:Montserrat,sans-serif;" <?= !empty($btn1['target']) ? 'target="' . esc_attr($btn1['target']) . '"' : '' ?>>
-                        <?= esc_html($btn1['title']) ?>
-                    </a>
+                    <?php d1g1B::primary_link(
+                        esc_html( $btn1['title'] ),
+                        esc_url( $btn1['url'] ),
+                        ! empty( $btn1['target'] ) ? [ 'target' => esc_attr( $btn1['target'] ) ] : []
+                    ); ?>
                 <?php else : ?>
-                    <a href="<?= esc_url(home_url('/akademie')) ?>" class="inline-flex items-center justify-center bg-primary text-white rounded-[50px] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.06em] no-underline hover:bg-primary-dark transition-colors w-fit" style="font-family:Montserrat,sans-serif;">
-                        Chci se vzdělávat
-                    </a>
+                    <?php d1g1B::primary_link( esc_html__( 'Chci se vzdělávat', 'cba' ), esc_url( home_url( '/akademie' ) ) ); ?>
                 <?php endif; ?>
             </div>
 
