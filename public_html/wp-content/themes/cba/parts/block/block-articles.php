@@ -48,13 +48,13 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
     return !in_array($c->slug, ['uncategorized', 'nezarazene', 'bez-kategorie'], true);
 }));
 ?>
-<section class="articles-section py-16 lg:py-24" style="background:#fff3db;" aria-label="<?= esc_attr($heading ?: 'Články') ?>">
+<section class="articles-section" style="background:#fff3db;padding:100px 0;" aria-label="<?= esc_attr($heading ?: 'Články') ?>">
     <div class="container max-w-content mx-auto">
 
         <!-- Section header -->
         <div class="text-center mb-10 lg:mb-14">
             <?php if ($heading) : ?>
-                <h2 class="font-bold text-dark mb-4" style="font-size:44px;font-family:Montserrat,sans-serif;line-height:1;"><?= esc_html($heading) ?></h2>
+                <h2 class="font-semibold text-dark mb-4" style="font-size:44px;font-family:Montserrat,sans-serif;line-height:1;"><?= esc_html($heading) ?></h2>
             <?php endif; ?>
             <?php if ($subheading) : ?>
                 <p class="text-dark/70 text-lg mb-8" style="font-family:Montserrat,sans-serif;"><?= esc_html($subheading) ?></p>
@@ -64,7 +64,7 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
             <?php if (!empty($filter_cats)) : ?>
                 <div class="flex flex-wrap justify-center gap-2.5">
                     <?php foreach ($filter_cats as $cat) : ?>
-                        <a href="<?= esc_url(get_category_link($cat->term_id)) ?>" class="inline-block px-5 py-2.5 rounded-full border border-dark/40 text-dark text-sm no-underline hover:border-primary hover:text-primary transition-colors duration-200" style="font-family:Montserrat,sans-serif;">
+                        <a href="<?= esc_url(get_category_link($cat->term_id)) ?>" class="inline-block px-5 py-2.5 rounded-full border border-dark text-dark text-sm no-underline hover:border-primary hover:text-primary transition-colors duration-200" style="font-family:Montserrat,sans-serif;">
                             <?= esc_html($cat->name) ?>
                         </a>
                     <?php endforeach; ?>
@@ -74,11 +74,11 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
 
         <!-- Articles grid: 1 featured left + 3 list right -->
         <?php if ($featured) : ?>
-            <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.93fr] gap-6 mb-10 mt-10" style="align-items:start;">
+            <div class="flex flex-col lg:flex-row items-stretch justify-between gap-6 lg:gap-5 py-10">
 
                 <!-- Featured article -->
                 <?php $has_thumb = !empty($featured['thumb_id']); ?>
-                <article class="article-featured relative rounded-[20px] overflow-hidden group flex flex-col <?= $has_thumb ? '' : 'bg-dark' ?>" style="height:500px;">
+                <article class="article-featured relative rounded-[20px] overflow-hidden group flex flex-col  <?= $has_thumb ? '' : 'bg-dark' ?>" style="min-width:598px;">
                     <?php if ($has_thumb) : ?>
                         <a href="<?= esc_url($featured['permalink']) ?>" class="absolute inset-0 no-underline" tabindex="-1" aria-hidden="true">
                             <?= wp_get_attachment_image($featured['thumb_id'], 'large', false, [
@@ -92,8 +92,8 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
                         <div class="absolute inset-0 bg-dark" aria-hidden="true"></div>
                     <?php endif; ?>
                     <!-- Reading time badge -->
-                    <div class="absolute top-7 left-[56px] z-10 flex items-center gap-2 text-white text-sm font-bold" style="font-family:Montserrat,sans-serif;">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div class="absolute top-7 left-[56px] z-10 flex items-center gap-1.5 text-white text-sm font-bold" style="font-family:Montserrat,sans-serif;">
+                        <?php d1g1B::icon('doba-cteni', 'w-[19px] h-[19px]  [&_path]:stroke-white'); ?>
                         <?= $featured['read_time'] ?> min. čtení
                     </div>
                     <!-- Content at bottom -->
@@ -104,7 +104,7 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
                             </a>
                         </h3>
                         <?php if (!empty($featured['excerpt'])) : ?>
-                            <p class="text-white/85 text-lg leading-relaxed" style="font-family:Montserrat,sans-serif;max-width:450px;">
+                            <p class="text-white/85 text-lg leading-relaxed font-medium" style="font-family:Montserrat,sans-serif;max-width:450px;">
                                 <?= esc_html(wp_trim_words($featured['excerpt'], 18, '...')) ?>
                             </p>
                         <?php endif; ?>
@@ -113,24 +113,24 @@ $filter_cats = array_values(array_filter($filter_cats, function($c) {
 
                 <!-- List articles -->
                 <?php if (!empty($list_posts)) : ?>
-                    <div class="flex flex-col gap-4 h-[500px]">
+                    <div class="flex flex-col gap-[25px] max-w-[600px]">
                         <?php foreach ($list_posts as $post) : ?>
-                            <article class="article-list bg-white rounded-[20px] overflow-hidden flex flex-col flex-1 relative hover:shadow-card transition-shadow duration-300 group">
-                                <!-- Left salmon accent bar -->
-                                <div class="absolute left-0 top-0 bottom-0 w-0 rounded-l-[20px]" style="background:#ff6b6b;"></div>
-                                <div class="p-7 pl-8 flex flex-col h-full">
-                                    <div class="flex items-center gap-2 mb-2 text-dark/60 text-xs" style="font-family:Montserrat,sans-serif;">
-                                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                        <?= $post['read_time'] ?> min. čtení
-                                    </div>
-                                    <h3 class="font-semibold text-dark text-xl leading-snug mb-3 group-hover:text-primary transition-colors flex-grow" style="font-family:Montserrat,sans-serif;">
+                            <article class="article-list bg-white rounded-[20px] overflow-hidden flex flex-col hover:shadow-card transition-shadow duration-300 group" >
+                                <div class="p-7 flex flex-col justify-between h-full">
+                                    <h3 class="font-semibold text-dark text-xl leading-snug group-hover:text-primary transition-colors" style="font-family:Montserrat,sans-serif;">
                                         <a href="<?= esc_url($post['permalink']) ?>" class="text-dark no-underline hover:text-primary">
                                             <?= esc_html($post['title']) ?>
                                         </a>
                                     </h3>
-                                    <p class="text-dark/50 text-xs leading-relaxed line-clamp-2" style="font-family:Montserrat,sans-serif;">
-                                        <?= esc_html(wp_trim_words($post['excerpt'], 22, '...')) ?>
-                                    </p>
+                                    <?php if (!empty($post['excerpt'])) : ?>
+                                        <p class="text-dark/60 text-sm leading-relaxed line-clamp-2" style="font-family:Montserrat,sans-serif;">
+                                            <?= esc_html(wp_trim_words($post['excerpt'], 22, '...')) ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    <div class="flex items-center gap-1.5 text-dark text-xs" style="font-family:Montserrat,sans-serif;">
+                                        <?php d1g1B::icon('doba-cteni', 'w-3 h-3 '); ?>
+                                        <?= $post['read_time'] ?> min. čtení
+                                    </div>
                                 </div>
                             </article>
                         <?php endforeach; ?>

@@ -37,6 +37,12 @@ require_once get_template_directory() . '/functions/calculators/net-worth/net-wo
 require_once get_template_directory() . '/functions/objects/CbaUser.php';
 require_once get_template_directory() . '/functions/objects/CbaCalculator.php';
 
+// SVG upload support
+add_filter('upload_mimes', function ($mimes) {
+    $mimes['svg'] = 'image/svg+xml';
+    return $mimes;
+});
+
 // Account (Můj účet + Přihlášení)
 require_once get_template_directory() . '/functions/account/account-ajax.php';
 require_once get_template_directory() . '/functions/account/account-assets.php';

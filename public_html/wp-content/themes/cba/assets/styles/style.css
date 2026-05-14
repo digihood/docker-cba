@@ -428,12 +428,26 @@ input[type="submit"] {
 }
 
 .header-nav .menu li a {
-    @apply text-dark font-medium text-base no-underline px-2 py-1 rounded-lg hover:text-primary hover:bg-gray-light transition-all duration-200;
+    @apply text-dark font-medium text-base no-underline px-2 py-1 rounded-lg hover:text-primary hover:bg-gray-light transition-all duration-200 uppercase;
+    font-family: Montserrat, sans-serif;
+    letter-spacing: 0.8px;
 }
 
 .header-nav .menu .current-menu-item > a,
 .header-nav .menu .current-menu-ancestor > a {
     @apply text-primary;
+}
+
+/* Dropdown chevron na položkách s podmenu */
+.header-nav .menu > .menu-item-has-children > a::after {
+    content: '';
+    display: inline-block;
+    width: 11.667px;
+    height: 5.833px;
+    margin-left: 10px;
+    vertical-align: middle;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' fill='none'%3E%3Cpath d='M1 1l5 4 5-4' stroke='%2313576B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
 }
 
 /* Dropdown menu v headeru */
@@ -458,11 +472,17 @@ input[type="submit"] {
 .footer-widget-col .widget-title,
 .footer-widget-col .h4,
 .footer-widget-col p.h4 {
-    @apply text-white font-bold text-lg mb-4;
+    @apply text-white font-bold mb-4;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
+    line-height: 20px;
 }
 
 .footer-widget-col a {
     @apply text-gray hover:text-white no-underline transition-colors duration-200;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    line-height: 18px;
 }
 
 .footer-widget-col ul {
@@ -471,6 +491,9 @@ input[type="submit"] {
 
 .footer-widget-col ul li {
     @apply text-gray;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    line-height: 18px;
 }
 
 /* =============================================

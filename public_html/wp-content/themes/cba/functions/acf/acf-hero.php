@@ -67,6 +67,15 @@ add_action('acf/init', function () {
                 'layout' => 'table',
                 'sub_fields' => [
                     [
+                        'key'   => 'field_hero_stat_icon',
+                        'label' => 'Ikona',
+                        'name'  => 'icon',
+                        'type'  => 'image',
+                        'return_format' => 'array',
+                        'preview_size' => 'thumbnail',
+                        'wrapper' => ['width' => '20'],
+                    ],
+                    [
                         'key'   => 'field_hero_stat_number',
                         'label' => 'Číslo',
                         'name'  => 'number',
@@ -78,7 +87,7 @@ add_action('acf/init', function () {
                         'label' => 'Popis',
                         'name'  => 'label',
                         'type'  => 'text',
-                        'wrapper' => ['width' => '70'],
+                        'wrapper' => ['width' => '50'],
                     ],
                 ],
             ],

@@ -80,6 +80,7 @@ export default {
     fontFamily: {
       sans:    ['"Inter Variable"', 'Inter', 'sans-serif'],
       display: ['"Montserrat"', '"Inter Variable"', 'Inter', 'sans-serif'],
+      'dm-sans': ['"DM Sans"', 'sans-serif'],
     },
     extend: {
       gap: {
@@ -103,7 +104,7 @@ export default {
         '30': '7.5rem',
       },
       maxWidth: {
-        'content': '1220px',
+        'content': '1284px',
       },
       transitionDuration: {
         '400': '400ms',

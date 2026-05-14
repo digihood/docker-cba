@@ -30,24 +30,26 @@ if( ! class_exists( 'd1g1AjaxPagination' ) )
         
         public function my_ajax_pagination() {
 
-            $query_vars = json_decode( stripslashes( filter_input( INPUT_POST, 'query_vars') ), true );        
+            $query_vars = json_decode( stripslashes( filter_input( INPUT_POST, 'query_vars') ), true );
             $query_vars['paged'] = filter_input( INPUT_POST, 'page');
+            $template = sanitize_file_name( filter_input( INPUT_POST, 'template') ?: 'post' );
             $posts = new WP_Query( $query_vars );
-            
+
             $GLOBALS['wp_query'] = $posts;
-        
-            if( $posts->have_posts() ) { 
-                
-                while ( $posts->have_posts() ) { 
 
-                    $posts->the_post();       
+            if( $posts->have_posts() ) {
 
-                    get_template_part( 'parts/repeats/loop', 'post' );       
-                    
+                while ( $posts->have_posts() ) {
+
+                    $posts->the_post();
+
+                    get_template_part( 'parts/repeats/loop', $template );
+
                 }
-        
-            } 
-        
+
+            }
+
+            wp_reset_postdata();
             die();
 
         }		

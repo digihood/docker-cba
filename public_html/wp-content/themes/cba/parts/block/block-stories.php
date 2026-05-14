@@ -35,120 +35,76 @@ while ($posts->have_posts()) {
     ];
 }
 wp_reset_postdata();
-
-$featured = $all_stories[1] ?? $all_stories[0] ?? null;
-$side_l   = $all_stories[0] ?? null;
-$side_r   = $all_stories[2] ?? null;
+$real_count = count($all_stories);
+while (count($all_stories) < 8) {
+    $all_stories = array_merge($all_stories, array_slice($all_stories, 0, 8 - count($all_stories)));
+}
 ?>
-<section class="stories-section py-16 lg:py-24" style="background:#fff3db;" aria-label="<?= esc_attr($heading ?: 'Příběhy a inspirace') ?>">
+<section class="stories-section" style="background:#fff3db;padding:100px 0;" aria-label="<?= esc_attr($heading ?: 'Příběhy a inspirace') ?>">
     <div class="container max-w-content mx-auto">
-
-        <!-- Hlavička -->
         <div class="text-center mb-12 lg:mb-16">
             <?php if ($heading) : ?>
-                <h2 class="font-bold text-dark mb-4" style="font-size:44px;font-family:Montserrat,sans-serif;line-height:1;"><?= esc_html($heading) ?></h2>
+                <h2 class="font-semibold text-dark mb-4" style="font-size:44px;font-family:Montserrat,sans-serif;line-height:1;"><?= esc_html($heading) ?></h2>
             <?php endif; ?>
             <?php if ($subheading) : ?>
                 <p class="text-dark/70 text-lg" style="font-family:Montserrat,sans-serif;"><?= esc_html($subheading) ?></p>
             <?php endif; ?>
         </div>
+    </div>
 
-        <!-- Stories carousel: arrow + small + LARGE featured + small + arrow -->
-        <div class="flex items-center justify-center gap-6 py-10">
-
-            <!-- Left arrow -->
-            <button class="flex items-center justify-center w-5 h-5 opacity-60 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Předchozí" onclick="this.closest('section').querySelector('.stories-track').scrollBy({left:-400,behavior:'smooth'})">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#13576b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="stories-slider-wrap">
+        <div class="flex items-center justify-center gap-6">
+            <button class="stories-prev hidden lg:flex items-center justify-center w-10 h-10 opacity-60 hover:opacity-100 transition-opacity flex-shrink-0 rotate-180" aria-label="Předchozí">
+                <?php d1g1B::icon('sipka-stories', 'w-[13px] h-[15px]'); ?>
             </button>
 
-            <!-- Stories track -->
-            <div class="stories-track flex items-center gap-6 overflow-hidden" style="max-width:1160px;">
-
-                <!-- Side card left -->
-                <?php if ($side_l) : ?>
-                    <article class="story-card-small flex-shrink-0 flex flex-col justify-end gap-5 p-10 rounded-[20px] bg-dark" style="width:287px;height:440px;">
-                        <?php if ($side_l['thumb_id']) : ?>
-                            <div class="w-[100px] h-[100px] rounded-full overflow-hidden flex-shrink-0">
-                                <?= wp_get_attachment_image($side_l['thumb_id'], [100, 100], false, ['class' => 'w-full h-full object-cover', 'alt' => esc_attr($side_l['author']), 'loading' => 'lazy']) ?>
-                            </div>
-                        <?php else : ?>
-                            <div class="w-[100px] h-[100px] rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12);">
-                                <span class="text-white font-bold text-2xl"><?= mb_substr($side_l['author'], 0, 1) ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <h3 class="font-bold text-white leading-tight" style="font-size:24px;font-family:Montserrat,sans-serif;">
-                            <a href="<?= esc_url($side_l['permalink']) ?>" class="text-white no-underline hover:opacity-80"><?= esc_html($side_l['title']) ?></a>
-                        </h3>
-                        <div class="inline-flex items-center justify-center bg-primary px-4 py-1.5 text-white text-sm font-semibold w-fit" style="font-family:Montserrat,sans-serif;">
-                            <?= esc_html($side_l['author']) ?>
-                        </div>
-                        <?php if ($side_l['cat']) : ?>
-                            <p class="text-white/70 text-sm leading-snug" style="font-family:Montserrat,sans-serif;"><?= esc_html($side_l['cat']->name) ?></p>
-                        <?php endif; ?>
-                    </article>
-                <?php endif; ?>
-
-                <!-- Featured card -->
-                <?php if ($featured) : ?>
-                    <article class="story-card-featured relative flex-shrink-0 flex flex-col justify-end gap-6 p-10 rounded-[20px] overflow-hidden" style="width:391px;height:600px;">
-                        <?php if ($featured['thumb_id']) : ?>
-                            <div class="absolute inset-0" aria-hidden="true">
-                                <?= wp_get_attachment_image($featured['thumb_id'], 'medium_large', false, ['class' => 'w-full h-full object-cover', 'alt' => '', 'loading' => 'lazy']) ?>
-                                <div class="absolute inset-0" style="background:linear-gradient(to top,#13576b 0%,rgba(19,87,107,0) 60%);"></div>
-                            </div>
-                        <?php else : ?>
-                            <div class="absolute inset-0 bg-dark" aria-hidden="true"></div>
-                        <?php endif; ?>
-                        <div class="relative z-10 flex flex-col gap-5">
-                            <h3 class="font-bold text-white leading-tight" style="font-size:34px;font-family:Montserrat,sans-serif;">
-                                <a href="<?= esc_url($featured['permalink']) ?>" class="text-white no-underline hover:opacity-80"><?= esc_html($featured['title']) ?></a>
-                            </h3>
-                            <div class="inline-flex items-center justify-center bg-primary px-4 py-1.5 text-white font-semibold w-fit" style="font-size:16px;font-family:Montserrat,sans-serif;">
-                                <?= esc_html($featured['author']) ?>
-                            </div>
-                            <?php if ($featured['cat']) : ?>
-                                <p class="text-white/80 leading-snug" style="font-size:16px;font-family:Montserrat,sans-serif;"><?= esc_html($featured['cat']->name) ?></p>
+            <div class="swiper stories-swiper">
+                <div class="swiper-wrapper">
+                    <?php foreach ($all_stories as $story) : ?>
+                    <div class="swiper-slide">
+                        <article class="story-card relative flex flex-col justify-end gap-4 p-7 lg:p-10 rounded-[20px] overflow-hidden h-full">
+                            <?php if ($story['thumb_id']) : ?>
+                                <div class="absolute inset-0" aria-hidden="true">
+                                    <?= wp_get_attachment_image($story['thumb_id'], 'medium_large', false, ['class' => 'w-full h-full object-cover', 'alt' => '', 'loading' => 'lazy']) ?>
+                                    <div class="absolute inset-0" style="background:linear-gradient(to top,#13576b 0%,rgba(19,87,107,0) 60%);"></div>
+                                </div>
+                            <?php else : ?>
+                                <div class="absolute inset-0 bg-dark" aria-hidden="true"></div>
                             <?php endif; ?>
-                        </div>
-                    </article>
-                <?php endif; ?>
-
-                <!-- Side card right -->
-                <?php if ($side_r) : ?>
-                    <article class="story-card-small flex-shrink-0 flex flex-col justify-end gap-5 p-10 rounded-[20px] bg-dark" style="width:287px;height:440px;">
-                        <?php if ($side_r['thumb_id']) : ?>
-                            <div class="w-[100px] h-[100px] rounded-full overflow-hidden flex-shrink-0">
-                                <?= wp_get_attachment_image($side_r['thumb_id'], [100, 100], false, ['class' => 'w-full h-full object-cover', 'alt' => esc_attr($side_r['author']), 'loading' => 'lazy']) ?>
+                            <div class="relative z-10 flex flex-col gap-4">
+                                <h3 class="font-bold text-white leading-tight" style="font-size:24px;font-family:Montserrat,sans-serif;">
+                                    <a href="<?= esc_url($story['permalink']) ?>" class="text-white no-underline hover:opacity-80"><?= esc_html($story['title']) ?></a>
+                                </h3>
+                                <div class="inline-flex items-center justify-center bg-primary px-4 py-1.5 text-white text-sm font-semibold w-fit" style="font-family:Montserrat,sans-serif;">
+                                    <?= esc_html($story['author']) ?>
+                                </div>
+                                <?php if ($story['cat']) : ?>
+                                    <p class="text-white/80 text-sm leading-snug" style="font-family:Montserrat,sans-serif;"><?= esc_html($story['cat']->name) ?></p>
+                                <?php endif; ?>
                             </div>
-                        <?php else : ?>
-                            <div class="w-[100px] h-[100px] rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12);">
-                                <span class="text-white font-bold text-2xl"><?= mb_substr($side_r['author'], 0, 1) ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <h3 class="font-bold text-white leading-tight" style="font-size:24px;font-family:Montserrat,sans-serif;">
-                            <a href="<?= esc_url($side_r['permalink']) ?>" class="text-white no-underline hover:opacity-80"><?= esc_html($side_r['title']) ?></a>
-                        </h3>
-                        <div class="inline-flex items-center justify-center bg-primary px-4 py-1.5 text-white text-sm font-semibold w-fit" style="font-family:Montserrat,sans-serif;">
-                            <?= esc_html($side_r['author']) ?>
-                        </div>
-                        <?php if ($side_r['cat']) : ?>
-                            <p class="text-white/70 text-sm leading-snug" style="font-family:Montserrat,sans-serif;"><?= esc_html($side_r['cat']->name) ?></p>
-                        <?php endif; ?>
-                    </article>
-                <?php endif; ?>
-
+                        </article>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
 
-            <!-- Right arrow -->
-            <button class="flex items-center justify-center w-5 h-5 opacity-60 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Další" onclick="this.closest('section').querySelector('.stories-track').scrollBy({left:400,behavior:'smooth'})">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 4L13 10L7 16" stroke="#13576b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button class="stories-next hidden lg:flex items-center justify-center w-10 h-10 opacity-60 hover:opacity-100 transition-opacity flex-shrink-0" aria-label="Další">
+                <?php d1g1B::icon('sipka-stories', 'w-[13px] h-[15px]'); ?>
             </button>
-
         </div>
+    </div>
 
-        <!-- CTA -->
+    <div class="container max-w-content mx-auto">
+        <?php if ($real_count > 1) : ?>
+            <div class="stories-pagination flex justify-center items-center gap-[6px]" style="margin-top:24px;">
+                <?php for ($d = 0; $d < $real_count; $d++) : ?>
+                    <button type="button" class="stories-dot<?= $d === 0 ? ' active' : '' ?>" data-index="<?= $d ?>" aria-label="Slide <?= $d + 1 ?>"></button>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+
         <?php if ($btn) : ?>
-            <div class="text-center mt-4">
+            <div class="text-center mt-8">
                 <?php d1g1B::primary_link(
                     esc_html( $btn['title'] ),
                     esc_url( $btn['url'] ),
@@ -156,6 +112,68 @@ $side_r   = $all_stories[2] ?? null;
                 ); ?>
             </div>
         <?php endif; ?>
-
     </div>
 </section>
+
+<style>
+.stories-slider-wrap { max-width:1200px; margin:0 auto; }
+.stories-swiper { overflow:hidden; padding:40px 0; }
+.stories-swiper .swiper-wrapper { align-items:center; }
+.stories-swiper .swiper-slide {
+    height:400px;
+    transition:transform 0.5s ease, opacity 0.5s ease;
+    transform:scale(0.95);
+    opacity:0.4;
+}
+.stories-swiper .swiper-slide-active {
+    transform:scale(1);
+    opacity:1;
+}
+@media (min-width:1024px) {
+    .stories-swiper .swiper-slide {
+        width:350px;
+        height:530px;
+        transform:scale(0.82);
+        opacity:0.5;
+    }
+    .stories-swiper .swiper-slide-active {
+        transform:scale(1.12);
+        opacity:1;
+        z-index:2;
+    }
+}
+.stories-dot { width:10px; height:10px; background:transparent; border:2px solid #FF6B6B; border-radius:9999px; transition:all 0.3s; cursor:pointer; padding:0; }
+.stories-dot.active { width:20px; height:20px; background:#FF6B6B; border-color:#FF6B6B; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Swiper === 'undefined') return;
+    var realCount = <?= $real_count ?>;
+    var dots = document.querySelectorAll('.stories-dot');
+
+    var sw = new Swiper('.stories-swiper', {
+        centeredSlides: true,
+        loop: true,
+        speed: 500,
+        grabCursor: true,
+        navigation: { prevEl: '.stories-prev', nextEl: '.stories-next' },
+        breakpoints: {
+            0: { slidesPerView: 1.2, spaceBetween: 10 },
+            1024: { slidesPerView: 'auto', spaceBetween: 20 }
+        },
+        on: {
+            slideChange: function() {
+                var idx = this.realIndex % realCount;
+                dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            }
+        }
+    });
+
+    dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+            sw.slideToLoop(parseInt(this.dataset.index));
+        });
+    });
+});
+</script>

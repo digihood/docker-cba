@@ -60,6 +60,15 @@ add_action('acf/init', function () {
                 ],
             ],
             [
+                'key'   => 'field_calc_image',
+                'label' => 'Obrázek na pozadí',
+                'name'  => 'calc_image',
+                'type'  => 'image',
+                'return_format' => 'array',
+                'preview_size' => 'medium',
+                'instructions' => 'Fotografie prosvítající skrz mezeru mezi sloupci kalkulaček',
+            ],
+            [
                 'key'   => 'field_calc_btn',
                 'label' => 'Tlačítko "Všechny kalkulačky"',
                 'name'  => 'calc_btn',

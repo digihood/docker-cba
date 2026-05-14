@@ -68,7 +68,7 @@ if( ! class_exists( 'd1g1RegisterStylesScripts' ) )
         wp_enqueue_style( 'main-css', get_template_directory_uri() . $this->styles_directory . '/style.css', array());
       }
       wp_enqueue_style( 'fonts', get_template_directory_uri() . $this->styles_directory . '/fonts.css', array());
-      wp_enqueue_style('montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap', [], null);
+      wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Montserrat:wght@400;500;600;700;800&display=swap', [], null);
       wp_enqueue_style( 'slideout-menu', get_template_directory_uri() . $this->specific_styles_directory . '/slideout-menu.css', array());
 
       // Register javacript
@@ -144,10 +144,18 @@ if( ! class_exists( 'd1g1RegisterStylesScripts' ) )
       }
 
       //slick slider
-      if ( $this->is_slick_required_d1g1( ) ) { 
-        
+      if ( $this->is_slick_required_d1g1( ) ) {
+
         $slickjs = filemtime( get_stylesheet_directory() . '/node_modules/slick-carousel/slick/slick.min.js');
-        wp_enqueue_script ( 'slickslider', get_stylesheet_directory_uri() . '/node_modules/slick-carousel/slick/slick.min.js', array("jquery", "global"), $slickjs, true); 
+        wp_enqueue_script ( 'slickslider', get_stylesheet_directory_uri() . '/node_modules/slick-carousel/slick/slick.min.js', array("jquery", "global"), $slickjs, true);
+      }
+
+      // Swiper.js
+      $swiper_css = get_stylesheet_directory() . '/node_modules/swiper/swiper-bundle.min.css';
+      $swiper_js  = get_stylesheet_directory() . '/node_modules/swiper/swiper-bundle.min.js';
+      if (file_exists($swiper_css) && file_exists($swiper_js)) {
+          wp_enqueue_style('swiper', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper-bundle.min.css', [], filemtime($swiper_css));
+          wp_enqueue_script('swiper', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper-bundle.min.js', [], filemtime($swiper_js), true);
       }
       
     }

@@ -1,41 +1,38 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$heading       = get_field('hero_heading');
-$highlight     = get_field('hero_heading_highlight');
-$text          = get_field('hero_text');
-$source        = get_field('hero_source') ?: 'od České bankovní asociace';
-$image         = get_field('hero_image');
-$stats         = get_field('hero_stats');
+$heading   = get_field('hero_heading');
+$highlight = get_field('hero_heading_highlight');
+$text      = get_field('hero_text');
+$source    = get_field('hero_source') ?: 'od České bankovní asociace';
+$image     = get_field('hero_image');
+$stats     = get_field('hero_stats');
 
 if (!$heading) return;
+
+$image_url = $image ? wp_get_attachment_image_url($image['ID'], 'full') : '';
 ?>
-<section class="hero-section relative overflow-hidden" style="background:#13576b;min-height:747px;" aria-label="<?= esc_attr($heading) ?>">
+<section class="hero-section relative overflow-hidden bg-dark" aria-label="<?= esc_attr($heading) ?>">
 
-    <!-- Decorative Union circles – LEFT side, matching Figma -->
-    <div class="absolute pointer-events-none" style="left:-14.65%;top:-14.32%;width:59%;aspect-ratio:1;" aria-hidden="true">
-        <div class="w-full h-full rounded-full" style="border:1px solid rgba(255,255,255,0.07);"></div>
-    </div>
-    <div class="absolute pointer-events-none" style="left:-10%;top:-8%;width:47%;aspect-ratio:1;" aria-hidden="true">
-        <div class="w-full h-full rounded-full" style="border:1px solid rgba(255,255,255,0.05);"></div>
+    <!-- Union shape with hero image -->
+    <div class="absolute bottom-0 left-0 h-full pointer-events-none" style="aspect-ratio:860/747;" aria-hidden="true">
+        <svg viewBox="0 0 860 747" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <clipPath id="union-clip">
+                    <path d="M-159.078 -55.1933C-90.0007 -124.269 21.9954 -124.269 91.0725 -55.1924L324.514 178.246L557.93 -55.166C627.007 -124.242 739.003 -124.242 808.08 -55.166L808.195 -55.0527C877.272 14.0237 877.272 126.019 808.195 195.096L574.779 428.508L808.179 661.905C877.256 730.982 877.256 842.976 808.179 912.053L808.066 912.167C738.988 981.243 626.992 981.243 557.914 912.167L324.514 678.77L91.0881 912.193C22.0109 981.27 -89.986 981.27 -159.063 912.193L-159.177 912.08C-228.254 843.004 -228.254 731.008 -159.177 661.932L74.2492 428.508L-159.192 195.069C-228.269 125.993 -228.269 13.9973 -159.192 -55.0791L-159.078 -55.1933Z"/>
+                </clipPath>
+            </defs>
+            <?php if ($image_url) : ?>
+                <image href="<?= esc_url($image_url) ?>" x="0" y="0" width="860" height="747" preserveAspectRatio="xMidYMid slice" clip-path="url(#union-clip)"/>
+            <?php else : ?>
+                <path d="M-159.078 -55.1933C-90.0007 -124.269 21.9954 -124.269 91.0725 -55.1924L324.514 178.246L557.93 -55.166C627.007 -124.242 739.003 -124.242 808.08 -55.166L808.195 -55.0527C877.272 14.0237 877.272 126.019 808.195 195.096L574.779 428.508L808.179 661.905C877.256 730.982 877.256 842.976 808.179 912.053L808.066 912.167C738.988 981.243 626.992 981.243 557.914 912.167L324.514 678.77L91.0881 912.193C22.0109 981.27 -89.986 981.27 -159.063 912.193L-159.177 912.08C-228.254 843.004 -228.254 731.008 -159.177 661.932L74.2492 428.508L-159.192 195.069C-228.269 125.993 -228.269 13.9973 -159.192 -55.0791L-159.078 -55.1933Z" fill="rgba(255,255,255,0.05)"/>
+            <?php endif; ?>
+        </svg>
     </div>
 
-    <!-- Background image – LEFT side (max ~52 % šířky) -->
-    <?php if ($image) : ?>
-    <div class="absolute left-0 top-0 bottom-0 w-[52%] pointer-events-none" aria-hidden="true">
-        <?= wp_get_attachment_image($image['ID'], 'large', false, [
-            'class'   => 'w-full h-full object-cover',
-            'alt'     => '',
-            'loading' => 'eager',
-        ]) ?>
-        <!-- Gradient: průhledná vlevo → teal vpravo (blend přes střed) -->
-        <div class="absolute inset-0" style="background:linear-gradient(to right,rgba(19,87,107,0) 0%,rgba(19,87,107,0.15) 40%,rgba(19,87,107,0.7) 75%,#13576b 100%);"></div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Text content – RIGHT side -->
-    <div class="container max-w-content mx-auto relative z-10 h-full" style="padding-top:99px;">
-        <div class="flex justify-end">
+    <!-- Text content -->
+    <div class="container max-w-content mx-auto relative z-10 flex flex-col" style="min-height:747px;">
+        <div class="flex justify-end flex-grow" style="padding-top:99px;">
             <div class="w-full lg:w-[55%]">
                 <h1 class="font-bold text-vanilka leading-[0.9] mb-6 tracking-tight" style="font-size:clamp(3.5rem,6.9vw,100px);font-family:Montserrat,sans-serif;">
                     <?= esc_html($heading) ?>
@@ -51,35 +48,33 @@ if (!$heading) return;
                 </p>
             </div>
         </div>
-    </div>
 
-    <!-- Bottom 4 category cards -->
-    <?php if (!empty($stats)) : ?>
-    <div class="absolute bottom-0 left-0 right-0 z-10">
-        <div class="container max-w-content mx-auto">
-            <div class="flex items-stretch gap-6">
+        <!-- Bottom category cards -->
+        <?php if (!empty($stats)) : ?>
+        <div class="pb-[160px] lg:pb-[84px]">
+            <div class="flex flex-col lg:flex-row items-stretch justify-center gap-4 lg:gap-6">
                 <?php foreach (array_slice($stats, 0, 4) as $stat) : ?>
-                    <div class="flex-1 flex flex-col items-center justify-center gap-5 py-9 px-4 rounded-t-[10px]" style="background:rgba(255,255,255,0.1);">
+                    <div class="flex flex-row lg:flex-col items-center gap-4 lg:gap-5 rounded-xl lg:rounded-t-[10px] lg:rounded-b-none backdrop-blur-md bg-white/10 px-5 py-4 lg:w-[287px] lg:h-[216px] lg:px-[45px] lg:py-[37px] lg:justify-center">
                         <?php if (!empty($stat['icon'])) : ?>
-                            <div class="w-[54px] h-[54px] flex items-center justify-center">
+                            <div class="hidden lg:flex w-[54px] h-[54px] items-center justify-center flex-shrink-0">
                                 <?= wp_get_attachment_image($stat['icon']['ID'], [54, 54], false, [
-                                    'class'   => 'w-full h-full object-contain',
-                                    'alt'     => '',
+                                    'class' => 'w-full h-full object-contain',
+                                    'alt'   => '',
                                 ]) ?>
                             </div>
                         <?php else : ?>
-                            <div class="w-[54px] h-[54px] flex items-center justify-center" aria-hidden="true">
+                            <div class="hidden lg:flex w-[54px] h-[54px] items-center justify-center flex-shrink-0" aria-hidden="true">
                                 <svg class="w-10 h-10 text-white/60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h6m-3 4h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
                             </div>
                         <?php endif; ?>
-                        <div class="font-semibold text-white text-center uppercase tracking-[0.08em]" style="font-size:16px;font-family:Montserrat,sans-serif;line-height:1.2;">
+                        <div class="font-semibold text-white uppercase tracking-[0.05em] text-center" style="font-size:16px;font-family:Montserrat,sans-serif;line-height:1.2;">
                             <?= esc_html($stat['label']) ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
 
 </section>
